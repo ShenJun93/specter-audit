@@ -38,6 +38,11 @@ Milestone 1 was implemented in a genuine Kiro CLI session and independently chec
 
 ## Hosted replay and local live inspection
 
+**Public judge demo:** https://specter-audit.vercel.app/
+
+**Public source:** https://github.com/ShenJun93/specter-audit
+
+
 The hosted Vercel app replays a frozen snapshot of a **real synthetic Git fixture**
 captured using the local Git inspector. The public UI conspicuously labels this
 mode **SYNTHETIC GIT SNAPSHOT**. All claim evaluations are computed at request

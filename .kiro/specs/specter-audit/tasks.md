@@ -43,7 +43,23 @@ Implemented via ChatGPT-assisted remote editing (not Kiro-authored):
 - `git diff --check` exit 0 is NOT a meaningful whitespace check yet because
   there are no tracked files or commits in this worktree.
 
-## Milestone 4 — Submission readiness: PENDING
+## Milestone 4 — Public source + hosted synthetic replay: VERIFIED
+
+- Public GitHub repo: https://github.com/ShenJun93/specter-audit
+  (main, MIT LICENSE, .kiro at root; initial commit 9896ccd).
+- Production hosted demo: https://specter-audit.vercel.app/
+  (synthetic Git snapshot, not a live visitor filesystem scan).
+- Vercel deploy from Git SHA 9896ccd, deployment dpl_H1oRAr2YFcjKSjDbacw19NzPpyw4 READY,
+  publicly accessible, no Vercel Authentication.
+- Live production GET /, /api/inspection, /api/status all HTTP 200.
+- Production POST /api/evaluate: UNVERIFIED / PARTIAL / SUPPORTED all tested; foreign Origin -> 403.
+- Public-site Chrome desktop and 390px mobile browser acceptance PASS,
+  0 JavaScript and console errors. Private QA receipts excluded from Git.
+- Local regression + hosted API tests: 82/82 PASS, syntax PASS.
+- GitHub Actions CI run 41639525541 for initial commit: completed/success.
+- Deployment and source publish used ChatGPT-assisted tooling, NOT additional Kiro-authored work.
+
+## Milestone 5 — Competition submission readiness: PENDING
 
 - Independent security review, focused on fail-closed behavior and filesystem boundaries.
 - User-approved initial Git commit and public GitHub repository.
