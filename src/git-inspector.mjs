@@ -20,6 +20,15 @@ import { realpath, stat } from 'node:fs/promises';
 
 const execFileP = promisify(execFile);
 
+// A repository may configure core.fsmonitor as an executable hook.
+// Disable it explicitly even when inspecting a repository we do not trust.
+// Never enable external diff helpers or text conversion commands.
+const READ_ONLY_GIT_CONFIG = [
+  '-c', 'core.fsmonitor=false',
+  '-c', 'core.untrackedCache=false',
+  '-c', 'diff.external=',
+];
+
 /** Git binary, overridable for tests. */
 const GIT_BIN = process.env.SPECTER_GIT_BIN || process.env.GIT_BIN || 'git';
 
@@ -44,14 +53,20 @@ async function git(cwd, args, opts = {}) {
   const maxBuffer = opts.maxBuffer ?? DEFAULT_MAX_BUFFER;
   const started = Date.now();
   try {
-    const result = await execFileP(GIT_BIN, args, {
+    const result = await execFileP(GIT_BIN, [...READ_ONLY_GIT_CONFIG, ...args], {
       cwd,
       shell: false,
       timeout,
       maxBuffer,
       windowsHide: true,
       // Git status can otherwise refresh index metadata via optional locks.
-      env: { ...process.env, GIT_OPTIONAL_LOCKS: '0', GIT_TERMINAL_PROMPT: '0' },
+      env: {
+        ...process.env,
+        // Prevent Git from refreshing/writing optional index metadata.
+        GIT_OPTIONAL_LOCKS: '0',
+        GIT_TERMINAL_PROMPT: '0',
+        GIT_EXTERNAL_DIFF: '',
+      },
     });
     return {
       ok: true,
@@ -296,7 +311,7 @@ export async function inspectRepository(repoPath, options = {}) {
   const statusEntries = parsePorcelainZ(statusResult.stdout);
 
   // 6. Unstaged name-status (worktree vs index).
-  const diffResult = await git(root, ['diff', '--name-status', '-z'], options);
+  const diffResult = await git(root, ['diff', '--no-ext-diff', '--no-textconv', '--name-status', '-z'], options);
   if (diffResult.overflow) errors.push('git diff output exceeded the buffer limit; results may be truncated');
   if (!diffResult.ok) {
     return errorResult(diffResult.timedOut ? 'TIMEOUT' : diffResult.overflow ? 'OUTPUT_TOO_LARGE' : 'GIT_DIFF_FAILED',
@@ -307,7 +322,7 @@ export async function inspectRepository(repoPath, options = {}) {
   // 7. Staged name-status (index vs HEAD). Works against an unborn HEAD too.
   const cachedResult = await git(
     root,
-    ['diff', '--cached', '--name-status', '-z'],
+    ['diff', '--cached', '--no-ext-diff', '--no-textconv', '--name-status', '-z'],
     options,
   );
   if (cachedResult.overflow) errors.push('git diff --cached output exceeded the buffer limit; results may be truncated');

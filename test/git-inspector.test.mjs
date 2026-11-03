@@ -241,3 +241,41 @@ test('parseNameStatusZ parses R100 rename (source first) and plain statuses', ()
   assert.deepEqual(entries[1], { status: 'M', path: 'mod.js', oldPath: null });
   assert.deepEqual(entries[2], { status: 'A', path: 'add.js', oldPath: null });
 });
+
+
+test('repository-configured fsmonitor hook is not executed by read-only inspection', async (t) => {
+  const dir = await makeTempDir('specter-fsmon-');
+  t.after(() => cleanup(dir));
+  await initRepo(dir);
+  await writeRel(dir, 'tracked.txt', 'before\n');
+  await commitAll(dir, 'baseline');
+  // A legitimate Git repo can configure a command as core.fsmonitor.
+  // This disposable fixture uses a harmless local marker instead of malicious code.
+  await writeRel(dir, 'fsmon.mjs',
+    "import {writeFileSync} from 'node:fs'; writeFileSync('fsmonitor-ran.txt','EXECUTED');\n");
+  await gitIn(dir, ['config', 'core.fsmonitor', 'node fsmon.mjs']);
+  await writeRel(dir, 'tracked.txt', 'after\n');
+  const result = await inspectRepository(dir);
+  assert.equal(result.ok, true);
+  assert.equal(result.dirty, true);
+  assert.ok(result.unstaged.some(f => f.path === 'tracked.txt'));
+  assert.equal(existsSync(path.join(dir, 'fsmonitor-ran.txt')), false,
+    'Git status must not invoke a repository-controlled fsmonitor command');
+});
+
+test('repository-configured external diff command is not executed', async (t) => {
+  const dir = await makeTempDir('specter-externaldiff-');
+  t.after(() => cleanup(dir));
+  await initRepo(dir);
+  await writeRel(dir, 'tracked.txt', 'before\n');
+  await commitAll(dir, 'baseline');
+  await writeRel(dir, 'external-diff.mjs',
+    "import {writeFileSync} from 'node:fs'; writeFileSync('external-diff-ran.txt','EXECUTED');\n");
+  await gitIn(dir, ['config', 'diff.external', 'node external-diff.mjs']);
+  await writeRel(dir, 'tracked.txt', 'after\n');
+  const result = await inspectRepository(dir);
+  assert.equal(result.ok, true);
+  assert.ok(result.diff.unstaged.some(f => f.path === 'tracked.txt'));
+  assert.equal(existsSync(path.join(dir, 'external-diff-ran.txt')), false,
+    'Git diff must not launch a repository-configured external diff helper');
+});
