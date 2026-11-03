@@ -17,7 +17,7 @@ Requires Node.js 24+ and Git. Zero runtime dependencies, no install needed.
 - Check JS syntax: npm run check
 - Inspect your own repository: node src/http-server.mjs --repo="ABSOLUTE_GIT_REPO_PATH"
 
-The demo launcher writes a fresh, disposable Git repository into the OS temporary directory, with a baseline commit and tracked modification. It does not modify the Specter Audit repo or execute user-provided commands. Ctrl+C stops the server and cleans the fixture. The running app makes only loopback HTTP calls.
+The demo launcher writes a fresh, disposable Git repository into the OS temporary directory, with a baseline commit and tracked modification. It does not modify the Specter Audit repo or execute user-provided commands. Ctrl+C stops the server and cleans the fixture. The app contacts only localhost by default. In local mode, a separate button can trigger one fixed-target, read-only GitHub Actions query. Hosted mode instead serves a recorded CI JSON file; no visitor action invokes GitHub.
 
 ## Evidence boundaries
 
@@ -25,7 +25,7 @@ The demo launcher writes a fresh, disposable Git repository into the OS temporar
 - PARTIAL: real Git path alignment plus an unsupported test/build assertion.
 - UNVERIFIED: no adequate change-path evidence or a standalone test-pass assertion.
 - A user-entered receipt can be "metadata-consistent", but is never independently attested. Even a matching HEAD hash, exitCode=0, and timestamp do not prove a test ran.
-- The inspector only sees worktree and index metadata; it does not analyze commit diffs, read source contents, run tests, connect to CI or accept arbitrary command execution.
+- The Git inspector only sees worktree and index metadata; it does not analyze commit diffs, read source contents, run tests or accept arbitrary command execution. A separate opt-in provider reader reports CI metadata for the fixed initial public release; this never changes the claim verdict.
 - Git sometimes reports an untracked directory instead of individual files.
 
 ## Security and accessibility
@@ -34,7 +34,7 @@ Server binds 127.0.0.1 only; selected repository fixed at launch; origin and Hos
 
 ## Development provenance
 
-Milestone 1 was implemented in a genuine Kiro CLI session and independently checked at 34/34 Node tests. Milestones 2–3 were authored by ChatGPT-assisted remote editing and independently tested on MAIN-PC. Those changes must not be represented as produced by Kiro. Root .kiro specs and steering provide the basis for further genuine Kiro development.
+Milestone 1 was implemented in a genuine Kiro CLI session. Milestones 2–4 were developed using ChatGPT-assisted tools. Kiro CLI contributed to the optional M5A/M5B adapter, while later hardening, integration, and regression fixes used ChatGPT/WAG. The code and Git evidence distinguish this provenance; no blanket Kiro-authorship claim is made.
 
 ## Hosted replay and local live inspection
 
@@ -47,7 +47,7 @@ The hosted Vercel app replays a frozen snapshot of a **real synthetic Git fixtur
 captured using the local Git inspector. The public UI conspicuously labels this
 mode **SYNTHETIC GIT SNAPSHOT**. All claim evaluations are computed at request
 time by the same `evaluateClaim()` engine; the hosted API does not scan the
-visitor's machine, arbitrary remote repos, or GitHub. See
+visitor's machine or arbitrary remote repositories. The new opt-in public CI feature on the **unreleased local feature branch** displays a timestamped JSON snapshot of the initial public release on hosted Vercel, and only queries GitHub live in local mode on explicit request. The recorded CI result is not about the synthetic fixture and does not change the evaluator or inspect visitor source files. See
 `scripts/build-hosted-snapshot.mjs`, `hosted/snapshot.mjs`, `api/`, and
 `vercel.json`.
 
@@ -56,6 +56,10 @@ The two modes are deliberately separated to avoid misleading evidence claims.
 
 ## Submission limitations
 
-The full live Git inspector remains a local-only application. Public GitHub, license selection, initial project Git commit, publicly accessible working demo, and final YouTube judge video remain separate submission requirements. This project does not claim production readiness, human validation, independent test attestation or security certification.
+The full live Git inspector remains a local-only application. The public GitHub repository, MIT license and hosted synthetic replay exist, but M5C/M5D/M5E improvements are not yet committed or deployed. Genuine Kiro usage documentation, final public YouTube judge video and verified Devpost submission remain pending. This project does not claim production readiness, human validation, independent test attestation or security certification.
 
-More details: docs/JUDGE_QUICKSTART.md and docs/RECEIPT_PROVENANCE.md.
+To refresh the hosted CI record, an operator must explicitly run `npm run capture:ci`, which queries only the hardcoded public workflow and updates `web/ci-evidence.json`. The hosted site reads that file on click; it never makes a GitHub API request per visitor. The capture is a dated provider report, not independent attestation.
+
+More details: docs/JUDGE_QUICKSTART.md, docs/M5E_RELEASE_GATE_20261103.md and docs/RECEIPT_PROVENANCE.md.
+
+M5F release candidate security review: `docs/M5F_RELEASE_CANDIDATE_AUDIT_20261103.md`. Changes remain local and uncommitted; CI on the candidate SHA and live production acceptance are not yet complete.

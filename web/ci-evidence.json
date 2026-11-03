@@ -1,0 +1,29 @@
+{
+  "scope": "FIXED_PUBLIC_RELEASE_CI",
+  "mode": "RECORDED",
+  "capturedAt": "2026-11-03T15:56:07.174Z",
+  "release": {
+    "owner": "ShenJun93",
+    "repo": "specter-audit",
+    "sha": "9896ccd9851d5559983f511187ac71ce85f0db10",
+    "workflowId": 405703749,
+    "label": "Initial public release (2026-11-03)"
+  },
+  "evidence": {
+    "verdict": "PROVIDER_REPORTED_SUCCESS",
+    "provider": "github-actions",
+    "sha": "9896ccd9851d5559983f511187ac71ce85f0db10",
+    "workflowId": "405703749",
+    "runId": "41639525541",
+    "runNumber": 1,
+    "runAttempt": 1,
+    "sourceUrl": "https://github.com/ShenJun93/specter-audit/actions/runs/41639525541",
+    "providerStatus": "completed",
+    "conclusion": "success",
+    "updatedAt": "2026-11-03T12:53:42Z",
+    "independentlyAttested": false,
+    "cryptographicAttestation": false,
+    "correctness": false
+  },
+  "limitation": "Recorded status from GitHub as of capturedAt, not live at viewing time. Provider report is not signed attestation or proof of correctness; it does not evaluate local or synthetic fixture code."
+}

@@ -1,8 +1,11 @@
 # M5 candidate — Provider-reported CI evidence (implement with Kiro)
 
-**Status:** PROPOSED, NOT IMPLEMENTED. This document is a bounded handoff
-for a future genuine Kiro coding session. Do not claim Kiro implemented it
-merely because this proposal lives in the repository.
+**Status:** HISTORICAL HANDOFF (superseded by M5E local evidence).
+The original proposal below remains as scope history, not a completion receipt.
+The M5 provider adapter and consent-gated UI now exist on an UNCOMMITTED
+local feature branch; they are NOT deployed. See docs/M5C_PROVIDER_TRUST_AUDIT_20261103.md
+and docs/M5D_OPTIN_PUBLIC_CI_PANEL_20261103.md. Do not claim that
+all M5 implementation was authored by Kiro.
 
 ## User problem
 
