@@ -9,9 +9,14 @@ const els = {
   untracked: $('untracked-count'), ledger: $('ledger-list'), total: $('ledger-total'),
   head: $('head-label'), footer: $('footer-status'), result: $('result'),
   empty: $('result-empty'), verdict: $('verdict-status'), confidence: $('confidence'),
-  description: $('verdict-description'), evidence: $('evidence-list'), gaps: $('gaps-list')
+  description: $('verdict-description'), evidence: $('evidence-list'), gaps: $('gaps-list'),
+  providerButton: $('provider-check'), providerState: $('provider-state'),
+  providerFacts: $('provider-facts'), providerVerdict: $('provider-verdict'),
+  providerRun: $('provider-run'), providerAttempt: $('provider-attempt'), providerLink: $('provider-link')
 };
 
+let hostedSnapshot = false;
+let inspectionReady = false;
 function setFooter(text) { els.footer.textContent = text; }
 function text(el, content) { el.textContent = String(content); }
 function showError(message) { text(els.error, message); els.error.hidden = false; setFooter('Investigation requires attention.'); }
@@ -33,10 +38,12 @@ function addLedgerEntry(code, filename, stage) {
 }
 function renderInspection(data) {
   if (!data || !data.ok) throw new Error('Git evidence unavailable. Check the selected repository.');
+  hostedSnapshot = data.demoMode === true;
+  inspectionReady = true;
   const banner = document.querySelector('#demo-mode-notice');
-  if (banner) banner.hidden = data.demoMode !== true;
+  if (banner) banner.hidden = !hostedSnapshot;
   const clock = document.querySelector('#clock');
-  if (clock) clock.textContent = data.demoMode ? 'SYNTHETIC SNAPSHOT' : 'NO EXTERNAL CONNECTION';
+  if (clock) clock.textContent = hostedSnapshot ? 'SYNTHETIC SNAPSHOT' : 'LOCAL GIT INSPECTION';
   const staged = data.staged ?? [];
   const unstaged = data.unstaged ?? [];
   const untracked = data.untracked ?? [];
@@ -64,6 +71,97 @@ async function getJSON(url, options) {
   if (!response.ok) throw new Error(data?.error ?? 'Local verifier error (HTTP ' + response.status + ').');
   return data;
 }
+
+function safePublicRunUrl(input, runId) {
+  const id = String(runId ?? '');
+  if (typeof input !== 'string' || !/^[1-9]\d*$/.test(id)) return null;
+  try {
+    const url = new URL(input);
+    if (url.origin !== 'https://github.com') return null;
+    if (url.pathname.toLowerCase() !== ('/ShenJun93/specter-audit/actions/runs/' + id).toLowerCase()) return null;
+    if (url.search || url.hash || url.username || url.password) return null;
+    return url.href;
+  } catch { return null; }
+}
+
+async function checkPublicCi() {
+  els.providerButton.disabled = true;
+  els.providerFacts.hidden = true;
+  els.providerLink.hidden = true;
+  try {
+    // A click before /api/inspection has resolved must not guess local mode:
+    // hosted mode has no dynamic provider route.
+    if (!inspectionReady) renderInspection(await getJSON('/api/inspection'));
+    text(els.providerState, hostedSnapshot ? 'Loading timestamped release CI record…' : 'Checking fixed public release CI with GitHub…');
+    // Public hosted: static file only (zero GitHub API calls or serverless
+    // invocations). Local: fixed-target server-only GitHub fetch, on click.
+    const result = hostedSnapshot
+      ? await getJSON('/ci-evidence.json')
+      : await getJSON('/api/provider-evidence', {
+          method: 'POST',
+          headers: { 'X-Specter-CI-Consent': 'public-release' }
+        });
+    if (result?.scope !== 'FIXED_PUBLIC_RELEASE_CI') throw new Error('Unexpected provider scope.');
+    if (result?.release?.owner !== 'ShenJun93' ||
+        result?.release?.repo !== 'specter-audit' ||
+        result?.release?.sha !== '9896ccd9851d5559983f511187ac71ce85f0db10' ||
+        Number(result?.release?.workflowId) !== 405703749 ||
+        (hostedSnapshot && (result.mode !== 'RECORDED' ||
+          !Number.isFinite(Date.parse(result.capturedAt))))) {
+      throw new Error('Unexpected public release evidence identity.');
+    }
+    const evidence = result.evidence;
+    const allowed = ['PROVIDER_REPORTED_SUCCESS','PROVIDER_REPORTED_FAILED','UNKNOWN'];
+    if (!evidence || !allowed.includes(evidence.verdict)) throw new Error('Invalid provider response.');
+    // Release identity must be independently checked even for an UNKNOWN result.
+    if (evidence.sha !== result.release.sha ||
+        String(evidence.workflowId) !== String(result.release.workflowId)) {
+      throw new Error('Provider evidence is not for the selected release.');
+    }
+    const isReported = evidence.verdict !== 'UNKNOWN';
+    const sourceLink = safePublicRunUrl(evidence.sourceUrl, evidence.runId);
+    if (hostedSnapshot && !isReported) {
+      throw new Error('A recorded CI snapshot must contain an explicit result.');
+    }
+    if (isReported) {
+      // Never display a green (or red) CI result if its provenance is broken.
+      const n = Number(evidence.runNumber);
+      const attempt = Number(evidence.runAttempt);
+      const updated = Date.parse(evidence.updatedAt);
+      if (!sourceLink ||
+          !Number.isSafeInteger(n) || n < 1 ||
+          !Number.isSafeInteger(attempt) || attempt < 1 ||
+          !Number.isFinite(updated) ||
+          evidence.providerStatus !== 'completed' ||
+          (evidence.verdict === 'PROVIDER_REPORTED_SUCCESS'
+            ? evidence.conclusion !== 'success'
+            : (typeof evidence.conclusion !== 'string' ||
+               evidence.conclusion.length === 0 || evidence.conclusion === 'success'))) {
+        throw new Error('Inconsistent or unverifiable CI source information.');
+      }
+      if (hostedSnapshot && updated > Date.parse(result.capturedAt)) {
+        throw new Error('The recorded CI timestamp predates its reported run.');
+      }
+    }
+    text(els.providerVerdict, evidence.verdict.replaceAll('_', ' '));
+    text(els.providerRun, evidence.runId ?? 'Not available');
+    text(els.providerAttempt, evidence.runAttempt ?? 'Not available');
+    if (hostedSnapshot) {
+      const recordedAt = new Date(result.capturedAt).toLocaleString();
+      text(els.providerState, 'Recorded GitHub status at ' + recordedAt +
+        '. This is not a live query; open the source link to verify current status.');
+    } else {
+      text(els.providerState, 'GitHub queried live. ' + (evidence.reason ?? 'No additional explanation.'));
+    }
+    if (sourceLink) { els.providerLink.href = sourceLink; els.providerLink.hidden = false; }
+    els.providerFacts.hidden = false;
+  } catch (error) {
+    text(els.providerState, 'Provider status unavailable: ' + (error.message ?? 'Request failed.'));
+  } finally {
+    els.providerButton.disabled = false;
+  }
+}
+
 async function refreshEvidence() {
   els.refresh.disabled = true;
   setFooter('Inspecting selected Git repository…');
@@ -142,5 +240,6 @@ for(const button of document.querySelectorAll('[data-sample-claim]')){
   });
 }
 els.refresh.addEventListener('click',refreshEvidence);
+els.providerButton.addEventListener('click',checkPublicCi);
 els.form.addEventListener('submit',analyze);
 refreshEvidence();

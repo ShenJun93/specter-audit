@@ -179,3 +179,18 @@ textarea::placeholder{color:#626d84}
 .demo-mode-notice strong{color:#ffd590;white-space:nowrap;letter-spacing:1.1px;font-size:10px}
 .demo-mode-notice span{max-width:900px}
 @media(max-width:650px){.demo-mode-notice{flex-direction:column;align-items:flex-start;gap:5px}}
+/* M5D — explicitly requested public provider evidence, not claim attestation. */
+.provider-panel{padding:24px}
+.provider-panel .helper{margin-bottom:14px}
+.provider-target{display:flex;flex-direction:column;gap:4px;margin:0 0 14px;padding:11px 13px;background:#111a26;border:1px solid #304453;border-radius:8px}
+.provider-target strong{font-size:12px;color:#cae9e5;overflow-wrap:anywhere}
+.provider-target span{color:#91a0b9;font-family:ui-monospace,Consolas,monospace;font-size:11px}
+.provider-button{width:100%;min-height:42px}
+.provider-state{color:#a9b7c7;font-size:12px;margin:13px 0;line-height:1.6;overflow-wrap:anywhere}
+.provider-facts{margin:14px 0;display:grid;gap:10px}
+.provider-facts div{border-top:1px solid #303b4c;padding-top:9px;display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.provider-facts dt{color:#8d9ab2;font-size:9px;letter-spacing:1px;font-weight:750}
+.provider-facts dd{margin:0;color:#d0f9ed;text-align:right;font-family:ui-monospace,monospace;font-size:11px;overflow-wrap:anywhere}
+.provider-link{color:var(--teal);display:inline-block;font-size:12px;text-decoration:underline;text-underline-offset:3px}
+.provider-link:hover{color:#b9ffeb}
+.provider-caveat{border-top:1px solid #2b3445;padding-top:11px;margin:15px 0 0;color:#98a6bf;font-size:11px;line-height:1.65}

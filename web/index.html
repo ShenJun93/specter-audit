@@ -34,13 +34,13 @@
       </div>
       <div class="rail-bottom">
         <div class="privacy-icon" aria-hidden="true">◈</div>
-        <div><strong>Zero exfiltration</strong><small>Loopback only · No source reads · No Git writes · No remote calls</small></div>
+        <div><strong>Local-first by default</strong><small>No source reads or Git writes · Hosted CI record is static; local live lookup requires a click</small></div>
       </div>
     </aside>
     <div class="workspace">
       <header class="topbar">
         <div class="crumb"><span>WORKSPACE</span><span class="slash">/</span><strong>Investigation console</strong></div>
-        <div class="top-meta"><span class="pulse" aria-hidden="true"></span><span>LOCAL INSTANCE</span><span class="top-separator"></span><span id="clock">NO EXTERNAL CONNECTION</span></div>
+        <div class="top-meta"><span class="pulse" aria-hidden="true"></span><span>LOCAL INSTANCE</span><span class="top-separator"></span><span id="clock">LOCAL GIT INSPECTION</span></div>
       </header>
       <main id="main-content">
         <div id="demo-mode-notice" class="demo-mode-notice" role="note" hidden>
@@ -119,6 +119,22 @@
               <ul class="ledger-items" id="ledger-list"><li class="ledger-placeholder">Fetching Git metadata…</li></ul>
               <div class="ledger-foot"><span id="head-label">HEAD / —</span><span>READ-ONLY</span></div>
             </article>
+            <article class="panel provider-panel" aria-labelledby="provider-title">
+              <div class="panel-head"><div><p class="section-kicker">04 / EXTERNAL PROVIDER</p><h2 id="provider-title">Public CI evidence</h2></div><span class="panel-index">OPT-IN / READ-ONLY</span></div>
+              <p class="helper">View GitHub's recorded CI status for the <strong>initial published Specter Audit release</strong>. Hosted mode shows a timestamped snapshot; local mode can query GitHub live on request. Neither reflects the synthetic judge fixture.</p>
+              <p class="provider-target"><strong>ShenJun93 / specter-audit</strong><span>Workflow 405703749 · Commit 9896ccd…</span></p>
+              <button class="button button-secondary provider-button" type="button" id="provider-check">View public CI evidence</button>
+              <p id="provider-state" role="status" aria-live="polite" class="provider-state">Not queried. Hosted mode reads a static record; local mode queries GitHub only after a click.</p>
+              <div id="provider-facts" hidden>
+                <dl class="provider-facts">
+                  <div><dt>PROVIDER STATUS</dt><dd id="provider-verdict">—</dd></div>
+                  <div><dt>WORKFLOW RUN</dt><dd id="provider-run">—</dd></div>
+                  <div><dt>RUN ATTEMPT</dt><dd id="provider-attempt">—</dd></div>
+                </dl>
+                <a id="provider-link" class="provider-link" href="#" target="_blank" rel="noopener noreferrer" hidden>Inspect original GitHub run</a>
+              </div>
+              <p class="provider-caveat">Hosted CI is a recorded status, not live. Provider-reported results are not signed attestation, test-log verification, or proof of correctness. No claim verdict is upgraded.</p>
+            </article>
             <article class="safety-panel" aria-labelledby="boundary-title">
               <div class="shield" aria-hidden="true">⬡</div>
               <p class="section-kicker">THE EVIDENCE RULE</p>
@@ -126,7 +142,7 @@
               <p>Specter reports <strong>SUPPORTED</strong>, <strong>PARTIAL</strong>, or <strong>UNVERIFIED</strong>. It never silently executes the reported test or changes the repository.</p>
               <div class="safety-rule"><span>01</span> No source files opened</div>
               <div class="safety-rule"><span>02</span> No test commands executed</div>
-              <div class="safety-rule"><span>03</span> No remote network services</div>
+              <div class="safety-rule"><span>03</span> Hosted CI record static; local live opt-in</div>
             </article>
           </div>
         </section>

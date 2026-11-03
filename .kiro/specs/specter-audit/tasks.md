@@ -1,8 +1,8 @@
 # Specter Audit — Implementation milestones
 
-Status is based on observable files, actual tests and browser QA. The project is
-still an uncommitted Git repository; do not treat git diff --check as coverage
-for untracked files.
+Status is based on observable files, actual tests and browser QA. The
+repository now has committed public release history; local M5 work remains
+uncommitted. git diff --check does not cover untracked files.
 
 ## Milestone 1 — Git inspector and evaluator: VERIFIED
 
@@ -59,12 +59,52 @@ Implemented via ChatGPT-assisted remote editing (not Kiro-authored):
 - GitHub Actions CI run 41639525541 for initial commit: completed/success.
 - Deployment and source publish used ChatGPT-assisted tooling, NOT additional Kiro-authored work.
 
-## Milestone 5 — Competition submission readiness: PENDING
+## Milestone 5 — Provider evidence and competition readiness: LOCAL VERIFIED / RELEASE PENDING
 
-- Independent security review, focused on fail-closed behavior and filesystem boundaries.
-- User-approved initial Git commit and public GitHub repository.
-- Choose and publish open-source license; set GitHub About license detection.
-- More genuine Kiro-authored implementation/review evidence and accurately documented Kiro usage.
-- Public judge-accessible app. Localhost-only demo is not publicly accessible.
-- Record professional <3-minute YouTube judge video showing Kiro process and live product.
-- Complete/verify Devpost submission (deadline 2026-12-04 22:00 UTC).
+- M5A: optional read-only GitHub Actions adapter started through genuine Kiro CLI;
+  Kiro-authored work must be distinguished from later ChatGPT/WAG remediation.
+- M5B/M5C: trust hardening for exact workflow+SHA, run_number/run_attempt,
+  pagination fail-closed, bounded response body and explicit no-attestation semantics.
+- M5D: fixed initial public release CI panel and consent-gated endpoints for local
+  and hosted modes; does not alter SUPPORTED/PARTIAL/UNVERIFIED claim evaluator.
+- Local acceptance 2026-11-03: npm run check PASS, npm test **142/142** PASS;
+  headless Chrome desktop and 390px mobile click-path QA PASS, no console
+  errors, no horizontal page overflow. CI adapter also passed a separate
+  read-only live GitHub API smoke query against the initial published commit.
+- M5C/M5D is UNCOMMITTED, UNPUSHED, NOT DEPLOYED. GitHub Actions did NOT run
+  against these local changes. See docs/M5C_PROVIDER_TRUST_AUDIT_20261103.md
+  and docs/M5D_OPTIN_PUBLIC_CI_PANEL_20261103.md for exact limits.
+- Remaining: independent security/UX review, rate-limit abuse mitigation,
+  authorized commit/push/release gates, more genuine Kiro usage evidence,
+  public <3-minute YouTube judge video and verified Devpost submission.
+- Competition deadline in project records: 2026-12-04 22:00 UTC.
+## Milestone 5E — Static hosted CI record: LOCAL VERIFIED / RELEASE PENDING
+
+- Removed the anonymous Vercel provider API function before production release.
+- Hosted CI panel reads the dated static web/ci-evidence.json record on click;
+  no visitor triggers an outbound GitHub API request or provider function.
+- Local loopback retains explicit-consent fixed-target GitHub live lookup.
+- scripts/capture-public-ci.mjs requires --capture and refuses incomplete or
+  mismatched SHA/workflow/run metadata before atomically refreshing the record.
+- Recorded 2026-11-03T15:56:07.174Z; original GitHub run 41639525541.
+- 143/143 Node tests PASS; npm run check PASS; tracked git diff --check PASS.
+- Hosted simulator Chrome desktop and mobile 390px PASS, zero external requests,
+  zero provider-route hits, zero JS/console errors, no horizontal overflow.
+- No commit, push or production deployment; independent review and real CI on
+  the eventual new commit remain required gates.
+- See docs/M5E_RELEASE_GATE_20261103.md.
+## Milestone 5F — Candidate security review: LOCAL VERIFIED / RELEASE PENDING
+
+- Tightened browser CI provenance: reported success/failure is rejected if the
+  source URL, SHA, workflow ID, run identity, attempt, conclusion or timestamps
+  disagree; no green UI verdict may survive missing provenance.
+- Recorded-snapshot capture refuses updatedAt later than capturedAt.
+- Kiro CLI completed two additional scoped read-only security reviews of the
+  server/hosted boundary and evaluator/synthetic read endpoints; no demonstrated
+  HIGH finding in reviewed scopes. The absent Origin header for native clients
+  remains an accepted, documented tradeoff; it is not authentication.
+- 143/143 Node tests PASS; Chrome local/hosted desktop and 390px mobile PASS,
+  including a tampered GitHub run URL that hides the whole CI result.
+- M5F is not committed, pushed or deployed. The initial release's green CI is
+  not evidence about the candidate commit. See
+  docs/M5F_RELEASE_CANDIDATE_AUDIT_20261103.md.

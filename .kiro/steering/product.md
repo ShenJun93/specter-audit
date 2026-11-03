@@ -29,8 +29,10 @@ Contest category: spooky UI **with** functional engineering).
 - **Bounded execution.** Every Git call has a timeout and a capped output
   buffer so a hostile or pathological repository cannot hang or exhaust memory.
 - **No secrets.** Never read `.env`, credential files, private keys, or token
-  stores. Never collect or transmit PII, source files, or secrets. The tool is
-  fully local; no outbound network calls.
+  stores. Never collect or transmit PII, source files, or secrets. The Git inspector remains fully local and offline by default. A separate
+  optional public GitHub Actions status reader is permitted only when explicitly
+  invoked for a fixed allowlisted public release, without credentials.
+  Hosted judges read a timestamped static CI record, not live GitHub requests.
 - **No global Git config changes.** Tests use disposable fixture repos with
   local-only config and `commit.gpgsign=false`; global Git config is untouched.
 
@@ -69,15 +71,18 @@ Contest category: spooky UI **with** functional engineering).
   reversible. Do not commit, push, or touch other repositories unless the user
   explicitly asks.
 
-## Current status (Milestones 1–3)
+## Current status (M5E feature branch — not released)
 
-- Core Git inspector, claim evaluator and loopback-only HTTP dashboard implemented.
-- Three verdicts are computed against real synthetic Git fixtures, not hardcoded UI states.
-- Metadata-consistent test receipts remain self-reported, not independent attestation.
-- Headless browser acceptance confirms UNVERIFIED/PARTIAL/SUPPORTED, 390px mobile
-  without horizontal overflow, and no console/page errors.
-- Source was changed using Kiro for Milestone 1 and ChatGPT-assisted remote editing
-  for Milestones 2–3; never misattribute M2/M3 changes to Kiro.
-- Git repository remains uncommitted/untracked: git diff --check does not validate
-  new untracked sources until Git index stages them. Do not report a clean diff.
-- Public GitHub, open-source license, public demo and final video remain pending.
+- M1 inspector/evaluator was genuinely implemented using Kiro CLI; M2–M4 were
+  implemented using ChatGPT-assisted tools. Kiro contributed to M5A/M5B;
+  later M5C/M5D/M5E hardening used ChatGPT/WAG.
+- Public GitHub repository, MIT LICENSE and synthetic Vercel replay are already
+  available; current local M5 changes are not published or deployed.
+- Local inspector and claim evaluator remain read-only and offline by default.
+- Optional local CI lookup is restricted to a fixed public GitHub repository,
+  exact commit and workflow and requires explicit user action. No tokens.
+- Hosted CI evidence is a dated static JSON record from the initial release,
+  never an anonymous request-triggered GitHub API fetch; it remains separate
+  from the synthetic judge fixture and cannot elevate claim verdicts.
+- Provider-reported CI is not signed attestation or proof of correctness.
+- See docs/M5E_RELEASE_GATE_20261103.md for local evidence and release gates.

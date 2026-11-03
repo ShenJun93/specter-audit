@@ -6,6 +6,7 @@ import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { inspectRepository } from './git-inspector.mjs';
 import { evaluateClaim } from './claim-evaluator.mjs';
+import { readPublicReleaseCI } from './public-ci.mjs';
 
 const LOOPBACK = '127.0.0.1';
 const BODY_LIMIT = 16 * 1024;
@@ -74,7 +75,7 @@ function validateOrigin(req, url) {
 }
 
 /** Start an HTTP application that only inspects a selected repository's Git metadata. */
-export async function createAppServer({repoPath,port=0}={}) {
+export async function createAppServer({repoPath,port=0,publicCiFetchImpl}={}) {
   if(typeof repoPath!=='string'||repoPath.trim()==='') throw new Error('Explicit --repo path required');
   if(!Number.isInteger(port)||port<0||port>65535) throw new Error('Invalid port');
   const initial=await inspectRepository(repoPath);
@@ -97,6 +98,20 @@ export async function createAppServer({repoPath,port=0}={}) {
       if(req.method==='GET' && rawPath==='/api/inspection'){
         const i=await inspectRepository(selectedRoot);
         return send(res,i.ok?200:503,publicInspection(i,repoLabel));
+      }
+      if(req.method==='GET' && rawPath==='/api/provider-evidence')return send(res,405,{error:'Method not allowed'});
+      if(req.method==='POST' && rawPath==='/api/provider-evidence'){
+        if(!validateOrigin(req,origin)) return send(res,403,{error:'Cross-origin CI request blocked'});
+        if(req.headers['x-specter-ci-consent']!=='public-release'){
+          return send(res,403,{error:'Explicit public CI query required'});
+        }
+        if((req.headers['transfer-encoding']??'')!=='' || Number(req.headers['content-length']??0)!==0){
+          return send(res,413,{error:'CI query takes no user-controlled body'});
+        }
+        // Fixed public GitHub release only. Never use the local repo origin,
+        // browser-supplied SHA/workflow, or pasted providerEvidence.
+        const result=await readPublicReleaseCI({fetchImpl:publicCiFetchImpl});
+        return send(res,200,result);
       }
       if(req.method==='POST' && rawPath==='/api/evaluate'){
         if(!validateOrigin(req,origin))return send(res,403,{error:'Cross-origin evaluation is blocked'});
