@@ -104,7 +104,7 @@ async function checkPublicCi() {
     if (result?.scope !== 'FIXED_PUBLIC_RELEASE_CI') throw new Error('Unexpected provider scope.');
     if (result?.release?.owner !== 'ShenJun93' ||
         result?.release?.repo !== 'specter-audit' ||
-        result?.release?.sha !== '9896ccd9851d5559983f511187ac71ce85f0db10' ||
+        result?.release?.sha !== '374af1417b714619d9edc1af790f7e7db15a71ca' ||
         Number(result?.release?.workflowId) !== 405703749 ||
         (hostedSnapshot && (result.mode !== 'RECORDED' ||
           !Number.isFinite(Date.parse(result.capturedAt))))) {
