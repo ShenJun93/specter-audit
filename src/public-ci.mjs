@@ -5,9 +5,9 @@ import { fetchGithubActionsEvidence } from './github-actions-evidence.mjs';
 export const PUBLIC_RELEASE_CI = Object.freeze({
   owner: 'ShenJun93',
   repo: 'specter-audit',
-  sha: '9896ccd9851d5559983f511187ac71ce85f0db10',
+  sha: '374af1417b714619d9edc1af790f7e7db15a71ca',
   workflowId: 405703749,
-  label: 'Initial public release (2026-11-03)',
+  label: 'Production merge release (2026-11-04, 374af14)',
 });
 
 export async function readPublicReleaseCI({ fetchImpl = globalThis.fetch } = {}) {

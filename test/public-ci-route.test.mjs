@@ -8,7 +8,7 @@ import { createRecordedCiSnapshot } from '../scripts/capture-public-ci.mjs';
 import { createAppServer } from '../src/http-server.mjs';
 import { makeTempDir, initRepo, writeRel, commitAll, cleanup } from './helpers.mjs';
 
-const RUN_ID = 41639525541;
+const RUN_ID = 41736082288;
 const CI_API_URL = 'https://api.github.com/repos/ShenJun93/specter-audit/actions/workflows/405703749/runs?head_sha=' +
   PUBLIC_RELEASE_CI.sha + '&per_page=100&page=1';
 
@@ -18,9 +18,9 @@ function responseForFixedPublicCI() {
     workflow_runs: [{
       id: RUN_ID, head_sha: PUBLIC_RELEASE_CI.sha,
       workflow_id: PUBLIC_RELEASE_CI.workflowId,
-      run_number: 1, run_attempt: 1,
+      run_number: 6, run_attempt: 1,
       status: 'completed', conclusion: 'success',
-      updated_at: '2026-11-03T12:53:42Z',
+      updated_at: '2026-11-03T23:04:05Z',
       html_url: 'https://github.com/ShenJun93/specter-audit/actions/runs/' + RUN_ID,
     }],
   });
@@ -58,12 +58,12 @@ test('capture refuses wrong SHA, missing run number, and invalid GitHub run URL'
     verdict:'PROVIDER_REPORTED_SUCCESS',
     sha:PUBLIC_RELEASE_CI.sha,
     workflowId: String(PUBLIC_RELEASE_CI.workflowId),
-    runId:String(RUN_ID), runNumber:1, runAttempt:1,
+    runId:String(RUN_ID), runNumber:6, runAttempt:1,
     sourceUrl:'https://github.com/ShenJun93/specter-audit/actions/runs/'+RUN_ID,
-    providerStatus:'completed', conclusion:'success', updatedAt:'2026-11-03T12:53:42Z',
+    providerStatus:'completed', conclusion:'success', updatedAt:'2026-11-03T23:04:05Z',
   };
   const source={scope:'FIXED_PUBLIC_RELEASE_CI',evidence};
-  const at='2026-11-03T15:56:07Z';
+  const at='2026-11-04T00:00:00Z';
   assert.equal(createRecordedCiSnapshot(source,at).mode,'RECORDED');
   assert.throws(()=>createRecordedCiSnapshot({...source,evidence:{...evidence,sha:'0'.repeat(40)}},at),/Refuse/);
   assert.throws(()=>createRecordedCiSnapshot({...source,evidence:{...evidence,runNumber:null}},at),/Refuse/);
@@ -72,7 +72,7 @@ test('capture refuses wrong SHA, missing run number, and invalid GitHub run URL'
   assert.throws(()=>createRecordedCiSnapshot({...source,evidence:{...evidence,providerStatus:'in_progress'}},at),/Refuse/);
   assert.throws(()=>createRecordedCiSnapshot({...source,evidence:{...evidence,conclusion:'failure'}},at),/Refuse/);
   assert.throws(()=>createRecordedCiSnapshot({...source,evidence:{...evidence,updatedAt:'invalid'}},at),/Refuse/);
-  assert.throws(()=>createRecordedCiSnapshot(source,'2026-11-03T10:00:00Z'),/Refuse/);
+  assert.throws(()=>createRecordedCiSnapshot(source,'2026-11-03T22:00:00Z'),/Refuse/);
   assert.throws(()=>createRecordedCiSnapshot({...source,evidence:{...evidence,sourceUrl:'https://github.com/ShenJun93/specter-audit/actions/runs/2'}},at),/Refuse/);
 });
 

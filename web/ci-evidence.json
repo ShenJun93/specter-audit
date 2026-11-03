@@ -1,26 +1,26 @@
 {
   "scope": "FIXED_PUBLIC_RELEASE_CI",
   "mode": "RECORDED",
-  "capturedAt": "2026-11-03T15:56:07.174Z",
+  "capturedAt": "2026-11-03T23:24:07.673Z",
   "release": {
     "owner": "ShenJun93",
     "repo": "specter-audit",
-    "sha": "9896ccd9851d5559983f511187ac71ce85f0db10",
+    "sha": "374af1417b714619d9edc1af790f7e7db15a71ca",
     "workflowId": 405703749,
-    "label": "Initial public release (2026-11-03)"
+    "label": "Production merge release (2026-11-04, 374af14)"
   },
   "evidence": {
     "verdict": "PROVIDER_REPORTED_SUCCESS",
     "provider": "github-actions",
-    "sha": "9896ccd9851d5559983f511187ac71ce85f0db10",
+    "sha": "374af1417b714619d9edc1af790f7e7db15a71ca",
     "workflowId": "405703749",
-    "runId": "41639525541",
-    "runNumber": 1,
+    "runId": "41736082288",
+    "runNumber": 6,
     "runAttempt": 1,
-    "sourceUrl": "https://github.com/ShenJun93/specter-audit/actions/runs/41639525541",
+    "sourceUrl": "https://github.com/ShenJun93/specter-audit/actions/runs/41736082288",
     "providerStatus": "completed",
     "conclusion": "success",
-    "updatedAt": "2026-11-03T12:53:42Z",
+    "updatedAt": "2026-11-03T23:04:05Z",
     "independentlyAttested": false,
     "cryptographicAttestation": false,
     "correctness": false
