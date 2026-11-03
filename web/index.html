@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b0e16">
+  <meta name="description" content="Specter Audit — read-only Git evidence and claim verification for AI-built software.">
+  <title>Specter Audit | Trust the evidence</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#main-content">Skip to content</a>
+  <div class="app-shell">
+    <aside class="rail" aria-label="Application sidebar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 48 48" fill="none"><path d="M24 5 40 12v14c0 11-6 16-16 19C14 42 8 37 8 26V12L24 5Z" stroke="currentColor" stroke-width="1.6"/><path d="M15 24c4-10 14-10 18 0m-18 0c4 10 14 10 18 0" stroke="currentColor" stroke-width="1.6"/><circle cx="24" cy="24" r="3" fill="currentColor"/></svg>
+        </div>
+        <div><strong>SPECTER<span>AUDIT</span></strong><small>EVIDENCE INTELLIGENCE / v0.2</small></div>
+      </div>
+      <div class="rail-section">
+        <p class="rail-label">WORKSPACE</p>
+        <div class="nav-item selected" aria-current="page"><span class="nav-icon">◈</span> Investigation <span class="nav-arrow">↗</span></div>
+        <div class="nav-item passive"><span class="nav-icon">⌘</span> Git evidence</div>
+        <div class="nav-item passive"><span class="nav-icon">◎</span> Claim analysis</div>
+      </div>
+      <div class="rail-section">
+        <p class="rail-label">PROTOCOL</p>
+        <div class="protocol-step"><span class="step-number">01</span><div><strong>Observe</strong><small>Read working-tree metadata</small></div></div>
+        <div class="protocol-step"><span class="step-number">02</span><div><strong>Correlate</strong><small>Align changed paths to claim</small></div></div>
+        <div class="protocol-step"><span class="step-number">03</span><div><strong>Disclose</strong><small>Separate facts from uncertainty</small></div></div>
+      </div>
+      <div class="rail-bottom">
+        <div class="privacy-icon" aria-hidden="true">◈</div>
+        <div><strong>Zero exfiltration</strong><small>Loopback only · No source reads · No Git writes · No remote calls</small></div>
+      </div>
+    </aside>
+    <div class="workspace">
+      <header class="topbar">
+        <div class="crumb"><span>WORKSPACE</span><span class="slash">/</span><strong>Investigation console</strong></div>
+        <div class="top-meta"><span class="pulse" aria-hidden="true"></span><span>LOCAL INSTANCE</span><span class="top-separator"></span><span id="clock">NO EXTERNAL CONNECTION</span></div>
+      </header>
+      <main id="main-content">
+        <div id="demo-mode-notice" class="demo-mode-notice" role="note" hidden>
+          <strong>SYNTHETIC GIT SNAPSHOT</strong>
+          <span>This public demo analyzes precomputed evidence from a disposable Git fixture. Claims are evaluated live; it does not scan your computer or a live remote repository.</span>
+        </div>
+        <section class="hero" aria-labelledby="hero-title">
+          <div class="hero-copy">
+            <div class="eyebrow"><span class="eyebrow-line"></span> THE TRUTH IS IN THE TRACE</div>
+            <h1 id="hero-title">Your agent said <em>done.</em><br>What does <span>Git</span> say?</h1>
+            <p>Independent, read-only scrutiny for AI-generated completion claims. A compelling assertion is not a verified result.</p>
+            <div class="hero-flags"><span class="flag">◎ READ-ONLY</span><span class="flag">◈ EVIDENCE-FIRST</span><span class="flag">↘ NO GUESSWORK</span></div>
+          </div>
+          <div class="hero-art" aria-hidden="true">
+            <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="orbit orbit-three"></div>
+            <div class="scan-line"></div>
+            <div class="orb-core"><div class="ghost-eye eye-left"></div><div class="ghost-eye eye-right"></div><div class="ghost-mouth"></div></div>
+            <div class="orb-tag orb-tag-top">RAW EVIDENCE <b>01</b></div>
+            <div class="orb-tag orb-tag-bottom">CLAIM SIGNAL <b>?</b></div>
+          </div>
+        </section>
+        <section class="heading-row" aria-label="Git summary">
+          <div><p class="section-kicker">01 / LIVE REPOSITORY</p><h2>Repository pulse</h2></div>
+          <button id="refresh" class="button button-secondary" type="button"><span aria-hidden="true">↻</span> Refresh evidence</button>
+        </section>
+        <section class="stats" aria-label="Git evidence summary">
+          <article class="stat stat-main"><div class="stat-label">WORKTREE STATE <span class="square"></span></div><strong id="worktree-state" class="stat-value">—</strong><div class="stat-foot" id="repo-name">Checking selected repository</div></article>
+          <article class="stat"><div class="stat-label">STAGED FILES <span class="stat-icon">↗</span></div><strong class="stat-value" id="staged-count">—</strong><div class="stat-foot">Index changes</div></article>
+          <article class="stat"><div class="stat-label">UNSTAGED FILES <span class="stat-icon">↙</span></div><strong class="stat-value" id="unstaged-count">—</strong><div class="stat-foot">Working-tree changes</div></article>
+          <article class="stat"><div class="stat-label">UNTRACKED <span class="stat-icon">✳</span></div><strong class="stat-value" id="untracked-count">—</strong><div class="stat-foot">Not in index</div></article>
+        </section>
+        <section class="content-grid" aria-label="Evidence analysis workspace">
+          <div class="main-column">
+            <article class="panel input-panel" aria-labelledby="evaluate-title">
+              <div class="panel-head"><div><p class="section-kicker">02 / INVESTIGATE</p><h2 id="evaluate-title">Interrogate a claim</h2></div><span class="panel-index">CLAIM / 001</span></div>
+              <p class="helper">Enter exactly what the agent claimed. We compare that wording with changed file paths and optional receipt metadata, not source code semantics.</p>
+              <form id="claim-form" novalidate>
+                <label for="claim">AGENT COMPLETION CLAIM <span class="required">REQUIRED</span></label>
+                <textarea id="claim" name="claim" maxlength="2000" rows="3" required spellcheck="false" placeholder="e.g. Fixed the authentication bug and all tests pass"></textarea>
+                <div class="scenario-strip" aria-label="Sample claims for the synthetic judge fixture">
+                  <span class="micro">TRY ON THE SYNTHETIC JUDGE REPO · RESULTS DEPEND ON SELECTED GIT EVIDENCE</span>
+                  <div class="scenario-actions">
+                    <button class="scenario-chip" type="button" data-sample-claim="all tests pass"><span class="scenario-dot unverified-dot"></span>Unverified claim</button>
+                    <button class="scenario-chip" type="button" data-sample-claim="updated auth login and all tests pass"><span class="scenario-dot partial-dot"></span>Partial evidence</button>
+                    <button class="scenario-chip" type="button" data-sample-claim="updated auth login validation"><span class="scenario-dot supported-dot"></span>Git alignment</button>
+                  </div>
+                </div>
+                <details class="receipt-details">
+                  <summary>Include structured test receipt <span>OPTIONAL</span></summary>
+                  <div class="receipt-content">
+                    <p>Only metadata is inspected: <code>exitCode</code>, <code>head</code>, <code>timestamp</code>. Even a matching receipt is <strong>self-reported</strong> and cannot independently prove a test ran.</p>
+                    <label for="receipt">RECEIPT JSON</label>
+                    <textarea id="receipt" name="receipt" rows="4" spellcheck="false" placeholder='{"exitCode":0,"head":"<current HEAD>","timestamp":"2026-11-03T10:00:00Z"}'></textarea>
+                  </div>
+                </details>
+                <div class="form-footer"><span class="micro">NO CODE EXECUTED · NO FILE CONTENT READ</span><button class="button button-primary" id="evaluate" type="submit">Analyze evidence <span aria-hidden="true">↗</span></button></div>
+              </form>
+              <p id="form-error" class="form-error" role="alert" hidden></p>
+            </article>
+            <article class="panel result-panel" aria-labelledby="result-title">
+              <div class="panel-head"><div><p class="section-kicker">03 / ASSESSMENT</p><h2 id="result-title">Verdict chamber</h2></div><span class="panel-index">EVIDENCE / LIVE</span></div>
+              <div class="result-empty" id="result-empty"><div class="result-glyph" aria-hidden="true">◇</div><strong>No claim analyzed yet</strong><p>Your next investigation will appear here, with supporting observations and explicit evidence gaps.</p></div>
+              <div id="result" hidden>
+                <div class="verdict-bar"><div><span class="micro">EVIDENCE ALIGNMENT</span><strong id="verdict-status">UNVERIFIED</strong></div><div class="confidence"><span>CONFIDENCE</span><strong id="confidence">—</strong></div></div>
+                <p id="verdict-description" class="verdict-description"></p>
+                <h3>Observations</h3><ul id="evidence-list" class="evidence-list"></ul>
+                <h3>Uncertainty & limitations</h3><ul id="gaps-list" class="gaps-list"></ul>
+                <div class="disclaimer">A supported claim is <b>not proof of correctness</b>. Git metadata and user-supplied receipts establish evidence alignment only.</div>
+              </div>
+            </article>
+          </div>
+          <div class="side-column">
+            <article class="panel ledger" aria-labelledby="ledger-title">
+              <div class="panel-head"><div><p class="section-kicker">EVIDENCE STREAM</p><h2 id="ledger-title">Haunted worktree</h2></div><span class="ledger-icon" aria-hidden="true">◉</span></div>
+              <div class="ledger-subhead"><span>OBSERVED PATHS</span><span id="ledger-total">0 RECORDS</span></div>
+              <ul class="ledger-items" id="ledger-list"><li class="ledger-placeholder">Fetching Git metadata…</li></ul>
+              <div class="ledger-foot"><span id="head-label">HEAD / —</span><span>READ-ONLY</span></div>
+            </article>
+            <article class="safety-panel" aria-labelledby="boundary-title">
+              <div class="shield" aria-hidden="true">⬡</div>
+              <p class="section-kicker">THE EVIDENCE RULE</p>
+              <h2 id="boundary-title">Confidence is earned, not declared.</h2>
+              <p>Specter reports <strong>SUPPORTED</strong>, <strong>PARTIAL</strong>, or <strong>UNVERIFIED</strong>. It never silently executes the reported test or changes the repository.</p>
+              <div class="safety-rule"><span>01</span> No source files opened</div>
+              <div class="safety-rule"><span>02</span> No test commands executed</div>
+              <div class="safety-rule"><span>03</span> No remote network services</div>
+            </article>
+          </div>
+        </section>
+        <footer class="footer"><span>SPECTER AUDIT / PREVIEW BUILD</span><span id="footer-status" role="status" aria-live="polite">Awaiting local repository evidence.</span><span>© 2026 · VERIFY WHAT MATTERS</span></footer>
+      </main>
+    </div>
+  </div>
+</body>
+</html>

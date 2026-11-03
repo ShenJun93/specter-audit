@@ -1,0 +1,26 @@
+# Specter Audit local development only
+node_modules/
+coverage/
+dist/
+build/
+playwright-report/
+test-results/
+*.log
+.env
+.env.*
+!.env.example
+
+# QA scripts and browser screenshots are local/private, not submission artifacts.
+qa/internal/
+qa/private/
+
+# Auto-approval launcher is a local operator convenience, never a judge artifact.
+START_KIRO_AUTO.ps1
+
+# Platform and editor artifacts
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+# Local Vercel project binding and CLI cache
+.vercel/
