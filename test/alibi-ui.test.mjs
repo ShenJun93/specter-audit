@@ -90,3 +90,32 @@ test('events are chronologically ordered without rewriting source content',()=>{
   assert.equal(ordered[1].runId,41742626694);
   assert.equal(ordered[2].type,'CLAIM');
 });
+
+test('CI run completed after claim cannot remain provider-reported pass in browser',()=>{
+  invalid(p=>{
+    const c=p.cases[1];
+    c.input.target.observedAt='2026-11-03T23:53:20Z';
+    c.verdict.events.find(e=>e.type==='CLAIM').timestamp='2026-11-03T23:53:20Z';
+  });
+});
+test('every cited provider run must appear exactly once on evidence timeline',()=>{
+  invalid(p=>{
+    const c=p.cases[1];
+    c.verdict.events=c.verdict.events.filter(e=>e.runId!==41742626694);
+  });
+  invalid(p=>{
+    const c=p.cases[1];
+    c.verdict.events.push(clone(c.verdict.events.find(e=>e.runId===41742626694)));
+  });
+});
+test('selected run must agree with exact input record including timestamp',()=>{
+  invalid(p=>p.cases[1].verdict.selectedRun.updatedAt='2026-11-03T23:53:20Z');
+});
+test('ambiguous duplicate commit nodes must not rewrite ancestry',()=>{
+  invalid(p=>p.cases[0].input.commits.push(clone(commits[0])));
+});
+
+test('checked-in real GitHub evidence pack passes browser integrity checks',()=>{
+  const pack=JSON.parse(readFileSync(resolve(import.meta.dirname,'../web/alibi-cases.json'),'utf8'));
+  assert.equal(validatePack(pack),pack);
+});

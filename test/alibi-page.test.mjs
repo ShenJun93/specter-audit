@@ -19,7 +19,8 @@ after(async()=>{if(server)await server.close();if(root)await cleanup(root)});
 test('alibi HTML and assets served from fixed allowlist only',async()=>{
   for(const [path,mime] of [
     ['/alibi.html','text/html'],['/alibi.css','text/css'],
-    ['/alibi.js','javascript'],['/alibi-cases.json','application/json']
+    ['/alibi.js','javascript'],['/alibi-cases.json','application/json'],
+    ['/alibi-session-case.json','application/json']
   ]){
     const response=await fetch(server.url+path);
     assert.equal(response.status,200,path);
@@ -61,7 +62,9 @@ test('static pack has distinct real source runs and hypothetical case labels',as
 });
 test('arbitrary path traversal and source routes remain blocked',async()=>{
   for(const path of ['/src/alibi-engine.mjs','/test/alibi-engine.test.mjs',
-    '/scripts/capture-alibi-cases.mjs','/alibi-private.json','/%2e%2e/.env']){
+    '/scripts/capture-alibi-cases.mjs','/scripts/capture-kiro-session-exhibit.mjs',
+    '/src/kiro-session-staleness.mjs','/qa/private/kiro-session.json',
+    '/alibi-private.json','/%2e%2e/.env']){
     assert.equal((await fetch(server.url+path)).status,404,path);
   }
 });
@@ -71,4 +74,24 @@ test('homepage clearly links to the newer alibi evidence investigation',async()=
   assert.match(html,/href="\/alibi\.html"/);
   assert.match(html,/The CI passed|tests passed on the wrong commit/i);
   assert.match(html,/id="instance-kind"/);
+});
+test('fourth recorded Kiro case is distinctly labeled, initially disabled and bounded',async()=>{
+  const html=await (await fetch(server.url+'/alibi.html')).text();
+  assert.match(html,/data-case="real-kiro-session"[^>]+disabled/);
+  assert.match(html,/AUTHENTIC KIRO/i);
+  assert.match(html,/hypothetical claims/i);
+  assert.match(html,/self-recorded local test/i);
+  const r=await fetch(server.url+'/alibi-session-case.json');
+  assert.equal(r.status,200);
+  const raw=await r.text();
+  assert.ok(raw.length<14000);
+  const data=JSON.parse(raw);
+  assert.equal(data.id,'real-kiro-session');
+  assert.equal(data.schema,'SPECTER_ALIBI_RECORDED_KIRO_SESSION_V1');
+  assert.equal(data.toolEvidence.pass,120);
+  assert.equal(data.sourceEdits.length,5);
+  assert.equal(data.finding.status,'STALE_LOCAL_TEST_EVIDENCE');
+  assert.equal(data.finding.independentAttestation,false);
+  assert.equal(data.afterFinalEdit.outsideSessionEvidenceUnknown,true);
+  assert.doesNotMatch(raw,/[A-Z]:\\|AppData|PACMAP|sess_[a-f0-9]{8}|sk-proj-/i);
 });

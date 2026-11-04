@@ -71,27 +71,42 @@ Contest category: spooky UI **with** functional engineering).
   reversible. Do not commit, push, or touch other repositories unless the user
   explicitly asks.
 
-## Current release and unreleased M6C status (2026-11-04)
+## Current release and unreleased M6F status (2026-11-04)
 
-- M5L is live on Vercel production at merge commit
-  `b6e1407d1218e4ff4b44cb2dd3cae1388a5f533e`, with confirmed
-  post-deploy HTTP/browser acceptance.
-- Production v1 uses a visibly synthetic Git replay. Its hosted CI panel
-  displays a separately labeled historical recorded run for release
-  `374af14`, not CI proof for M5L code.
-- Branch `feat/agent-alibi-v2` adds **unreleased** Alibi Room, a pure
-  read-only evidence engine and fixed GitHub Actions runs `41736082288`
-  (ancestor SHA) and `41742626694` (exact current SHA). It never states
-  that the latter CI is absent.
-- Claims are hypothetical and separately labeled; Git commit ancestry and
-  public CI status are real recorded metadata captured by an operator.
-  Both remain unauthenticated snapshot data, never proof of correctness.
-- M6A/M6C source and tests were implemented with ChatGPT/WAG. Three genuine
-  Kiro CLI implementation attempts timed out without authoring source.
-  Prior genuine Kiro M1/M5A/M5B contributions and narrow reviews remain
-  documented; do not attribute M6A/M6C to Kiro.
-- The local inspector remains read-only, loopback, no source-content reads,
-  zero runtime dependencies. The Alibi UI uses same-origin case JSON only;
-  its browser never invokes GitHub or a dynamic provider API.
-- New source is a local candidate only. Git push, merge and deployment still
-  require separate gates and authorization.
+- M5L remains live on Vercel production (merged SHA
+  `b6e1407d1218e4ff4b44cb2dd3cae1388a5f533e`), with separately
+  recorded post-deploy browser/API acceptance. The CI evidence panel shows
+  a labeled *historical* result for release `374af14`, not CI evidence for
+  every later revision.
+- Draft PR #3 on branch `feat/agent-alibi-v2` currently points to
+  `eb9d200b1ac8e5f25edb0ca73610896ebb6be9ef`. M6D hardening,
+  M6E authentic session auditor and M6F four-case UI are **uncommitted
+  local candidate work**, not pushed or deployed. No production mutation.
+- M6A/M6C Git/CI engine + haunted UI were created with ChatGPT/WAG after
+  Kiro CLI implementation attempts timed out. M6E local Kiro-session
+  staleness auditor **was directly authored and revised by Kiro CLI**
+  in five verifiable local sessions (18 successful file edit tool results).
+  ChatGPT/WAG wrote the separate adversarial tests, six fixture assertion
+  changes, and M6F UI integration. Do not attribute all code to Kiro.
+- Four case types coexist in M6F: three *hypothetical completion claims*
+  anchored to real GitHub Actions records, and one *actual Kiro CLI session*
+  with self-reported passing tests followed by five successful source
+  edits. Their respective schemas, provenance and verdict scopes are
+  separate; never render an invented GitHub run for Kiro session data.
+- `STALE_EVIDENCE` for a cited old CI artifact does not imply no newer CI.
+  `STALE_LOCAL_TEST_EVIDENCE` means older local recorded test results
+  do not cover later source edits. It does not prove code correctness,
+  bugs, or missing test runs in other sessions. Local log SHA-256 is an
+  editable-data fingerprint, not signed attestation.
+- The original inspector still reads **Git metadata only** using fixed
+  read-only operations; it never reads source files, arbitrary local
+  transcripts or user credentials. The operator-only M6F capture script
+  reads one already scrubbed, ignored local JSON record and calls the
+  pure Kiro-authored evidence engine, then emits a fixed static web asset.
+  This is **not** a browser-driven ingestion API. Hosted visitors only
+  fetch same-origin JSON and never invoke GitHub or Kiro APIs.
+- Local browser/Node verification is distinct from public release
+  acceptance. Before deployment: authorized Git commit/push,
+  exact-SHA CI, reviewed PR, Vercel Preview browser QA and rollback gate.
+  The `GIT_COMMIT` gateway previously returned `KILL_SWITCH_ENGAGED`;
+  do not use an alternate execution channel to bypass that denial.

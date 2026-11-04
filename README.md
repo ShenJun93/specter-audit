@@ -10,22 +10,51 @@ Specter Audit is a local-first, read-only Git metadata investigator for AI codin
 
 **Public repository:** https://github.com/ShenJun93/specter-audit
 
-## Alibi Room v2 — local release candidate
+## Alibi Room v2 — four evidence exhibits (M6F local candidate)
 
-The new **Agent Alibi Investigator** is available at `/alibi.html` when running this branch locally. It is **not yet deployed on the public production domain**. The homepage links to this separate experience.
+**Unreleased candidate:** `/alibi.html` on the local Node server. The current
+public Vercel production site remains the earlier M5L release. The branch
+`feat/agent-alibi-v2` Draft PR #3 has not received M6D–M6F changes yet.
 
-Alibi Room reconstructs whether cited GitHub Actions results match the exact commit in a hypothetical coding-agent completion claim. Three bounded, inspectable exhibits use actual recorded GitHub CI run metadata:
+Alibi Room asks two different questions: *Is the cited CI for the correct
+commit?* and *Was the recorded test result still current after the agent
+continued editing?* Four distinct exhibits illustrate those boundaries:
 
-| Exhibit | GitHub CI evidence | Alibi conclusion |
+| Exhibit | Evidence source | Bounded conclusion |
 | --- | --- | --- |
-| Borrowed alibi | Successful workflow #6 at ancestor SHA `374af14` reused for `b6e1407` | `STALE_EVIDENCE` (that **artifact** is stale; not all CI absent) |
-| Fresh evidence | Exact target SHA `b6e1407`, workflow #9 | `PROVIDER_REPORTED_PASS`, **not** a correctness proof |
-| Empty dossier | No CI run supplied in a hypothetical exercise | `INSUFFICIENT_EVIDENCE` |
+| The borrowed alibi | Real GitHub Actions success #41736082288 on ancestor `374af14` used in a hypothetical later-commit claim | `STALE_EVIDENCE` — the **cited artifact** is older; later CI also exists |
+| Fresh evidence | Real successful run #41742626694 at exact target `b6e1407` | `PROVIDER_REPORTED_PASS`; never a semantic correctness guarantee |
+| The empty dossier | Hypothetical claim with **no CI receipt supplied** | `INSUFFICIENT_EVIDENCE`; not an assertion GitHub lacked CI |
+| **The midnight rewrite** | **Authentic recorded Kiro CLI session M5A**, with 120 tests passing, a genuine agent statement and five later successful edits to `src/github-actions-evidence.mjs` | `STALE_LOCAL_TEST_EVIDENCE` for the earlier test report relative to later edits |
 
-Recorded source runs: [41736082288](https://github.com/ShenJun93/specter-audit/actions/runs/41736082288) and [41742626694](https://github.com/ShenJun93/specter-audit/actions/runs/41742626694). They are real, publicly inspectable metadata; the claimed agent statements are explicitly hypothetical. A pure deterministic engine checks SHA/workflow/ancestry and the time evidence became available. No token or anonymous visitor-triggered GitHub API access is used.
+The fourth case is selected by default for judges and uses a **separate
+schema/validator** from GitHub provider evidence. It displays seven
+chronological events and a verdict only after revealing it. No raw session
+transcript, private paths, tokens or terminal output are published. An
+unsigned local transcript can be edited; its SHA-256 digest is a captured
+fingerprint, not signed independent attestation. No tests observed after the
+five edits **within this saved Kiro session**; tests elsewhere remain unknown.
 
-The engine and UI were implemented with ChatGPT/WAG assistance. **Three Kiro CLI implementation attempts timed out without authoring source**, so this v2 feature is not represented as Kiro-authored. Competition-level Kiro development evidence and the final video remain release gates.
+The pure `auditLocalSession(input)` in
+`src/kiro-session-staleness.mjs` was **authored and revised by Kiro CLI**
+in five recorded M6E sessions. ChatGPT/WAG independently supplied adversarial
+tests and made six small fixture-assertion changes. The original M6A CI
+engine and M6C UI were ChatGPT/WAG-assisted after earlier Kiro attempts timed
+out. Do **not** attribute the entire repository to Kiro.
 
+The operator-only `npm run capture:kiro-session` command creates the public
+JSON snapshot from a **pre-scrubbed, ignored** local exhibit; it is not a
+visitor-facing ingestion API and requires its private input to exist.
+Regular visitors fetch only the fixed same-origin `alibi-session-case.json`
+asset; the browser makes no Kiro or GitHub API requests.
+
+The original recorded CI run links remain public:
+[41736082288](https://github.com/ShenJun93/specter-audit/actions/runs/41736082288) and
+[41742626694](https://github.com/ShenJun93/specter-audit/actions/runs/41742626694).
+
+For verified Kiro authorship, source-timeline limits and local checks see
+`docs/competition/M6E_KIRO_REAL_SESSION_EVIDENCE_20261104.md` and
+`docs/competition/M6F_FOUR_CASE_LOCAL_ACCEPTANCE_20261104.md`.
 
 ## Try it in 60 seconds
 
@@ -75,13 +104,14 @@ Tests cover Git inspection, evaluator verdict semantics, synthetic mode, API lim
 ## Development provenance
 
 - Kiro CLI genuinely implemented initial M1 Git inspection work, and contributed to the early M5A/M5B GitHub Actions adapter.
+- Kiro CLI also wrote and revised the M6E local-session staleness auditor. Five new Kiro session records show 18 successful source/test file edits; independent tests verified its bounded behavior. The M6F UI integration is ChatGPT/WAG-assisted.
 - Root `.kiro/specs/specter-audit/` and `.kiro/steering/product.md` capture requirements, tasks and strict read-only/evidence semantics.
 - Subsequent API/UI, hosted release engineering, security hardening, testing and targeted remediation were developed with ChatGPT/WAG tooling. Kiro CLI also performed scoped read-only reviews. **Do not attribute all source code to Kiro.**
 - The public Git history and milestone documents are the authority for actual authorship and release state.
 
 ## Release, security and submission
 
-Production M5L currently serves merge SHA `b6e1407d1218e4ff4b44cb2dd3cae1388a5f533e`; its GitHub workflow was verified separately, with public browser/API post-deploy acceptance. `docs/M5K_PRODUCTION_RELEASE_20261104.md` documents the prior M5K release and limitations; M6C Alibi Room is local-only until reviewed and deployed.
+Production M5L currently serves merge SHA `b6e1407d1218e4ff4b44cb2dd3cae1388a5f533e`; its GitHub workflow was verified separately, with public browser/API post-deploy acceptance. `docs/M5K_PRODUCTION_RELEASE_20261104.md` documents the prior M5K release and limitations; M6F four-case Alibi Room is local-only until reviewed, committed, CI-verified and deployed.
 
 The app is not a security certification or an independent semantic code auditor. `SUPPORTED` means **Git path alignment**, not that tests passed or code works.
 

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#090d16">
-  <meta name="description" content="Specter Audit Alibi Room — expose stale GitHub Actions evidence by commit, run and timeline.">
+  <meta name="description" content="Specter Audit Alibi Room — follow GitHub Actions commit evidence and authentic local Kiro CLI test receipts.">
   <title>Alibi Room | Specter Audit</title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/alibi.css">
@@ -24,16 +24,16 @@
         <span class="nav-active" aria-current="page">Alibi Room</span>
         <a href="https://github.com/ShenJun93/specter-audit" target="_blank" rel="noopener noreferrer">Source <span aria-hidden="true">↗</span></a>
       </nav>
-      <div class="status-pill"><span class="status-dot" aria-hidden="true"></span> RECORDED PROVIDER EXHIBITS</div>
+      <div class="status-pill"><span class="status-dot" aria-hidden="true"></span> RECORDED CI + LOCAL KIRO EVIDENCE</div>
     </header>
     <main>
       <section class="hero" aria-labelledby="hero-title">
         <div class="hero-copy">
-          <div class="eyebrow"><span class="line"></span> THE EVIDENCE DOESN'T LIE. IT CAN BE OUTDATED.</div>
+          <div class="eyebrow"><span class="line"></span> FOLLOW THE TEST. THEN FOLLOW THE SOURCE EDITS.</div>
           <h1 id="hero-title">Every agent has an <em>alibi.</em><br><span>Follow the commit.</span></h1>
-          <p class="hero-summary">An agent claims the tests passed. But <strong>which commit</strong> did the CI run actually test? Reconstruct the alibi from real GitHub Actions records and Git ancestry.</p>
-          <div class="hero-cta"><a class="primary-link" href="#case-room">Enter the investigation <span aria-hidden="true">↘</span></a><span class="meta-hint">3 CASES · ZERO SIGN-UP · REAL RUN LINKS</span></div>
-          <div class="trust-notice" role="note"><span class="notice-symbol" aria-hidden="true">!</span><p><strong>Evidence scope.</strong> These are hypothetical claims tested against real, dated public GitHub run metadata. This page does not scan your repository or prove code correctness. <a href="#chain-of-custody">Read the boundaries</a>.</p></div>
+          <p class="hero-summary">An agent claims the tests passed. But <strong>which commit</strong> did CI test, and <strong>did source change afterward</strong>? Follow real GitHub Actions records and a recorded Kiro coding session.</p>
+          <div class="hero-cta"><a class="primary-link" href="#case-room">Inspect the real Kiro case <span aria-hidden="true">↘</span></a><span class="meta-hint">4 CASES · NO SIGN-UP · RECORDED EVIDENCE</span></div>
+          <div class="trust-notice" role="note"><span class="notice-symbol" aria-hidden="true">!</span><p><strong>Evidence scope.</strong> The first three cases use hypothetical claims with real public GitHub run metadata. Case four uses a genuine Kiro CLI claim and self-recorded local test/edit receipts. Local logs are editable, not independently attested. No case proves code correctness. <a href="#chain-of-custody">Read the boundaries</a>.</p></div>
         </div>
         <div class="hero-scene" aria-hidden="true">
           <div class="scene-orbit orbit-a"></div><div class="scene-orbit orbit-b"></div>
@@ -48,23 +48,24 @@
         <div class="room-heading"><div><div class="eyebrow">01 / OPEN THE CASE FILE</div><h2 id="room-title">The investigation chamber</h2><p>Choose an exhibit. Inspect the evidence. Reveal the verdict.</p></div><div class="room-state"><span class="pulse" aria-hidden="true"></span><span id="loaded-status">Loading recorded case files…</span></div></div>
         <div class="room-grid">
           <aside class="case-selector" aria-label="Cases">
-            <div class="selector-head"><span class="tiny-label">CASE ARCHIVE</span><span class="counter">3 EXHIBITS</span></div>
+            <div class="selector-head"><span class="tiny-label">CASE ARCHIVE</span><span class="counter">4 EXHIBITS</span></div>
             <div class="case-buttons">
               <button class="case-button selected" type="button" data-case="stale-artifact" aria-pressed="true"><span class="case-n">01</span><span class="case-labels"><b>The borrowed alibi</b><small>One green CI. Wrong commit.</small></span><span aria-hidden="true" class="case-arrow">→</span></button>
               <button class="case-button" type="button" data-case="current-exact-run" aria-pressed="false"><span class="case-n">02</span><span class="case-labels"><b>Fresh evidence</b><small>New commit. New CI record.</small></span><span aria-hidden="true" class="case-arrow">→</span></button>
               <button class="case-button" type="button" data-case="no-artifact-presented" aria-pressed="false"><span class="case-n">03</span><span class="case-labels"><b>The empty dossier</b><small>No receipt was supplied.</small></span><span aria-hidden="true" class="case-arrow">→</span></button>
+              <button class="case-button real-case" type="button" data-case="real-kiro-session" aria-pressed="false" disabled><span class="case-n">04</span><span class="case-labels"><b>The midnight rewrite</b><small>REAL KIRO SESSION · 5 LATER EDITS</small></span><span aria-hidden="true" class="case-arrow">→</span></button>
             </div>
-            <div class="archive-note"><span aria-hidden="true" class="archive-icon">⌁</span><p>No paid account, code execution, or credential required. The original GitHub source links remain inspectable.</p></div>
-            <div class="scoping"><span>CAPTURED AT</span><strong id="captured-at">—</strong><span>DATA ORIGIN</span><strong>Public GitHub Actions API · recorded</strong></div>
+            <div class="archive-note"><span aria-hidden="true" class="archive-icon">⌁</span><p>No account, code execution, or credentials needed. The real Kiro exhibit shows scrubbed, local self-reported tool receipts; raw logs are not published.</p></div>
+            <div class="scoping"><span>CAPTURED AT</span><strong id="captured-at">—</strong><span>DATA ORIGIN</span><strong>Recorded GitHub Actions + self-recorded Kiro CLI (separate evidence types)</strong></div>
           </aside>
           <article class="case-panel" aria-labelledby="case-title">
             <div class="case-head"><span class="chapter"><span class="lamp" aria-hidden="true"></span> CASE <span id="case-number">01</span> / RECONSTRUCTION</span><span id="origin-label" class="origin-label">RECORDED RUN · HYPOTHETICAL CLAIM</span></div>
             <h3 id="case-title">Loading evidence…</h3>
             <p id="case-desc" class="case-desc">Reading the recorded public case pack.</p>
             <div class="case-proof">
-              <div><span class="mini-label">THE CLAIMED REVISION</span><strong id="target-sha" class="mono">—</strong><span class="proof-sub">Target commit SHA</span></div>
+              <div><span id="target-label" class="mini-label">THE CLAIMED REVISION</span><strong id="target-sha" class="mono">—</strong><span id="target-sub" class="proof-sub">Target commit SHA</span></div>
               <div class="proof-separator" aria-hidden="true"><span>≠</span></div>
-              <div><span class="mini-label">CITED CI REVISION</span><strong id="cited-sha" class="mono">—</strong><span class="proof-sub" id="cited-sub">Source selected from record</span></div>
+              <div><span id="cited-label" class="mini-label">CITED CI REVISION</span><strong id="cited-sha" class="mono">—</strong><span class="proof-sub" id="cited-sub">Source selected from record</span></div>
             </div>
             <div class="timeline-header"><div><span class="mini-label">RECONSTRUCTED CHAIN OF CUSTODY</span><h4>Evidence timeline</h4></div><span class="tiny-label">EARLIEST → LATEST</span></div>
             <ol id="timeline" class="timeline" aria-label="Chronological case evidence">
@@ -77,7 +78,7 @@
                 <h4 id="verdict-title"></h4>
                 <p id="verdict-reason"></p>
                 <ul id="verdict-gaps" class="gap-list"></ul>
-                <div class="verdict-footer"><a id="source-link" target="_blank" rel="noopener noreferrer" hidden>Examine the original GitHub run <span aria-hidden="true">↗</span></a><span class="scope-caveat">Provider-reported status ≠ proof of correctness</span></div>
+                <div class="verdict-footer"><a id="source-link" target="_blank" rel="noopener noreferrer" hidden>Examine the original GitHub run <span aria-hidden="true">↗</span></a><span id="scope-caveat" class="scope-caveat">Provider-reported status ≠ proof of correctness</span></div>
               </div>
             </div>
           </article>
@@ -87,8 +88,8 @@
         <div><div class="eyebrow">02 / EVIDENCE, NOT THEATER</div><h2 id="integrity-title">How to read the verdict</h2><p>Each outcome is an assertion about the supplied <em>evidence artifact</em>. None certifies that the coding agent fixed a vulnerability or implemented correct behavior.</p></div>
         <div class="integrity-grid">
           <div class="integrity-card"><span class="ic-a">01</span><h3>Exact commit binding</h3><p>A green run on SHA A cannot stand in for a claim made about SHA B. The Git graph decides whether the cited result is ancestral.</p></div>
-          <div class="integrity-card"><span class="ic-b">02</span><h3>Provider-reported only</h3><p>Run IDs and source URLs point to real GitHub Actions pages. Snapshots are dated and are not cryptographically signed attestations.</p></div>
-          <div class="integrity-card"><span class="ic-c">03</span><h3>No synthetic failure</h3><p>The examples use real successful workflow records and explicit hypothetical claims. The empty dossier does not assert actual CI was absent.</p></div>
+          <div class="integrity-card"><span class="ic-b">02</span><h3>Provider-reported only</h3><p>GitHub run links identify provider records; the local Kiro case has no public transcript URL. Both recorded snapshots and editable local logs lack signed independent attestation.</p></div>
+          <div class="integrity-card"><span class="ic-c">03</span><h3>No synthetic failure</h3><p>Three examples use real workflow records with hypothetical claims. The fourth draws from an authentic Kiro session; no post-edit rerun was seen in that saved session. Outside evidence remains unknown.</p></div>
         </div>
         <div class="integrity-footer"><a href="/">Return to the local Git inspector <span aria-hidden="true">→</span></a><span>KIROWEEN 2026 · SPECTER AUDIT · EVIDENCE BEFORE CONFIDENCE</span></div>
       </section>
