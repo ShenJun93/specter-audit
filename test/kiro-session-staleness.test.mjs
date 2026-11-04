@@ -1,9 +1,9 @@
 /**
  * Tests for kiro-session-staleness module
- * 
+ *
  * Node:test based tests for the auditLocalSession function.
  * No external dependencies.
- * 
+ *
  * @file kiro-session-staleness.test.mjs
  * @module test/kiro-session-staleness.test
  */

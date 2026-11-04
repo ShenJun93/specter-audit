@@ -1,9 +1,9 @@
 /**
  * Kiro Session Staleness Auditor
- * 
+ *
  * Pure ESM module for auditing local Kiro CLI session evidence.
  * No external dependencies, no network, no filesystem access.
- * 
+ *
  * @file kiro-session-staleness.mjs
  * @module src/kiro-session-staleness
  */
@@ -41,26 +41,26 @@ function normalizeTimestamp(ts) {
  */
 function isValidFilePath(filePath) {
   if (typeof filePath !== 'string' || filePath.trim() === '') return false;
-  
+
   // Check for path traversal patterns (forward or backward slash)
   if (filePath.includes('..')) return false;
-  
+
   // Reject UNC paths like \\server\share or //server/share
   if (filePath.startsWith('\\\\') || filePath.startsWith('//')) return false;
-  
+
   // Reject Windows absolute paths like C:\ or D:\
   if (filePath.match(/^[a-zA-Z]:[/\\]/)) return false;
-  
+
   // Reject Unix absolute paths like /etc/x
   if (filePath.startsWith('/')) return false;
-  
+
   // Allow relative paths like 'src/name.mjs'
   return true;
 }
 
 /**
  * Audits a local Kiro CLI session for staleness based on test and edit evidence.
- * 
+ *
  * @param {Object} input - Session audit input
  * @param {string} input.sourceKind - Must be 'RECORDED_LOCAL_KIRO_CLI_SESSION'
  * @param {string} input.claimAt - ISO UTC timestamp of the claim
@@ -253,7 +253,7 @@ export function auditLocalSession(input) {
       latestTestMs = testAtMs;
       latestTestPassed = (test.pass > 0 && test.fail === 0 && test.exitCode === 0);
     }
-    
+
     // Track latest passing test (only if this test passed)
     if (test.pass > 0 && test.fail === 0 && test.exitCode === 0) {
       latestPassingTestMs = testAtMs;
@@ -342,7 +342,7 @@ export function auditLocalSession(input) {
   // Classification logic
   // A passing test is only valid evidence if it was the latest test at or before claim time
   const hasValidPassingTest = (latestTestPassed && latestPassingTestMs !== null);
-  
+
   let status;
   let reason;
 
