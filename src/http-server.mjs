@@ -20,6 +20,11 @@ const STATIC_FILES = new Map([
   ['/alibi.css', ['alibi.css', 'text/css; charset=utf-8']],
   ['/alibi-cases.json', ['alibi-cases.json', 'application/json; charset=utf-8']],
   ['/alibi-session-case.json', ['alibi-session-case.json', 'application/json; charset=utf-8']],
+  ['/live.html', ['live.html', 'text/html; charset=utf-8']],
+  ['/live.css', ['live.css', 'text/css; charset=utf-8']],
+  ['/live.js', ['live.js', 'text/javascript; charset=utf-8']],
+  ['/kiro-session-import.mjs', ['kiro-session-import.mjs', 'text/javascript; charset=utf-8']],
+  ['/kiro-session-staleness.mjs', ['kiro-session-staleness.mjs', 'text/javascript; charset=utf-8']],
   ['/favicon.svg', ['favicon.svg', 'image/svg+xml']],
   ['/favicon.ico', ['favicon.svg', 'image/svg+xml']],
 ]);
