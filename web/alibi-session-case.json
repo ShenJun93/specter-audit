@@ -1,0 +1,67 @@
+{
+  "schema": "SPECTER_ALIBI_RECORDED_KIRO_SESSION_V1",
+  "id": "real-kiro-session",
+  "project": "ShenJun93/specter-audit",
+  "title": "The midnight rewrite",
+  "summary": "A genuine Kiro CLI test report passed, then the same agent made five later source edits. The earlier result cannot establish their final tested state.",
+  "origin": "RECORDED_LOCAL_KIRO_CLI_SESSION",
+  "capturedAt": "2026-11-04T03:06:42.820Z",
+  "sourceTraceSha256": "48f82b65a652dc2a7f4b4de8d20716af45c798152cf5d4c95867443bb2847d12",
+  "claim": {
+    "text": "All 120 tests pass, 0 fail.",
+    "observedAt": "2026-11-03T13:42:53.083Z"
+  },
+  "toolEvidence": {
+    "kind": "KIRO_EXECUTE_PWSH_TOOL_RESULT",
+    "at": "2026-11-03T13:42:38.312Z",
+    "pass": 120,
+    "fail": 0,
+    "exitCode": 0
+  },
+  "sourceEdits": [
+    {
+      "at": "2026-11-03T15:06:27.965Z",
+      "file": "src/github-actions-evidence.mjs",
+      "successful": true
+    },
+    {
+      "at": "2026-11-03T15:06:41.549Z",
+      "file": "src/github-actions-evidence.mjs",
+      "successful": true
+    },
+    {
+      "at": "2026-11-03T15:06:55.866Z",
+      "file": "src/github-actions-evidence.mjs",
+      "successful": true
+    },
+    {
+      "at": "2026-11-03T15:07:08.372Z",
+      "file": "src/github-actions-evidence.mjs",
+      "successful": true
+    },
+    {
+      "at": "2026-11-03T15:07:21.514Z",
+      "file": "src/github-actions-evidence.mjs",
+      "successful": true
+    }
+  ],
+  "sessionEndedAt": "2026-11-03T15:07:21.514Z",
+  "afterFinalEdit": {
+    "furtherTestRunsObservedInThisSavedSession": 0,
+    "outsideSessionEvidenceUnknown": true
+  },
+  "finding": {
+    "status": "STALE_LOCAL_TEST_EVIDENCE",
+    "reason": "Successful source edit after latest passing test with no later passing test",
+    "independentAttestation": false,
+    "semanticCorrectnessVerified": false,
+    "headline": "Tests passed. Then the code changed.",
+    "gaps": [
+      "Five successful source edits followed the last recorded passing test.",
+      "No rerun was observed after those edits within this saved Kiro session.",
+      "Other sessions or later CI could contain additional evidence; code correctness is not evaluated."
+    ]
+  },
+  "provenanceNote": "Recorded Kiro CLI tool results from a local editable session; captured SHA-256 is a fingerprint, not a signed attestation.",
+  "privacyNote": "Only selected, pre-scrubbed timestamps, public source file name, outcome counts and digest are shown. No raw session or terminal output is published."
+}
