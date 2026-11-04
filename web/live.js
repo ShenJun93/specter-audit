@@ -45,6 +45,7 @@ const errors={
  INCOMPLETE_RELEVANT_TOOL_EVIDENCE:'Some test or edit tool results are unmatched or unsupported.',
  CLAIM_TEST_COUNT_MISMATCH:'The agent claim count does not match the latest observed test report.',
  POST_CLAIM_TEST_EVIDENCE_UNRESOLVED:'A later test cannot confirm the earlier claim. The available evidence does not establish a current result.',
+ OVERLAPPING_RELEVANT_TOOL_OPERATIONS:'A test overlaps a source edit or an uncertain tool operation. Its completion cannot prove which code was tested.',
  LATER_AGENT_TEST_CLAIM_RETRACTED:'A later agent message retracts the passing-test claim; the prior PASS cannot establish a current result.',
  AMBIGUOUS_EVENT_TIMESTAMPS:'Multiple test or edit events share an ambiguous timestamp.'
 };

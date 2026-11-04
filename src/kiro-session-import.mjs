@@ -163,6 +163,7 @@ function result(events) {
   if(retractions.some(ms=>ms>=claim.ms))return safeError('LATER_AGENT_TEST_CLAIM_RETRACTED',{recognizedClaims:claims.length});
   if(claim.ms>lastTime)return safeError('INVALID_CHRONOLOGY');
   const tests=[],edits=[],unverifiedOperations=[];
+  const testWindows=[],editWindows=[],uncertainWindows=[];
   let unclassifiedEdits=0,unpairedRelevant=0;
   const readOnlyTools=new Set(['read_file','list_directory','update_session_information','get_session_information','list_files']);
   for(const [id,call] of callById){
@@ -180,6 +181,7 @@ function result(events) {
       if(shell||!readOnlyTools.has(tool)){
         if(observed&&iso(observed.timestamp)<iso(call.timestamp))return safeError('RESULT_BEFORE_TOOL');
         unverifiedOperations.push({at:observed?.timestamp??new Date(lastTime).toISOString()});
+        uncertainWindows.push({start:iso(call.timestamp),end:observed?iso(observed.timestamp):lastTime});
       }
       continue;
     }
@@ -187,6 +189,7 @@ function result(events) {
       unpairedRelevant++;
       // With no result timestamp, completion may have occurred later.
       unverifiedOperations.push({at:new Date(lastTime).toISOString()});
+      uncertainWindows.push({start:iso(call.timestamp),end:lastTime});
       continue;
     }
     const at=observed.timestamp; // Evidence exists at completion, not invocation.
@@ -197,6 +200,7 @@ function result(events) {
       // Likewise a failed test tool cannot supply a valid passing receipt.
       unpairedRelevant++;
       unverifiedOperations.push({at:observed.timestamp});
+      uncertainWindows.push({start:iso(call.timestamp),end:iso(observed.timestamp)});
       continue;
     }
     if(isEditingTool){
@@ -206,14 +210,17 @@ function result(events) {
       // The placeholder is explicitly redacted, not a claimed filename.
       if(!file)unclassifiedEdits++;
       edits.push({at,file:file??('redacted/edited-file-'+(edits.length+1)),successful:true});
+      editWindows.push({start:iso(call.timestamp),end:iso(at)});
     }else{
       const data=summaryNumbers(observed.payload.content);
       if(!data){
         unpairedRelevant++;
         unverifiedOperations.push({at:observed.timestamp});
+        uncertainWindows.push({start:iso(call.timestamp),end:iso(at)});
         continue;
       }
       tests.push({at,...data});
+      testWindows.push({start:iso(call.timestamp),end:iso(at)});
     }
     if(tests.length>60||edits.length>60)return safeError('TOO_MANY_RELEVANT_EVENTS');
   }
@@ -223,6 +230,7 @@ function result(events) {
     if(!callById.has(id)){
       unpairedRelevant++;
       unverifiedOperations.push({at:observed.timestamp});
+      uncertainWindows.push({start:iso(observed.timestamp),end:iso(observed.timestamp)});
     }
   }
   const info={
@@ -234,6 +242,14 @@ function result(events) {
     testTimesBeforeClaim:tests.filter(t=>iso(t.at)<=claim.ms).length,
     scope:'ONE_SAVED_LOCAL_KIRO_SESSION_ONLY'
   };
+  // A test's completion time alone cannot prove it ran against a later
+  // source edit. If a test and an edit/uncertain tool operation overlap,
+  // their source state is ambiguous even when the test finishes last.
+  // Boundaries at the same millisecond are also ambiguous.
+  if(testWindows.some(test=>[...editWindows,...uncertainWindows].some(other=>
+      test.start<=other.end&&other.start<=test.end))){
+    return safeError('OVERLAPPING_RELEVANT_TOOL_OPERATIONS',info);
+  }
   // Unrecognized paths are retained as explicit redacted source edits,
   // never dropped from chronology. Missing/unsupported tool results
   // remain insufficient because they could hide a later test or edit.

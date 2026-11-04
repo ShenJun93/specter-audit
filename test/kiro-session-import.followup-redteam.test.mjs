@@ -16,6 +16,46 @@ const assess = events => {
   const parsed=parseKiroSession(events.map(e=>JSON.stringify(e)).join('\n'));
   return {parsed,status:parsed.input?auditLocalSession(parsed.input).status:null};
 };
+test('test and source edit finishing at the same instant cannot prove CURRENT',()=>{
+  const {parsed,status}=assess([
+    call(0,'test'),
+    event(0,{type:'tool_call',toolCallId:'edit',toolName:'str_replace',filePath:'src/example.mjs'}),
+    result(1,'test',true,receipt()),
+    result(1,'edit',true,'Done'),
+    claim(2),event(3,{type:'turn_end'})
+  ]);
+  assert.notEqual(status,'CURRENT_SELF_RECORDED_TEST',JSON.stringify(parsed.summary));
+});
+test('a test started before an edit completed cannot verify that edit, even if it finishes later',()=>{
+  const {parsed,status}=assess([
+    call(0,'test'),
+    event(1,{type:'tool_call',toolCallId:'edit',toolName:'str_replace',filePath:'src/example.mjs'}),
+    result(2,'edit',true,'Done'),
+    result(3,'test',true,receipt()),
+    claim(4),event(5,{type:'turn_end'})
+  ]);
+  assert.notEqual(status,'CURRENT_SELF_RECORDED_TEST',JSON.stringify(parsed.summary));
+});
+test('unknown shell execution overlapping a test cannot be superseded by test completion alone',()=>{
+  const {parsed,status}=assess([
+    call(0,'test'),
+    call(1,'unknown','git status'),
+    result(2,'unknown',true,'ok'),
+    result(3,'test',true,receipt()),
+    claim(4),event(5,{type:'turn_end'})
+  ]);
+  assert.notEqual(status,'CURRENT_SELF_RECORDED_TEST',JSON.stringify(parsed.summary));
+});
+test('failed source edit during test can partially mutate source and must not leave CURRENT',()=>{
+  const {parsed,status}=assess([
+    call(0,'test'),
+    event(1,{type:'tool_call',toolCallId:'edit',toolName:'str_replace',filePath:'src/example.mjs'}),
+    result(2,'edit',false,'operation failed'),
+    result(3,'test',true,receipt()),
+    claim(4),event(5,{type:'turn_end'})
+  ]);
+  assert.notEqual(status,'CURRENT_SELF_RECORDED_TEST',JSON.stringify(parsed.summary));
+});
 test('post-claim failing test supersedes an earlier passing test for current-session verdict',()=>{
   const {status,parsed}=assess([
     call(0,'pass'),result(1,'pass',true,receipt()),claim(2),

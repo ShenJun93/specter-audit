@@ -20,6 +20,7 @@ This matrix describes **verified inputs**, not all Kiro CLI versions. A valid JS
 - Unsupported source-modifying shell calls and missing or unsuccessful tool results are not silently treated as clean.
 - Parentheses within a quoted read-only `Select-String` regex filter are supported; PowerShell expansion, backtick escape and unquoted grouping fail closed.
 - Later test completions are observed chronology, not proof of an earlier claim. To return STALE with post-claim tests, there must also be a valid pre-claim PASS, every post-claim test must pass and a successful source edit must finish after all tests. Otherwise the post-claim chronology is insufficient.
+- Test and edit/unverified operation intervals are compared from tool call to tool result. Overlap, including same-millisecond boundaries, is insufficient; a test finishing after an edit does **not** prove it began after that edit. The parser returns `OVERLAPPING_RELEVANT_TOOL_OPERATIONS` rather than inventing CURRENT or STALE.
 
 ## Limitations and independent test protocol
 

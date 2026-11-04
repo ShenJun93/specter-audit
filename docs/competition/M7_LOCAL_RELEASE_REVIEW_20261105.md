@@ -144,6 +144,36 @@ All observations above are local and self-recorded. No independent reviewer,
 exact-commit remote CI, new Preview or production acceptance is claimed.
 The raw Kiro file remains outside Git.
 
+## 2026-11-05 continuation — concurrent test/edit false CURRENT fix
+
+An independent red-team audit reproduced four false CURRENT outcomes:
+a test and edit completing at the same instant; a test starting before
+a source edit finishes; an unknown shell operation overlapping the test;
+and a failed edit with possible partial mutation during a test.
+These were first recorded as failing tests before remediation.
+
+The importer now compares bounded tool **call-to-result intervals**,
+not only completion timestamps. If a recognized passing test overlaps
+a successful edit or an unverified operation, including at equal
+millisecond boundaries, the result fails closed with
+`OVERLAPPING_RELEVANT_TOOL_OPERATIONS`. Completion after an edit does
+not establish that the test started against the edited source.
+One earlier synthetic test intentionally expecting STALE from
+overlapping evidence was revised to require insufficient evidence;
+a non-overlapping M5A stale case remains independently verified.
+
+| Latest local gate | Result |
+| --- | --- |
+| Full Node tests | **292 PASS, 0 FAIL** |
+| `npm run build:live` and `npm run check` | PASS |
+| Authentic M5A Chrome desktop | PASS; STALE, 2 tests, 6 subsequent edits, 2 redacted paths |
+| Chrome mobile width 390px | PASS; no overflow |
+| Uploads after file selection / console errors | **0 / 0** observed |
+| Remote exact-SHA CI / Vercel Preview | **NOT RUN**; branch remains local |
+
+This is ChatGPT/WAG-authored parser hardening, not a new Kiro-authored
+contribution. The raw M5A log remains outside Git.
+
 ## Remaining release gates
 
 - [ ] Independent review of JSONL parsing, local session semantics and

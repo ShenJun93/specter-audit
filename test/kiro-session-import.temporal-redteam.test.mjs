@@ -16,9 +16,10 @@ test('a test finishing after the claim cannot prove it retroactively',()=>{
  const {verdict}=inspect([call('00','t','execute_pwsh',{command:'node --test'}),claim('02'),result('04','t',true,passLog),event('06',{type:'turn_end'})]);
  assert.notEqual(verdict,'CURRENT_SELF_RECORDED_TEST');
 });
-test('an edit finishing after the last passing test invalidates that test',()=>{
- const {verdict}=inspect([call('00','e','str_replace',{filePath:'src/main.mjs'}),call('01','t','execute_pwsh',{command:'node --test'}),result('02','t',true,passLog),result('04','e',true,'done'),claim('05'),event('06',{type:'turn_end'})]);
- assert.equal(verdict,'STALE_LOCAL_TEST_EVIDENCE');
+test('an edit overlapping a test cannot establish CURRENT or proven STALE chronology',()=>{
+ const {parsed,verdict}=inspect([call('00','e','str_replace',{filePath:'src/main.mjs'}),call('01','t','execute_pwsh',{command:'node --test'}),result('02','t',true,passLog),result('04','e',true,'done'),claim('05'),event('06',{type:'turn_end'})]);
+ assert.equal(parsed.errorCode,'OVERLAPPING_RELEVANT_TOOL_OPERATIONS');
+ assert.equal(verdict,null);
 });
 test('a failed later test tool result must not silently disappear',()=>{
  const {verdict}=inspect([call('00','t1','execute_pwsh',{command:'node --test'}),result('01','t1',true,passLog),call('02','t2','execute_pwsh',{command:'npm test'}),result('03','t2',false,'Tool execution aborted'),claim('04'),event('05',{type:'turn_end'})]);
