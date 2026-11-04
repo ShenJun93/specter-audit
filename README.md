@@ -10,6 +10,23 @@ Specter Audit is a local-first, read-only Git metadata investigator for AI codin
 
 **Public repository:** https://github.com/ShenJun93/specter-audit
 
+## Alibi Room v2 — local release candidate
+
+The new **Agent Alibi Investigator** is available at `/alibi.html` when running this branch locally. It is **not yet deployed on the public production domain**. The homepage links to this separate experience.
+
+Alibi Room reconstructs whether cited GitHub Actions results match the exact commit in a hypothetical coding-agent completion claim. Three bounded, inspectable exhibits use actual recorded GitHub CI run metadata:
+
+| Exhibit | GitHub CI evidence | Alibi conclusion |
+| --- | --- | --- |
+| Borrowed alibi | Successful workflow #6 at ancestor SHA `374af14` reused for `b6e1407` | `STALE_EVIDENCE` (that **artifact** is stale; not all CI absent) |
+| Fresh evidence | Exact target SHA `b6e1407`, workflow #9 | `PROVIDER_REPORTED_PASS`, **not** a correctness proof |
+| Empty dossier | No CI run supplied in a hypothetical exercise | `INSUFFICIENT_EVIDENCE` |
+
+Recorded source runs: [41736082288](https://github.com/ShenJun93/specter-audit/actions/runs/41736082288) and [41742626694](https://github.com/ShenJun93/specter-audit/actions/runs/41742626694). They are real, publicly inspectable metadata; the claimed agent statements are explicitly hypothetical. A pure deterministic engine checks SHA/workflow/ancestry and the time evidence became available. No token or anonymous visitor-triggered GitHub API access is used.
+
+The engine and UI were implemented with ChatGPT/WAG assistance. **Three Kiro CLI implementation attempts timed out without authoring source**, so this v2 feature is not represented as Kiro-authored. Competition-level Kiro development evidence and the final video remain release gates.
+
+
 ## Try it in 60 seconds
 
 The public demo requires no account or installation. It is visibly labeled **SYNTHETIC SNAPSHOT**, because it uses a frozen Git fixture, not a remote inspection of your machine or repositories. Its claim evaluator still runs on every request.
@@ -22,7 +39,7 @@ The public demo requires no account or installation. It is visibly labeled **SYN
 
 A separate **Public CI evidence** button shows a timestamped record of the fixed GitHub Actions workflow for the **production merge release** (`374af141...`). Hosted visitors never trigger an outbound GitHub API call. The recorded result is provider-reported CI metadata for that *one published commit*, not an attestation and not proof that arbitrary agent claims are true.
 
-**Snapshot refresh status:** This production-merge CI snapshot is part of the M5L candidate branch. Until M5L is separately merged and deployed, the currently published page may still display the explicitly labeled **initial release** record. See `docs/M5K_PRODUCTION_RELEASE_20261104.md`.
+**Live production provenance:** M5L has deployed at merge SHA `b6e1407d...`. Its CI panel intentionally displays the separately labeled historical M5K release record (`374af141...`), not CI proof for M5L. The M5L merge CI is [run 41742626694](https://github.com/ShenJun93/specter-audit/actions/runs/41742626694). Alibi Room v2 remains an unreleased candidate.
 
 ## Local read-only inspection
 
@@ -64,7 +81,7 @@ Tests cover Git inspection, evaluator verdict semantics, synthetic mode, API lim
 
 ## Release, security and submission
 
-The 2026-11-04 production release is the merged Git commit `374af1417b714619d9edc1af790f7e7db15a71ca`, with a verified GitHub workflow and public post-deploy browser/API acceptance. See `docs/M5K_PRODUCTION_RELEASE_20261104.md` for the exact evidence and limitations.
+Production M5L currently serves merge SHA `b6e1407d1218e4ff4b44cb2dd3cae1388a5f533e`; its GitHub workflow was verified separately, with public browser/API post-deploy acceptance. `docs/M5K_PRODUCTION_RELEASE_20261104.md` documents the prior M5K release and limitations; M6C Alibi Room is local-only until reviewed and deployed.
 
 The app is not a security certification or an independent semantic code auditor. `SUPPORTED` means **Git path alignment**, not that tests passed or code works.
 

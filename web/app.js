@@ -44,6 +44,8 @@ function renderInspection(data) {
   if (banner) banner.hidden = !hostedSnapshot;
   const clock = document.querySelector('#clock');
   if (clock) clock.textContent = hostedSnapshot ? 'SYNTHETIC SNAPSHOT' : 'LOCAL GIT INSPECTION';
+  const instanceKind = document.querySelector('#instance-kind');
+  if (instanceKind) instanceKind.textContent = hostedSnapshot ? 'HOSTED JUDGE DEMO' : 'LOCAL INSTANCE';
   const staged = data.staged ?? [];
   const unstaged = data.unstaged ?? [];
   const untracked = data.untracked ?? [];

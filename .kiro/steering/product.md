@@ -71,18 +71,27 @@ Contest category: spooky UI **with** functional engineering).
   reversible. Do not commit, push, or touch other repositories unless the user
   explicitly asks.
 
-## Current status (M5E feature branch — not released)
+## Current release and unreleased M6C status (2026-11-04)
 
-- M1 inspector/evaluator was genuinely implemented using Kiro CLI; M2–M4 were
-  implemented using ChatGPT-assisted tools. Kiro contributed to M5A/M5B;
-  later M5C/M5D/M5E hardening used ChatGPT/WAG.
-- Public GitHub repository, MIT LICENSE and synthetic Vercel replay are already
-  available; current local M5 changes are not published or deployed.
-- Local inspector and claim evaluator remain read-only and offline by default.
-- Optional local CI lookup is restricted to a fixed public GitHub repository,
-  exact commit and workflow and requires explicit user action. No tokens.
-- Hosted CI evidence is a dated static JSON record from the initial release,
-  never an anonymous request-triggered GitHub API fetch; it remains separate
-  from the synthetic judge fixture and cannot elevate claim verdicts.
-- Provider-reported CI is not signed attestation or proof of correctness.
-- See docs/M5E_RELEASE_GATE_20261103.md for local evidence and release gates.
+- M5L is live on Vercel production at merge commit
+  `b6e1407d1218e4ff4b44cb2dd3cae1388a5f533e`, with confirmed
+  post-deploy HTTP/browser acceptance.
+- Production v1 uses a visibly synthetic Git replay. Its hosted CI panel
+  displays a separately labeled historical recorded run for release
+  `374af14`, not CI proof for M5L code.
+- Branch `feat/agent-alibi-v2` adds **unreleased** Alibi Room, a pure
+  read-only evidence engine and fixed GitHub Actions runs `41736082288`
+  (ancestor SHA) and `41742626694` (exact current SHA). It never states
+  that the latter CI is absent.
+- Claims are hypothetical and separately labeled; Git commit ancestry and
+  public CI status are real recorded metadata captured by an operator.
+  Both remain unauthenticated snapshot data, never proof of correctness.
+- M6A/M6C source and tests were implemented with ChatGPT/WAG. Three genuine
+  Kiro CLI implementation attempts timed out without authoring source.
+  Prior genuine Kiro M1/M5A/M5B contributions and narrow reviews remain
+  documented; do not attribute M6A/M6C to Kiro.
+- The local inspector remains read-only, loopback, no source-content reads,
+  zero runtime dependencies. The Alibi UI uses same-origin case JSON only;
+  its browser never invokes GitHub or a dynamic provider API.
+- New source is a local candidate only. Git push, merge and deployment still
+  require separate gates and authorization.

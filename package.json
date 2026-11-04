@@ -12,7 +12,8 @@
     "start": "node src/http-server.mjs",
     "demo": "node scripts/judge-demo.mjs",
     "capture:ci": "node scripts/capture-public-ci.mjs --capture",
-    "check": "node --check src/http-server.mjs && node --check src/claim-evaluator.mjs && node --check src/git-inspector.mjs && node --check src/github-actions-evidence.mjs && node --check src/public-ci.mjs && node --check scripts/capture-public-ci.mjs && node --check web/app.js && node --check scripts/create-judge-fixture.mjs && node --check scripts/judge-demo.mjs && node --check api/inspection.js && node --check api/status.js && node --check api/evaluate.js && node --check hosted/api-common.mjs && node --check hosted/snapshot.mjs && node --check scripts/build-hosted-snapshot.mjs"
+    "check": "node --check src/http-server.mjs && node --check src/claim-evaluator.mjs && node --check src/git-inspector.mjs && node --check src/github-actions-evidence.mjs && node --check src/public-ci.mjs && node --check scripts/capture-public-ci.mjs && node --check web/app.js && node --check scripts/create-judge-fixture.mjs && node --check scripts/judge-demo.mjs && node --check api/inspection.js && node --check api/status.js && node --check api/evaluate.js && node --check hosted/api-common.mjs && node --check hosted/snapshot.mjs && node --check scripts/build-hosted-snapshot.mjs && node --check src/alibi-engine.mjs && node --check scripts/capture-alibi-cases.mjs && node --check web/alibi.js",
+    "capture:alibi": "node scripts/capture-alibi-cases.mjs --capture"
   },
   "files": [
     "src",
