@@ -2,11 +2,12 @@
 
 **Audit date:** 2026-11-05 (Asia/Ho_Chi_Minh)
 
-**State:** Local-only candidate on `feat/agent-alibi-v2`, committed HEAD
-`156efb1fb0a5f771af9d39f66aae626432a142a4`.
-M7 has **uncommitted** source/UI/spec/tests in the worktree. M7 is **not**
-part of Ready-for-review PR #3, its Vercel Preview or production. No
-merge, push or production deployment occurred in this audit.
+**State as of latest local review:** M7 is isolated on the local branch
+`feat/m7-local-session-investigator`. Its first local commit is
+`74005e4af42b3932614a39d4250704e1ac0391e5`; later hardening is covered
+by the continuation evidence below. Refer to Git HEAD for the exact current
+version. The M7 branch has not been pushed or deployed. Ready-for-review PR #3,
+its Preview and production remain unchanged.
 
 ## Top-three product improvement
 
@@ -110,17 +111,50 @@ be evaluated. The browser displays a sanitized error with no raw prose.
   `docs/competition/M7_FORMAT_COMPATIBILITY_20261105.md`.
 - No push, PR modification, merge or production deployment in this continuation.
 
+## 2026-11-05 continuation — M5A compatibility and post-claim hardening
+
+A second red-team batch first reproduced four false CURRENT verdicts:
+post-claim failed test; orphan tool result; identical claim/test completion
+timestamp; and dynamic PowerShell expression substitution. Four synthetic
+reproducers were red before the parser changes and green afterward.
+The older M5A Chrome QA temporarily failed after overrestricting the
+read-only PowerShell output filter. Local, non-disclosing analysis established
+the actual safe chronology: a 120-PASS test completes before the claim,
+a narrower 36-PASS test completes afterward, and six source edits follow
+both. Parenthesized regex text in quoted output-only filters is now
+recognized without accepting executable PowerShell expressions.
+
+The parser only retains a STALE conclusion with a valid preceding PASS,
+successful later test receipts, and a successful edit strictly after all
+tests. Post-claim FAIL, equal timestamps, missing pre-claim evidence or
+a later passing test without a newer edit remains insufficient. The later
+test never retroactively substantiates the earlier claim.
+
+| Local verification gate | Latest result |
+| --- | --- |
+| Full Node regression | **288 PASS, 0 FAIL** |
+| `npm run build:live` / `npm run check` | PASS |
+| M5A real Kiro session | 288 events, 2 parsed tests, 11 edits, 2 redacted paths; STALE |
+| Chrome desktop real Kiro file | PASS; 14 sanitized chronology events |
+| Chrome mobile width 390px | PASS; no overflow |
+| Requests after file selection / console errors | **0 / 0** observed |
+| Synthetic new post-claim/PowerShell red-team | 10/10 PASS |
+
+All observations above are local and self-recorded. No independent reviewer,
+exact-commit remote CI, new Preview or production acceptance is claimed.
+The raw Kiro file remains outside Git.
+
 ## Remaining release gates
 
 - [ ] Independent review of JSONL parsing, local session semantics and
   privacy boundaries; verify against another real Kiro version/session.
 - [ ] Independent novice user tries selecting their own session and can
   correctly interpret `CURRENT` vs `STALE` vs `INSUFFICIENT`.
-- [ ] Review unsupported older M1 format and publish a transparent
-  compatibility matrix; do not invent an all-version support claim.
-- [ ] Make M7 source changes reviewable on a separate feature commit/
-  PR after authorization. WAG policy and branch safety must be
-  rechecked. Do not bypass a `KILL_SWITCH_ENGAGED` response.
+- [x] Publish a transparent M1/M5A compatibility matrix. M1 remains
+  unsupported/insufficient; expand coverage only with independently validated fixtures.
+- [x] Isolate M7 in its own local feature branch and initial commit.
+- [ ] Push that branch and open a separate PR after checking WAG policy;
+  never bypass `KILL_SWITCH_ENGAGED` or rewrite PR #3.
 - [ ] GitHub Actions on exact new head SHA, clean Vercel Preview and
   independent real Chrome desktop/mobile acceptance against that SHA.
 - [ ] Owner-authorized merge + production release with rollback plan.

@@ -4,7 +4,7 @@ This matrix describes **verified inputs**, not all Kiro CLI versions. A valid JS
 
 | Input family | Evidence | Status | User-facing claim allowed |
 | --- | --- | --- | --- |
-| Actual M5A Kiro CLI session | Observed locally: 288 events, 2 parsed test receipts, 11 successful edits, 2 redacted paths | `STALE_LOCAL_TEST_EVIDENCE` | Passing tests precede later edits **in this file**; never implies correctness |
+| Actual M5A Kiro CLI session | Observed locally: 288 events, 2 parsed tests (120 PASS before claim; 36 PASS after claim), 11 successful edits with 6 later than both tests, 2 redacted paths | `STALE_LOCAL_TEST_EVIDENCE` | Later edits establish staleness **in this file**; post-claim tests cannot retroactively support the claim |
 | Supported synthetic modern Kiro event shape | Node tests cover `tool_call`/`tool_result` with shared ID, `assistant/Say`, `node --test` and `npm test`, PowerShell output-only filtering | `CURRENT_SELF_RECORDED_TEST` or `STALE_LOCAL_TEST_EVIDENCE`, according to chronology | Self-recorded only; **not** independent evidence |
 | Actual older M1 Kiro session | Earlier local audit found insufficient or unsupported test receipts for parser-recognized shapes | `INSUFFICIENT_SESSION_EVIDENCE` or a safe parser error | Cannot assert that tests passed; exact legacy coverage remains unverified |
 | Failed/incomplete/unknown tools; mixed shell commands | Negative red-team tests cover failures, unmatched results and unknown shell effects | Fail closed / insufficient | No promotion to `CURRENT` without supported evidence |
@@ -18,6 +18,8 @@ This matrix describes **verified inputs**, not all Kiro CLI versions. A valid JS
 - Completed source mutations: `fs_write` and `str_replace`, with sanitized paths or synthetic redacted file names.
 - Claims: limited explicit affirmative test-passed statements; a later explicit retraction blocks the earlier affirmative claim.
 - Unsupported source-modifying shell calls and missing or unsuccessful tool results are not silently treated as clean.
+- Parentheses within a quoted read-only `Select-String` regex filter are supported; PowerShell expansion, backtick escape and unquoted grouping fail closed.
+- Later test completions are observed chronology, not proof of an earlier claim. To return STALE with post-claim tests, there must also be a valid pre-claim PASS, every post-claim test must pass and a successful source edit must finish after all tests. Otherwise the post-claim chronology is insufficient.
 
 ## Limitations and independent test protocol
 

@@ -47,6 +47,24 @@ function summaryNumbers(raw) {
   }
   return {pass:matches.pass,fail:matches.fail,exitCode:matches.exit};
 }
+// Accept regex parentheses inside quoted read-only filter arguments only.
+function safeOutputFilter(stage) {
+  if (/[<>$\x60]/.test(stage)) return false;
+  let quoted=null;
+  for(let i=0;i<stage.length;i++){
+    const ch=stage[i];
+    if(quoted){
+      if(ch===quoted){
+        if(ch==="'"&&stage[i+1]==="'"){i++;continue}
+        quoted=null;
+      }
+      continue;
+    }
+    if(ch==="'"||ch==='"'){quoted=ch;continue}
+    if(ch==='('||ch===')'||ch==='&')return false;
+  }
+  return quoted===null;
+}
 function isTestCommand(command) {
   if(typeof command!=='string'||command.length>4000)return false;
   // PowerShell single/double-quoted regex patterns may contain literal pipes.
@@ -76,12 +94,14 @@ function isTestCommand(command) {
   if(parts.length<1||parts.length>3)return false;
   const first=parts[0].replace(/\s+2>&1\s*$/,'').trim();
   // Other redirection operators are unverified potential side effects.
-  if(/[<>]/.test(first)||/&&/.test(first))return false;
+  // PowerShell expressions and backticks can execute arbitrary extra commands.
+  // Reject non-literal test arguments rather than guessing that they are read-only.
+  if(/[<>$()`]/.test(first)||/&&/.test(first))return false;
   if(!/^(?:&\s*)?(?:(?:node|node\.exe)\s+--test(?:\s|$)|(?:npm|npm\.cmd)\s+(?:run\s+)?test(?:\s|$))/i.test(first))return false;
   for(const stage of parts.slice(1)){
     // Only allow known read-only output filters. Compound test+write
     // pipelines and arbitrary code in script blocks remain unsupported.
-    if(!/^(?:Select-String\b|Select-Object\s+-(?:First|Last|Skip|Unique|Property|ExpandProperty)\b|Out-String\b)/i.test(stage)||/[<>]/.test(stage))return false;
+    if(!/^(?:Select-String\b|Select-Object\s+-(?:First|Last|Skip|Unique|Property|ExpandProperty)\b|Out-String\b)/i.test(stage)||!safeOutputFilter(stage))return false;
   }
   return true;
 }
@@ -197,6 +217,14 @@ function result(events) {
     }
     if(tests.length>60||edits.length>60)return safeError('TOO_MANY_RELEVANT_EVENTS');
   }
+  // A result without a recorded call has unknown effect and cannot be
+  // presumed read-only. A later recognized test may supersede its uncertainty.
+  for(const [id,observed] of resultById){
+    if(!callById.has(id)){
+      unpairedRelevant++;
+      unverifiedOperations.push({at:observed.timestamp});
+    }
+  }
   const info={
     recognizedClaims:claims.length,
     passingTests:tests.filter(t=>t.pass>0&&t.fail===0&&t.exitCode===0).length,
@@ -213,8 +241,25 @@ function result(events) {
   // test or successful edit can supersede earlier uncertainty, but any
   // uncertainty at/after the latest known evidence blocks CURRENT/STALE.
   // Mismatched count is not proof that the observed test run supports the claim.
-  const candidate=tests.filter(t=>iso(t.at)<=claim.ms).sort((a,b)=>iso(b.at)-iso(a.at))[0];
+  // Only a completed test strictly before the claim can support it.
+  // Later test results are chronology, not retroactive confirmation.
+  const candidate=tests.filter(t=>iso(t.at)<claim.ms).sort((a,b)=>iso(b.at)-iso(a.at))[0];
   if(candidate&&candidate.pass!==claim.count)return safeError('CLAIM_TEST_COUNT_MISMATCH',info);
+  const afterClaim=tests.filter(t=>iso(t.at)>=claim.ms);
+  if(afterClaim.length){
+    const lastAfterClaim=Math.max(...afterClaim.map(t=>iso(t.at)));
+    const lastEdit=Math.max(-Infinity,...edits.map(e=>iso(e.at)));
+    const allPassed=afterClaim.every(t=>t.pass>0&&t.fail===0&&t.exitCode===0);
+    // Retain STALE only when a proven preclaim pass is followed by
+    // successful postclaim tests, then a successful edit after ALL tests.
+    // Equal timestamps, failures, missing preclaim tests and newer tests
+    // after the last edit remain insufficient.
+    if(afterClaim.some(t=>iso(t.at)===claim.ms)||
+       !candidate||candidate.pass<=0||candidate.fail!==0||candidate.exitCode!==0||
+       !allPassed||lastEdit<=lastAfterClaim){
+      return safeError('POST_CLAIM_TEST_EVIDENCE_UNRESOLVED',info);
+    }
+  }
   // Unverified operations after the newest known successful test/edit
   // might have changed source or produced another test. Do not elevate
   // the recorded file to CURRENT in the absence of tool coverage.
