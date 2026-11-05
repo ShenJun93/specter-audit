@@ -105,6 +105,11 @@ function isTestCommand(command) {
   }
   return true;
 }
+// An agent can contradict its own apparently affirmative first sentence.
+// Match retractions about the test/claim only, not unrelated prose about code.
+function contradictsClaim(statement) {
+ return /\b(?:this|that|the|my|above|earlier|previous)\s+(?:(?:above|earlier|previous|original|test|passing|pass|result)\s+){0,3}(?:claim|statement|assertion|result|results)\s+(?:is|was|are|were|has\s+been|have\s+been)\s+(?:wrong|false|incorrect|inaccurate|invalid|untrue|mistaken|retracted)\b|\b(?:i|we)\s+(?:retract|withdraw|disavow)\s+(?:(?:this|that|the|my|earlier|previous)\s+)?(?:test\s+|passing\s+)?(?:claim|statement|assertion|result|results)\b|\b(?:this|that)\s+was\s+(?:a\s+)?(?:mistaken|false|wrong|incorrect)\s+(?:claim|statement|assertion|result)\b/i.test(statement);
+}
 function safeClaim(content) {
   if(typeof content!=='string')return null;
   // Only a short, explicit affirmative result claim qualifies.
@@ -115,7 +120,7 @@ function safeClaim(content) {
   const match=content.match(/^\s*(?:all\s+)?(\d{1,5})\s+tests?\s+pass(?:ed)?(?:\s*,\s*0\s+fail(?:ures?)?)?(?:\s*\([^()\r\n]{1,120}\))?\s*[.!](?:\s|$)/i);
   if(!match)return null;
   const suffix=content.slice(match[0].length);
-  if(/\b(?:but|however|actually|false|failed|didn.t|not|hypothetical|conditional)\b/i.test(suffix))return null;
+  if(/\b(?:but|however|actually|false|failed|didn.t|not|hypothetical|conditional)\b/i.test(suffix)||contradictsClaim(suffix))return null;
   const count=Number(match[1]);
   return count>0&&Number.isSafeInteger(count)?count:null;
 }
@@ -127,8 +132,9 @@ function isTestRetraction(content) {
 }
 function result(events) {
   const callById=new Map(),resultById=new Map();
+  const callPositions=new Map(),resultPositions=new Map();
   let lastTime=-Infinity,firstTime=Infinity,validSessionIds=new Set();
-  for(const e of events) {
+  for(const [position,e] of events.entries()) {
     if(!e||typeof e!=='object'||Array.isArray(e))return safeError('INVALID_EVENT');
     const ms=iso(e.timestamp);
     if(ms===null)return safeError('INVALID_EVENT_TIMESTAMP');
@@ -136,13 +142,21 @@ function result(events) {
     lastTime=Math.max(lastTime,ms);
     const sessionId=typeof e.sessionId==='string'?e.sessionId:null;
     if(sessionId&&sessionId.length<150)validSessionIds.add(sessionId);
-    const p=e.payload??{};
+    const p=e.payload;
     if(!p||typeof p!=='object'||Array.isArray(p))return safeError('INVALID_PAYLOAD');
     if(p.type!=='tool_call'&&p.type!=='tool_result')continue;
     if(typeof p.toolCallId!=='string'||p.toolCallId.length<1||p.toolCallId.length>220)return safeError('INVALID_TOOL_ID');
     const map=p.type==='tool_call'?callById:resultById;
     if(map.has(p.toolCallId))return safeError('DUPLICATE_TOOL_EVENT');
     map.set(p.toolCallId,e);
+    (p.type==='tool_call'?callPositions:resultPositions).set(p.toolCallId,position);
+  }
+  // Timestamps alone are insufficient. A paired tool result serialized before
+  // its call cannot establish chronology; orphan results remain uncertain.
+  for(const [id,resultPosition] of resultPositions){
+    if(callPositions.has(id)&&resultPosition<callPositions.get(id)){
+      return safeError('RESULT_PRECEDES_TOOL_CALL_IN_FILE');
+    }
   }
   if(validSessionIds.size>1)return safeError('MULTI_SESSION_FILE');
   if(events.length===0)return safeError('EMPTY_SESSION');
@@ -152,7 +166,7 @@ function result(events) {
     if(p.type!=='assistant'||p.operationType!=='Say')continue;
     const n=safeClaim(p.content);
     if(n!==null)claims.push({at:e.timestamp,ms:iso(e.timestamp),count:n});
-    else if(isTestRetraction(p.content))retractions.push(iso(e.timestamp));
+    else if(isTestRetraction(p.content)||contradictsClaim(typeof p.content==='string'?p.content:''))retractions.push(iso(e.timestamp));
   }
   if(!claims.length)return safeError('NO_RECORDED_AGENT_TEST_CLAIM',{
     sessionEvents:events.length,

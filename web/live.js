@@ -42,6 +42,7 @@ const errors={
  INVALID_CHRONOLOGY:'Event timestamps do not form a supported chronology.',
  TOO_MANY_RELEVANT_EVENTS:'Too many test or edit tool events to analyze safely.',
  RESULT_BEFORE_TOOL:'A result appears before its originating tool call.',
+ RESULT_PRECEDES_TOOL_CALL_IN_FILE:'A tool result appears before its matching call in the saved file; chronology cannot be verified.',
  INCOMPLETE_RELEVANT_TOOL_EVIDENCE:'Some test or edit tool results are unmatched or unsupported.',
  CLAIM_TEST_COUNT_MISMATCH:'The agent claim count does not match the latest observed test report.',
  POST_CLAIM_TEST_EVIDENCE_UNRESOLVED:'A later test cannot confirm the earlier claim. The available evidence does not establish a current result.',
