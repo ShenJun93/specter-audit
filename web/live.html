@@ -40,6 +40,11 @@
               <input id="session-file" type="file" accept=".jsonl,.txt,text/plain,application/x-ndjson" aria-describedby="file-hint">
               <small id="file-hint">Up to 8 MiB · local Kiro CLI JSONL · no credentials needed</small>
             </div>
+            <details class="live-howto">
+              <summary>Where do I find a Kiro messages.jsonl file?</summary>
+              <p>Use your file manager to locate a saved Kiro CLI session's <code>messages.jsonl</code> on this computer. Specter does not scan folders or choose a session for you.</p>
+              <p>Start with the three synthetic cases if you do not have a saved session. Use a private browser environment when inspecting sensitive logs; do not include raw sessions in public recordings.</p>
+            </details>
             <p id="file-selected" class="live-selected" aria-live="polite">No local file selected</p>
             <div class="live-actions">
               <button class="live-primary" id="analyze-file" type="submit" disabled>Investigate my session <span aria-hidden="true">→</span></button>
@@ -80,6 +85,8 @@
             <section class="live-next-step" aria-labelledby="live-next-step-title">
               <h3 id="live-next-step-title">Next evidence step</h3>
               <p id="live-next-step-body">Only the selected saved session can be assessed.</p>
+              <button id="copy-next-step" class="live-secondary" type="button">Copy next step</button>
+              <span id="next-copy-status" class="live-copy-status" role="status" aria-live="polite"></span>
             </section>
             <div class="live-timeline-head"><h3>Observed chronology</h3><span>NO SOURCE CONTENT</span></div>
             <ol id="live-timeline" class="live-timeline"></ol>

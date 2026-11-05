@@ -33,7 +33,7 @@ implemented by ChatGPT/WAG; a separate Kiro implementation attempt timed
 out and did not create this module. Do not attribute M7 parser authorship
 to Kiro. See `docs/competition/M7_LOCAL_RELEASE_REVIEW_20261105.md`.
 
-**Release gate (2026-11-05):** M7 is committed as `937da7876bf7766e85e77b94e540843e11151294` in [draft PR #4](https://github.com/ShenJun93/specter-audit/pull/4), stacked on still-open PR #3. Exact-SHA GitHub Actions completed successfully with 296 passing Node tests. The no-Toolbar Vercel Preview and its Chrome acceptance were verified only for the **previous** SHA `0e5a22b`; a current-SHA Preview and production release remain **unverified/unreleased**. Never describe the prior Preview as validating the new Judge Journey.
+**M8 release gate (2026-11-05):** [Draft PR #4](https://github.com/ShenJun93/specter-audit/pull/4) at SHA `73068263f5c50c5a1dcb8c50d2747d3ab61f2c20` has a [matching READY Vercel Preview](https://specter-audit-96h1fqej1-nvhoa1691993-6852s-projects.vercel.app/live.html). Browser QA checked six desktop/mobile synthetic verdict flows, asset bytes against source and absence of unexpected click-triggered requests. **Production remains unreleased for M8.** The separate M8.1 UX branch improves discoverability, file-selection help and actionable next-step copying; it requires its own CI/Preview. M9 Hook remains disabled and unverified on actual Kiro V3. See `docs/competition/M8_JUDGE_ENTRY_RELEASE_GATE_20261105.md`.
 
 ## Alibi Room v2 — four evidence exhibits (M6F local candidate)
 

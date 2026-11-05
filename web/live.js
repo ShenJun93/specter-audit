@@ -68,6 +68,13 @@ function status(kind) {
  $('live-verdict-reason').textContent=text.reason;
  $('live-next-step-body').textContent=safeNextAction[kind]??safeNextAction.INSUFFICIENT_SESSION_EVIDENCE;
  $('live-verdict-label').parentElement.className='live-verdict '+text.css;
+ $('next-copy-status').textContent='';
+ $('copy-next-step').onclick=async()=>{
+  // Fixed instructions only; never copy private logs, commands or paths.
+  const instruction=safeNextAction[kind]??safeNextAction.INSUFFICIENT_SESSION_EVIDENCE;
+  try{await navigator.clipboard.writeText(instruction);$('next-copy-status').textContent='Next step copied.'}
+  catch{$('next-copy-status').textContent='Clipboard unavailable. No command was run.'}
+ };
 }
 function showTimeline(parsed,verdict,lastPassMs) {
  const list=$('live-timeline');
