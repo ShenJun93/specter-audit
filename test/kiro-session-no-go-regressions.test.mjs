@@ -80,3 +80,53 @@ test('P1: direct exported audit API cannot report session CURRENT after a postcl
  assert.equal(r.independentAttestation,false);
  assert.equal(r.semanticCorrectnessVerified,false);
 });
+test('P0: plain-English pronoun-only withdrawal of a PASS claim cannot establish CURRENT',()=>{
+ for(const claim of [
+  'All 8 tests pass, 0 fail. I retract this.',
+  'All 8 tests pass, 0 fail. I withdraw that.',
+  'All 8 tests pass, 0 fail. That was a lie.',
+  'All 8 tests pass, 0 fail. Please disregard my earlier statement.',
+  'All 8 tests pass, 0 fail. I take that back.'
+ ]){
+  const r=status(currentFixture(claim));
+  assert.equal(r.parsed.input,null,'FAIL CLOSED: '+claim);
+  assert.equal(r.verdict,'INSUFFICIENT_SESSION_EVIDENCE');
+ }
+});
+test('P0: a separate assistant withdrawal after PASS claim blocks CURRENT',()=>{
+ const rows=currentFixture();
+ rows.splice(5,0,e(5,{type:'assistant',operationType:'Say',content:'I retract this.'}));
+ rows[6].timestamp=t(6);
+ const r=status(rows);
+ assert.equal(r.parsed.input,null);
+ assert.equal(r.parsed.errorCode,'LATER_AGENT_TEST_CLAIM_RETRACTED');
+});
+test('P0: a later serialized source edit cannot be backdated before test to fake CURRENT',()=>{
+ const rows=[
+  e(0,{type:'tool_call',toolCallId:'e1',toolName:'str_replace',filePath:'src/sample.mjs'}),
+  e(1,{type:'tool_result',toolCallId:'e1',success:true}),
+  e(3,{type:'tool_call',toolCallId:'test1',toolName:'execute_pwsh',args:{command:'node --test'}}),
+  e(4,{type:'tool_result',toolCallId:'test1',success:true,content:'pass 8\nfail 0\nExit Code: 0'}),
+  e(1,{type:'tool_call',toolCallId:'e2',toolName:'str_replace',filePath:'src/sample.mjs'}),
+  e(2,{type:'tool_result',toolCallId:'e2',success:true}),
+  e(6,{type:'assistant',operationType:'Say',content:'All 8 tests pass, 0 fail.'}),
+  e(7,{type:'turn_end'})
+ ];
+ const r=status(rows);
+ assert.equal(r.parsed.input,null);
+ assert.equal(r.parsed.errorCode,'NON_MONOTONIC_TOOL_CHRONOLOGY');
+});
+test('P0: agent claim serialized before its supporting test result cannot establish CURRENT',()=>{
+ const rows=currentFixture();
+ [rows[3],rows[4]]=[rows[4],rows[3]]; // claim appears before test result; timestamps stay valid.
+ const r=status(rows);
+ assert.equal(r.parsed.input,null);
+ assert.equal(r.parsed.errorCode,'CLAIM_PRECEDES_TEST_RESULT_IN_FILE');
+});
+test('legitimate unrelated event timestamp skew does not discard Kiro tool chronology',()=>{
+ const rows=currentFixture();
+ rows.splice(2,0,e(0,{type:'turn_end'})); // unrelated non-tool event can arrive late.
+ const r=status(rows);
+ assert.equal(r.parsed.errorCode,null);
+ assert.equal(r.verdict,'CURRENT_SELF_RECORDED_TEST');
+});

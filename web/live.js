@@ -43,6 +43,8 @@ const errors={
  TOO_MANY_RELEVANT_EVENTS:'Too many test or edit tool events to analyze safely.',
  RESULT_BEFORE_TOOL:'A result appears before its originating tool call.',
  RESULT_PRECEDES_TOOL_CALL_IN_FILE:'A tool result appears before its matching call in the saved file; chronology cannot be verified.',
+ NON_MONOTONIC_TOOL_CHRONOLOGY:'Tool timestamps contradict their recorded order. This file cannot establish test freshness.',
+ CLAIM_PRECEDES_TEST_RESULT_IN_FILE:'The agent claimed PASS before its supporting tool result appeared in the saved session.',
  INCOMPLETE_RELEVANT_TOOL_EVIDENCE:'Some test or edit tool results are unmatched or unsupported.',
  CLAIM_TEST_COUNT_MISMATCH:'The agent claim count does not match the latest observed test report.',
  POST_CLAIM_TEST_EVIDENCE_UNRESOLVED:'A later test cannot confirm the earlier claim. The available evidence does not establish a current result.',

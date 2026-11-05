@@ -108,7 +108,7 @@ function isTestCommand(command) {
 // An agent can contradict its own apparently affirmative first sentence.
 // Match retractions about the test/claim only, not unrelated prose about code.
 function contradictsClaim(statement) {
- return /\b(?:this|that|the|my|above|earlier|previous)\s+(?:(?:above|earlier|previous|original|test|passing|pass|result)\s+){0,3}(?:claim|statement|assertion|result|results)\s+(?:is|was|are|were|has\s+been|have\s+been)\s+(?:wrong|false|incorrect|inaccurate|invalid|untrue|mistaken|retracted)\b|\b(?:i|we)\s+(?:retract|withdraw|disavow)\s+(?:(?:this|that|the|my|earlier|previous)\s+)?(?:test\s+|passing\s+)?(?:claim|statement|assertion|result|results)\b|\b(?:this|that)\s+was\s+(?:a\s+)?(?:mistaken|false|wrong|incorrect)\s+(?:claim|statement|assertion|result)\b/i.test(statement);
+ return /\b(?:this|that|the|my|above|earlier|previous)\s+(?:(?:above|earlier|previous|original|test|passing|pass|result)\s+){0,3}(?:claim|statement|assertion|result|results)\s+(?:is|was|are|were|has\s+been|have\s+been)\s+(?:wrong|false|incorrect|inaccurate|invalid|untrue|mistaken|retracted)\b|\b(?:i|we)\s+(?:retract|withdraw|disavow)\s+(?:(?:this|that|the|my|earlier|previous)\s+)?(?:test\s+|passing\s+)?(?:claim|statement|assertion|result|results)\b|\b(?:this|that)\s+was\s+(?:a\s+)?(?:mistaken|false|wrong|incorrect)\s+(?:claim|statement|assertion|result)\b/i.test(statement)||/\b(?:i|we)\s+(?:(?:retract|withdraw|disavow)\s+(?:this|that|it)|take\s+(?:this|that|it)\s+back)\b|\b(?:that|this|it)\s+was\s+(?:a\s+)?(?:lie|fabrication|falsehood)\b|\b(?:please\s+)?(?:ignore|disregard|discard)\s+(?:(?:my|the|our|that|this)\s+)?(?:(?:earlier|previous|preceding|above)\s+)?(?:claim|statement|assertion|test\s+results?)\b/i.test(statement);
 }
 function safeClaim(content) {
   if(typeof content!=='string')return null;
@@ -134,6 +134,7 @@ function result(events) {
   const callById=new Map(),resultById=new Map();
   const callPositions=new Map(),resultPositions=new Map();
   let lastTime=-Infinity,firstTime=Infinity,validSessionIds=new Set();
+  let lastToolEventMs=-Infinity,nonMonotonicToolOrder=false;
   for(const [position,e] of events.entries()) {
     if(!e||typeof e!=='object'||Array.isArray(e))return safeError('INVALID_EVENT');
     const ms=iso(e.timestamp);
@@ -145,6 +146,11 @@ function result(events) {
     const p=e.payload;
     if(!p||typeof p!=='object'||Array.isArray(p))return safeError('INVALID_PAYLOAD');
     if(p.type!=='tool_call'&&p.type!=='tool_result')continue;
+    // JSONL event order must not contradict timestamps of tool operations.
+    // Kiro may serialize unrelated status events out of order; only tool
+    // event chronology is a safety-critical ordering source.
+    if(ms<lastToolEventMs)nonMonotonicToolOrder=true;
+    lastToolEventMs=ms;
     if(typeof p.toolCallId!=='string'||p.toolCallId.length<1||p.toolCallId.length>220)return safeError('INVALID_TOOL_ID');
     const map=p.type==='tool_call'?callById:resultById;
     if(map.has(p.toolCallId))return safeError('DUPLICATE_TOOL_EVENT');
@@ -158,14 +164,15 @@ function result(events) {
       return safeError('RESULT_PRECEDES_TOOL_CALL_IN_FILE');
     }
   }
+  if(nonMonotonicToolOrder)return safeError('NON_MONOTONIC_TOOL_CHRONOLOGY');
   if(validSessionIds.size>1)return safeError('MULTI_SESSION_FILE');
   if(events.length===0)return safeError('EMPTY_SESSION');
   const claims=[],retractions=[];
-  for(const e of events) {
+  for(const [position,e] of events.entries()) {
     const p=e.payload;
     if(p.type!=='assistant'||p.operationType!=='Say')continue;
     const n=safeClaim(p.content);
-    if(n!==null)claims.push({at:e.timestamp,ms:iso(e.timestamp),count:n});
+    if(n!==null)claims.push({at:e.timestamp,ms:iso(e.timestamp),count:n,position});
     else if(isTestRetraction(p.content)||contradictsClaim(typeof p.content==='string'?p.content:''))retractions.push(iso(e.timestamp));
   }
   if(!claims.length)return safeError('NO_RECORDED_AGENT_TEST_CLAIM',{
@@ -177,6 +184,16 @@ function result(events) {
   claims.sort((a,b)=>b.ms-a.ms);
   if(claims.length>1&&claims[0].ms===claims[1].ms)return safeError('AMBIGUOUS_AGENT_CLAIMS');
   const claim=claims[0];
+  // A tool result physically recorded after the agent's claim cannot
+  // establish a prior observed PASS, even when its timestamp is backdated.
+  for(const [id,call] of callById){
+    const observed=resultById.get(id);
+    if(call.payload.toolName==='execute_pwsh'&&observed&&
+      isTestCommand(call.payload.args?.command)&&
+      iso(observed.timestamp)<claim.ms&&resultPositions.get(id)>claim.position){
+      return safeError('CLAIM_PRECEDES_TEST_RESULT_IN_FILE',{recognizedClaims:claims.length});
+    }
+  }
   // A correction at/after the chosen claim leaves the claim's truth unresolved.
   // A newer affirmative claim can supersede an earlier correction.
   if(retractions.some(ms=>ms>=claim.ms))return safeError('LATER_AGENT_TEST_CLAIM_RETRACTED',{recognizedClaims:claims.length});
