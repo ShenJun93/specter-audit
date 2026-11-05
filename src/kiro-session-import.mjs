@@ -154,7 +154,12 @@ function result(events) {
     if(n!==null)claims.push({at:e.timestamp,ms:iso(e.timestamp),count:n});
     else if(isTestRetraction(p.content))retractions.push(iso(e.timestamp));
   }
-  if(!claims.length)return safeError('NO_RECORDED_AGENT_TEST_CLAIM');
+  if(!claims.length)return safeError('NO_RECORDED_AGENT_TEST_CLAIM',{
+    sessionEvents:events.length,
+    observedToolCalls:callById.size,
+    observedToolResults:resultById.size,
+    scope:'ONE_SAVED_LOCAL_KIRO_SESSION_ONLY'
+  });
   claims.sort((a,b)=>b.ms-a.ms);
   if(claims.length>1&&claims[0].ms===claims[1].ms)return safeError('AMBIGUOUS_AGENT_CLAIMS');
   const claim=claims[0];

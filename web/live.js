@@ -92,6 +92,22 @@ function showTimeline(parsed,verdict,lastPassMs) {
 }
 function analyzeText(raw,origin) {
  const parsed=parseKiroSession(raw);
+ $('live-unverified').hidden=true;
+ if(!parsed.input&&parsed.errorCode==='NO_RECORDED_AGENT_TEST_CLAIM'){
+  const summary=parsed.summary??{};
+  const counts=['sessionEvents','observedToolCalls','observedToolResults'];
+  if(counts.every(k=>Number.isSafeInteger(summary[k])&&summary[k]>=0&&summary[k]<=4000)){
+   clearError();
+   $('result-provenance').textContent=origin==='synthetic'?'SYNTHETIC EXAMPLE':'YOUR LOCAL KIRO SESSION';
+   $('live-empty').hidden=true;
+   $('live-report').hidden=true;
+   $('live-unverified').hidden=false;
+   $('metric-unverified-events').textContent=String(summary.sessionEvents);
+   $('metric-unverified-calls').textContent=String(summary.observedToolCalls);
+   $('metric-unverified-results').textContent=String(summary.observedToolResults);
+   return;
+  }
+ }
  if(!parsed.input) {
   showError(errors[parsed.errorCode]??'This session is unsupported or incomplete.');
   $('live-empty').hidden=false;

@@ -174,6 +174,49 @@ a non-overlapping M5A stale case remains independently verified.
 This is ChatGPT/WAG-authored parser hardening, not a new Kiro-authored
 contribution. The raw M5A log remains outside Git.
 
+## 2026-11-05 continuation — more authentic Kiro sessions and insufficient UX
+
+A read-only, strictly workspace-scoped aggregate scan inspected **15 saved
+Kiro CLI messages.jsonl files** under the same Specter Audit workspace.
+It returned **one STALE verdict**, **13 files without a supported explicit
+passing-test claim**, and **one file with incomplete tool evidence**.
+There was **no verified CURRENT** result among these files. This is
+not a ground-truth accuracy rate, independent validation, or evidence of
+support for additional Kiro versions. Raw commands, prompts, paths, IDs and
+session contents were not included in the audit output.
+
+The original missing-claim behavior showed a bare error with no useful
+session metrics. The new bounded `INSUFFICIENT SESSION EVIDENCE` panel shows
+only the count of session events, tool calls and tool results. This does
+not assert that no tests were run, or imply a passing result. Malformed
+JSONL still fails hard. A new parser regression first failed 2/3 before
+remediation and passed 3/3 afterward; a Chrome acceptance using only
+generated **synthetic** JSONL confirmed no claim panel, 390px layout,
+no network after file selection, no console errors, file handle cleared,
+and successful return to the existing STALE synthetic sample.
+The final local suite is **296 PASS, 0 FAIL**; `npm run check` and
+`git diff --check` both pass. All updated browser ESM files match source.
+
+The attempted Chrome pass using a **second private real Kiro log** was
+blocked by tool safety checks and was not retried or treated as PASS.
+The additional real logs were evaluated only with the local read-only
+safe-metadata scan; no independent human reviewer inspected them.
+
+### Exact-SHA hosted acceptance (prior committed head)
+
+- GitHub draft [PR #4](https://github.com/ShenJun93/specter-audit/pull/4)
+  is stacked on still-open PR #3, base `feat/agent-alibi-v2`.
+- Last pushed SHA `0e5a22b29ef72e2d60ca586f7caeb21edcf5ea5a` had
+  GitHub Actions run 41935545214 SUCCESS and a Vercel Preview READY.
+- Vercel project-level `enablePreviewFeedback:false` removed the
+  formerly injected `vercel.live` script from a new exact-SHA Preview.
+  [No-Toolbar Preview](https://specter-audit-q49twvfcp-nvhoa1691993-6852s-projects.vercel.app/live.html)
+  passed source-byte checks and Chrome desktop/mobile synthetic file-input QA.
+- This **new no-claim UI revision is not part of that pushed SHA or
+  Preview**. Run exact-new-SHA CI and Preview acceptance after the next push.
+- The hosted QA only used non-private synthetic JSONL. No broad security
+  or privacy attestation is claimed.
+
 ## Remaining release gates
 
 - [ ] Independent review of JSONL parsing, local session semantics and
@@ -183,10 +226,12 @@ contribution. The raw M5A log remains outside Git.
 - [x] Publish a transparent M1/M5A compatibility matrix. M1 remains
   unsupported/insufficient; expand coverage only with independently validated fixtures.
 - [x] Isolate M7 in its own local feature branch and initial commit.
-- [ ] Push that branch and open a separate PR after checking WAG policy;
-  never bypass `KILL_SWITCH_ENGAGED` or rewrite PR #3.
-- [ ] GitHub Actions on exact new head SHA, clean Vercel Preview and
-  independent real Chrome desktop/mobile acceptance against that SHA.
+- [x] Push M7 branch and create separate draft PR #4 (stacked on PR #3).
+- [ ] Push the new no-claim UX commit and re-run exact-SHA CI and Preview QA;
+  WAG GIT_PUSH remains policy-denied, so the owner must perform push.
+- [x] GitHub Actions and no-Toolbar Vercel Preview Chrome QA on the
+  previous M7 SHA `0e5a22b` (not the upcoming UX commit).
+- [ ] Exact-SHA CI, Preview and Chrome QA on the next committed UX revision.
 - [ ] Owner-authorized merge + production release with rollback plan.
 - [ ] Regenerate judge video with actual M7 file import (no raw data
   disclosed), update Devpost truthfully, and confirm final submission.

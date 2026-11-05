@@ -20,6 +20,18 @@ test('local HTML is a working file-driven user flow with explicit trust boundari
  assert.match(html,/BROWSER-ONLY · NO UPLOAD/);
  assert.match(html,/Raw prompts, commands and private paths are never rendered/);
 });
+test('no supported agent claim displays bounded event counts without a passing verdict',async()=>{
+ const [html,js]=await Promise.all([load('web/live.html'),load('web/live.js')]);
+ const page=html.toString('utf8'),controller=js.toString('utf8');
+ for(const id of ['live-unverified','metric-unverified-events','metric-unverified-calls','metric-unverified-results']){
+  assert.match(page,new RegExp('id="'+id+'"'));
+ }
+ assert.match(page,/A missing supported claim is not evidence that no tests ran/);
+ assert.match(controller,/parsed\.errorCode==='NO_RECORDED_AGENT_TEST_CLAIM'/);
+ assert.match(controller,/Number\.isSafeInteger\(summary\[k\]\)/);
+ assert.match(controller,/\$\('live-report'\)\.hidden=true/);
+ assert.match(controller,/\$\('live-unverified'\)\.hidden=true/);
+});
 test('browser controller does not fetch, send or persist selected session data',async()=>{
  const src=(await load('web/live.js')).toString('utf8');
  assert.doesNotMatch(src,/fetch\s*\(|XMLHttpRequest|sendBeacon|localStorage|sessionStorage|indexedDB|WebSocket/);

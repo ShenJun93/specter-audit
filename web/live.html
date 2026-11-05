@@ -55,6 +55,16 @@
           <div class="live-panel-header"><span class="tiny-label">02 / THE SPECTER'S FINDING</span><span id="result-provenance" class="live-count">AWAITING EVIDENCE</span></div>
           <h2 id="results-heading">The investigation report</h2>
           <div id="live-empty" class="live-empty"><span aria-hidden="true">◇</span><strong>No evidence inspected yet</strong><p>Your local source file never leaves this page. You can try a synthetic example first.</p></div>
+          <div id="live-unverified" hidden aria-live="polite">
+            <div class="live-verdict unknown"><span>INSUFFICIENT SESSION EVIDENCE</span><h3>No supported test-passed claim was found.</h3><p>This session contains recorded activity, but it does not contain a test-passed assertion that Specter can verify. Tool event counts are not proof that tests passed or failed.</p></div>
+            <div class="live-metrics">
+              <div><span>EVENTS IN FILE</span><strong id="metric-unverified-events">—</strong></div>
+              <div><span>TOOL CALLS</span><strong id="metric-unverified-calls">—</strong></div>
+              <div><span>TOOL RESULTS</span><strong id="metric-unverified-results">—</strong></div>
+              <div><span>RECOGNIZED CLAIMS</span><strong>0</strong></div>
+            </div>
+            <p class="live-caveat">Only bounded event counts are shown. No source paths, prompts or tool commands are displayed. A missing supported claim is not evidence that no tests ran.</p>
+          </div>
           <div id="live-report" hidden aria-live="polite">
             <div class="live-verdict"><span id="live-verdict-label">—</span><h3 id="live-verdict-headline">—</h3><p id="live-verdict-reason">—</p></div>
             <div class="live-metrics">
