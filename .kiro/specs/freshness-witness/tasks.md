@@ -1,4 +1,12 @@
 # M9 Tasks — Genuine Kiro Implementation
+
+> **2026-11-05 update:** Kiro CLI reached its monthly usage limit before
+> authoring M9 source. ChatGPT/WAG implemented a local reducer, CLI wrapper,
+> and disabled Hook, with 325/325 full Node tests PASS. This does **not**
+> complete Kiro-authored provenance or real PostToolUse acceptance.
+> See docs/competition/M9_LOCAL_IMPLEMENTATION_REVIEW_20261105.md.
+> The genuine Kiro-owned tasks below remain open.
+
 - [ ] 0. Inspect current repo, Kiro CLI 3.0.0 Hook docs and exact runtime event shape using a fresh Kiro session. Do not read private .kiro/sessions logs or existing secrets.
 - [ ] 1. Implement src/freshness-witness.mjs with the three required exported functions and a bounded, immutable pure state reducer.
 - [ ] 2. Implement scripts/kiro-freshness-witness-hook.mjs receiving bounded stdin, parsing known event fields conservatively and maintaining metadata-only per-session state with safe locking/fail-closed behavior.
