@@ -43,8 +43,11 @@
             <p id="file-selected" class="live-selected" aria-live="polite">No local file selected</p>
             <div class="live-actions">
               <button class="live-primary" id="analyze-file" type="submit" disabled>Investigate my session <span aria-hidden="true">→</span></button>
-              <button class="live-secondary" id="try-sample" type="button">Try synthetic example</button>
+              <button class="live-secondary" id="try-sample" type="button">Try stale example</button>
+              <button class="live-secondary" id="try-current" type="button">Try current example</button>
+              <button class="live-secondary" id="try-insufficient" type="button">Try insufficient example</button>
             </div>
+            <p class="live-demo-guide">Three synthetic cases. Each runs through the same local evidence parser as an imported Kiro session. None is a real test attestation.</p>
           </form>
           <p id="live-error" class="live-error" role="alert" hidden></p>
           <div class="live-privacy" role="note">
@@ -64,6 +67,7 @@
               <div><span>RECOGNIZED CLAIMS</span><strong>0</strong></div>
             </div>
             <p class="live-caveat">Only bounded event counts are shown. No source paths, prompts or tool commands are displayed. A missing supported claim is not evidence that no tests ran.</p>
+            <p class="live-next-hint">Next step: capture a complete recorded test tool result and a matching explicit claim in a new session. Do not fabricate a claim to force a verdict.</p>
           </div>
           <div id="live-report" hidden aria-live="polite">
             <div class="live-verdict"><span id="live-verdict-label">—</span><h3 id="live-verdict-headline">—</h3><p id="live-verdict-reason">—</p></div>
@@ -73,6 +77,10 @@
               <div><span>REDACTED PATHS</span><strong id="metric-redacted">0</strong></div>
               <div><span>AGENT CLAIMS</span><strong id="metric-claims">0</strong></div>
             </div>
+            <section class="live-next-step" aria-labelledby="live-next-step-title">
+              <h3 id="live-next-step-title">Next evidence step</h3>
+              <p id="live-next-step-body">Only the selected saved session can be assessed.</p>
+            </section>
             <div class="live-timeline-head"><h3>Observed chronology</h3><span>NO SOURCE CONTENT</span></div>
             <ol id="live-timeline" class="live-timeline"></ol>
             <p class="live-caveat">Only the selected saved session was examined. Other tests or edits may exist elsewhere. The evidence is self-recorded, not an independent attestation.</p>

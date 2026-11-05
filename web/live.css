@@ -44,3 +44,11 @@
 .live-metrics small{display:block;font-size:10px;color:#879eb1;margin-top:2px}
 .live-timeline li[data-phase=after-test] strong{color:#f7cf92}
 .live-flag{display:inline-block;margin-top:5px;padding:2px 6px;border-radius:4px;border:1px solid #997348;color:#eecb91;background:#33291d;font-size:9px;font-weight:900;letter-spacing:.8px}
+
+/* M8 judge journey — accessible, self-contained synthetic examples and next-step guidance. */
+.live-demo-guide{font-size:11px;color:#9fc7d8;line-height:1.65;max-width:450px;margin:0 0 18px}
+.live-next-step{margin:18px 0 26px;padding:16px 18px;border-left:3px solid #85c9d8;border-radius:6px;background:#132a36}
+.live-next-step h3{font-size:15px;margin:0 0 9px;color:#e8f4ff}
+.live-next-step p{font-size:12px;color:#c7d9e5;line-height:1.65;margin:0}
+.live-next-hint{font-size:12px;line-height:1.65;padding:14px 16px;color:#c7d9e5;background:#182b3c;border-left:3px solid #8294b6}
+.live-actions button:focus-visible{outline:3px solid #8bd6df;outline-offset:3px}

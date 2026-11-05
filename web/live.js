@@ -55,12 +55,18 @@ function showError(text) {
  label.hidden=false;
 }
 function clearError() {$('live-error').hidden=true;$('live-error').textContent=''}
+const safeNextAction=Object.freeze({
+ STALE_LOCAL_TEST_EVIDENCE:'Run the relevant tests after the final source edit. Re-import a complete saved Kiro session to check whether a newer recorded result exists. Test freshness is not code correctness.',
+ CURRENT_SELF_RECORDED_TEST:'Review correctness separately and verify CI for the exact commit SHA. A self-recorded CURRENT result is not release approval.',
+ INSUFFICIENT_SESSION_EVIDENCE:'Capture complete tool results and an explicit, genuine agent test claim in a new session. Never infer PASS from missing evidence.'
+});
 function status(kind) {
  const text=verdictNames[kind]??verdictNames.INSUFFICIENT_SESSION_EVIDENCE;
  const el=$('live-verdict-label');
  el.textContent=text.label;
  $('live-verdict-headline').textContent=text.headline;
  $('live-verdict-reason').textContent=text.reason;
+ $('live-next-step-body').textContent=safeNextAction[kind]??safeNextAction.INSUFFICIENT_SESSION_EVIDENCE;
  $('live-verdict-label').parentElement.className='live-verdict '+text.css;
 }
 function showTimeline(parsed,verdict,lastPassMs) {
@@ -166,11 +172,31 @@ const sample=(()=>{
   line(at('02:30'),{type:'turn_end'})
  ].join('\n');
 })();
-$('try-sample').addEventListener('click',()=>{
+// All three browser examples use genuine parser/auditor code, not hardcoded verdicts.
+// Timestamps and tool content are synthetic and never presented as Kiro provenance.
+const safeExampleTime=n=>'2026-11-04T11:'+String(n).padStart(2,'0')+':00.000Z';
+const exampleEvent=(n,payload)=>JSON.stringify({timestamp:safeExampleTime(n),payload});
+const currentExample=[
+ exampleEvent(0,{type:'tool_call',toolCallId:'cur-edit',toolName:'str_replace',filePath:'src/demo.mjs'}),
+ exampleEvent(1,{type:'tool_result',toolCallId:'cur-edit',success:true,content:'Done'}),
+ exampleEvent(2,{type:'tool_call',toolCallId:'cur-test',toolName:'execute_pwsh',args:{command:'node --test'}}),
+ exampleEvent(3,{type:'tool_result',toolCallId:'cur-test',success:true,content:'pass 8\nfail 0\nExit Code: 0'}),
+ exampleEvent(4,{type:'assistant',operationType:'Say',content:'All 8 tests pass, 0 fail.'}),
+ exampleEvent(5,{type:'turn_end'})
+].join('\n');
+const insufficientExample=[
+ exampleEvent(0,{type:'tool_call',toolCallId:'missing-test',toolName:'execute_pwsh',args:{command:'node --test'}}),
+ exampleEvent(1,{type:'tool_result',toolCallId:'missing-test',success:true,content:'pass 8\nfail 0\nExit Code: 0'}),
+ exampleEvent(2,{type:'turn_end'})
+].join('\n');
+function showSyntheticExample(label,fixture){
  fileInput.value='';analyzeButton.disabled=true;
- $('file-selected').textContent='Synthetic test example (not a real Kiro session)';
- analyzeText(sample,'synthetic');
-});
+ $('file-selected').textContent=label+' · generated synthetic example';
+ analyzeText(fixture,'synthetic');
+}
+$('try-sample').addEventListener('click',()=>showSyntheticExample('Stale',sample));
+$('try-current').addEventListener('click',()=>showSyntheticExample('Current',currentExample));
+$('try-insufficient').addEventListener('click',()=>showSyntheticExample('Insufficient',insufficientExample));
 function selected(file){
  if(!file){analyzeButton.disabled=true;$('file-selected').textContent='No local file selected';return}
  if(file.size>maxBytes){
