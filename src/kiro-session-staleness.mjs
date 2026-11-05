@@ -70,6 +70,15 @@ function isValidFilePath(filePath) {
  * @returns {Object} Audit result with status, reason, timeline, and flags
  */
 export function auditLocalSession(input) {
+  if (!input || typeof input !== 'object' || Array.isArray(input)) {
+    return {
+      status: 'INSUFFICIENT_SESSION_EVIDENCE',
+      reason: 'Invalid session input',
+      timeline: [],
+      independentAttestation: false,
+      semanticCorrectnessVerified: false
+    };
+  }
   // Validate sourceKind
   if (input.sourceKind !== 'RECORDED_LOCAL_KIRO_CLI_SESSION') {
     return {
@@ -255,7 +264,8 @@ export function auditLocalSession(input) {
     }
 
     // Track latest passing test (only if this test passed)
-    if (test.pass > 0 && test.fail === 0 && test.exitCode === 0) {
+    if (test.pass > 0 && test.fail === 0 && test.exitCode === 0 &&
+        (latestPassingTestMs === null || testAtMs > latestPassingTestMs)) {
       latestPassingTestMs = testAtMs;
       latestPassingTest = test;
     }

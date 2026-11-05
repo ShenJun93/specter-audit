@@ -10,11 +10,38 @@ Specter Audit is a local-first, read-only Git metadata investigator for AI codin
 
 **Public repository:** https://github.com/ShenJun93/specter-audit
 
+## M7 — Analyze your own Kiro session (draft PR #4; production unreleased)
+
+**New local-only user flow:** start the Node server and open `/live.html`.
+Select a Kiro CLI `messages.jsonl` file (up to 8 MiB, 4,000 lines).
+The tab reads and processes the selected file in memory; the browser does
+**not** upload it. The privacy-focused output shows tool-observed test
+receipts, completion timestamps, sanitized source edit counts, and a bounded
+verdict: `CURRENT_SELF_RECORDED_TEST`, `STALE_LOCAL_TEST_EVIDENCE`, or
+`INSUFFICIENT_SESSION_EVIDENCE`.
+
+The import parser treats failed or missing tool results, ambiguous agent
+claims, unsupported source mutation tools and compound shell commands
+conservatively. Unknown evidence is not silently upgraded to a PASS. Only
+the selected saved log is analyzed; it can be edited and is not a signed
+attestation. The importer cannot guarantee complete capture of all agents,
+test tools, mutations, repository versions or tests run outside that file.
+
+**Provenance:** Kiro CLI authored and revised the earlier M6E session
+staleness engine. The M7 JSONL parser, website and red-team tests were
+implemented by ChatGPT/WAG; a separate Kiro implementation attempt timed
+out and did not create this module. Do not attribute M7 parser authorship
+to Kiro. See `docs/competition/M7_LOCAL_RELEASE_REVIEW_20261105.md`.
+
+**Release gate (2026-11-05):** M7 is committed as `937da7876bf7766e85e77b94e540843e11151294` in [draft PR #4](https://github.com/ShenJun93/specter-audit/pull/4), stacked on still-open PR #3. Exact-SHA GitHub Actions completed successfully with 296 passing Node tests. The no-Toolbar Vercel Preview and its Chrome acceptance were verified only for the **previous** SHA `0e5a22b`; a current-SHA Preview and production release remain **unverified/unreleased**. Never describe the prior Preview as validating the new Judge Journey.
+
 ## Alibi Room v2 — four evidence exhibits (M6F local candidate)
 
 **Unreleased candidate:** `/alibi.html` on the local Node server. The current
 public Vercel production site remains the earlier M5L release. The branch
-`feat/agent-alibi-v2` Draft PR #3 has not received M6D–M6F changes yet.
+`feat/agent-alibi-v2` contains M6D–M6F in **Ready for review PR #3**
+at SHA `156efb1fb0a5f771af9d39f66aae626432a142a4`, with exact-SHA
+Preview acceptance. M7 is committed in a separate draft PR #4; it has not been deployed to production.
 
 Alibi Room asks two different questions: *Is the cited CI for the correct
 commit?* and *Was the recorded test result still current after the agent

@@ -21,3 +21,6 @@
 .timeline li.edit-event:before{border-color:var(--red);background:#4c2633}
 .case-proof .mini-label{overflow-wrap:anywhere}
 @media(max-width:630px){.case-buttons{grid-template-columns:1fr}.case-button.real-case .case-labels small{font-size:9px}}
+/* M7 local-session CTA: distinguish analysis of a visitor's data from recorded exhibits. */
+.hero-cta .live-cta{background:#143a37;color:#a1f8e7;border-color:#378b80;box-shadow:none}
+.hero-cta .live-cta:hover{background:#1b4b43;color:#e7fffa}
