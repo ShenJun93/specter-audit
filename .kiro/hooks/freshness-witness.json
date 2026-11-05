@@ -1,0 +1,16 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "specter-freshness-witness",
+      "description": "Opt-in, non-blocking local evidence advisory. Disabled until real Kiro V3 event-schema acceptance.",
+      "trigger": "PostToolUse",
+      "action": {
+        "type": "command",
+        "command": "node scripts/kiro-freshness-witness-hook.mjs"
+      },
+      "timeout": 10,
+      "enabled": false
+    }
+  ]
+}
