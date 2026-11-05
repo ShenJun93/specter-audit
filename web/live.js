@@ -103,6 +103,14 @@ function showTimeline(parsed,verdict,lastPassMs) {
  const firstLate=list.querySelector('[data-phase="after-test"]');
  if(firstLate)list.scrollTop=Math.max(0,firstLate.offsetTop-list.offsetTop-100);
 }
+// Move keyboard and screen-reader focus to the newly rendered finding on narrow
+// layouts. The desktop side-by-side workflow keeps its current position.
+function exposeMobileFinding(){
+ if(!window.matchMedia('(max-width:850px)').matches)return;
+ const heading=$('results-heading');
+ heading.focus({preventScroll:true});
+ heading.scrollIntoView({block:'start',behavior:'instant'});
+}
 function analyzeText(raw,origin) {
  const parsed=parseKiroSession(raw);
  $('live-unverified').hidden=true;
@@ -118,6 +126,7 @@ function analyzeText(raw,origin) {
    $('metric-unverified-events').textContent=String(summary.sessionEvents);
    $('metric-unverified-calls').textContent=String(summary.observedToolCalls);
    $('metric-unverified-results').textContent=String(summary.observedToolResults);
+   exposeMobileFinding();
    return;
   }
  }
@@ -166,6 +175,7 @@ function analyzeText(raw,origin) {
   try{await navigator.clipboard.writeText(info);$('copy-state').textContent='Sanitized finding copied.'}
   catch{$('copy-state').textContent='Clipboard unavailable. No file was uploaded.'}
  };
+ exposeMobileFinding();
 }
 const sample=(()=>{
  const at=(s)=>'2026-11-04T10:'+s+'.000Z';

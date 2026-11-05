@@ -25,3 +25,15 @@ test('next-step copy uses only known static guidance',async()=>{
  assert.match(js,/No command was run/);
  assert.doesNotMatch(js,/fetch\(|XMLHttpRequest|sendBeacon/);
 });
+test('mobile verdict scrolls and moves accessible focus after real or synthetic evidence',async()=>{
+ const html=await read('web/live.html');
+ const js=await read('web/live.js');
+ const css=await read('web/live.css');
+ assert.match(html,/id="results-heading" tabindex="-1"/);
+ assert.match(js,/function exposeMobileFinding\(\)/);
+ assert.match(js,/matchMedia\('\(max-width:850px\)'\)/);
+ assert.match(js,/heading\.focus\(\{preventScroll:true\}\)/);
+ assert.match(js,/heading\.scrollIntoView\(\{block:'start',behavior:'instant'\}\)/);
+ assert.equal(js.split('exposeMobileFinding();').length-1,2,'Focus is required for both supported and no-claim states');
+ assert.match(css,/#results-heading\{scroll-margin-block-start:24px\}/);
+});
