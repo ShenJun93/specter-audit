@@ -11,10 +11,11 @@ This continues work after the interactive Kiro CLI V3 account hit its monthly us
 - .kiro/hooks/freshness-witness.json — standalone v1 PostToolUse Hook with fixed literal command; **enabled:false intentionally**.
 - test/freshness-witness.wrapper.test.mjs — subprocess checks for state transitions, locking, corrupted/expired state, session separation, malformed input, unsafe command and private-data redaction.
 - Independent contract tests: test/freshness-witness.contract.test.mjs.
+- test/freshness-witness.replay.test.mjs — replay/duplicate tool ID tests, including a persisted-state subprocess run and bounded metadata checks.
 
 ## Verified local gates
-- M9 contract and wrapper tests: **26 PASS / 0 FAIL**.
-- Full project Node tests: **325 PASS / 0 FAIL**, 11 suites.
+- M9 contract + wrapper + replay tests: **31 PASS / 0 FAIL** (26 previous + 5 new).
+- Full project Node tests: **330 PASS / 0 FAIL**, 11 suites.
 - npm run check: PASS. node --check on both new source files: PASS.
 - git diff --check: PASS.
 - M7/M8 engine, browser UI, PR #4, Vercel and production unchanged.
@@ -24,10 +25,13 @@ This continues work after the interactive Kiro CLI V3 account hit its monthly us
 2. **Completion is not source snapshot proof.** A PASS_RECEIPT_OBSERVED event is explicitly self-recorded only, and is not CURRENT_SELF_RECORDED_TEST or proof of correctness.
 3. **M9 Kiro-authored provenance remains missing.** Kiro CLI hit MONTHLY USAGE LIMIT after inspecting requirements; it had no recorded successful M9 source-write tool call. This WAG implementation does not satisfy the new genuine Kiro-code gate.
 4. **Fail closed.** Unknown tools, missing explicit success, dynamic shell commands, partial writes, corrupted or expired state and abandoned locks do not produce passing statuses.
-5. **No private material in repository.** Hook state stores only fixed status codes and counters, not raw prompts, tool command text, source paths or session IDs.
+5. **No private material in repository.** Hook state stores only fixed status codes, counters and at most **16 SHA-256 tool-ID digests**; never raw prompts, tool command text, source paths, or session IDs.
+6. **Replay hardening (2026-11-05).** A red-team test reproduced false PASS_RECEIPT_OBSERVED after a stale tool result was replayed with the same tool ID. Baseline: **2/3 failing**; after bounded digest deduplication: **5/5 PASS**, including persisted wrapper state. Duplicate/malformed tool IDs fail closed; a new identified test remains allowed.
+7. **Replay detection limits.** Detection applies only when events carry a stable top-level tool_use_id/tool_call_id and their hashes remain in the latest 16-entry window. ID-less events, older evicted IDs or tampered local state cannot be fully disambiguated. No claim of tamper-proof or complete replay protection; tests/edits remain self-recorded.
+8. **Runtime payload still unknown.** Official Kiro Hook documentation covers standalone JSON, PostToolUse and stdin context, but this account has not produced a successful native Hook invocation after hitting quota. Exact event IDs, result shape and version behavior remain unverified. Hook stays disabled.
 
 ## Next Kiro-owned acceptance
-After credits are available, start a fresh Kiro V3 session. Inspect the actual PostToolUse input fields and tool ids without publishing private input, deliberately enable the Hook, and verify a genuine test → source edit → RETEST_REQUIRED sequence with Kiro-written files and credible tool-write provenance. Run the 325+ tests, exact-SHA CI and independent review before marking release-ready.
+After credits are available, start a fresh Kiro V3 session. Inspect the actual PostToolUse input fields and tool ids without publishing private input, deliberately enable the Hook, and verify a genuine test → source edit → RETEST_REQUIRED sequence with Kiro-written files and credible tool-write provenance. Run the 330+ tests, exact-SHA CI and independent review before marking release-ready.
 
 References: https://kiro.dev/docs/hooks/ and https://kiro.dev/docs/cli/v3/hooks-migration/
 

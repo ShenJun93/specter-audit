@@ -1,8 +1,11 @@
 // M9 Freshness Witness — local, self-recorded advisory only.
+import {createHash} from 'node:crypto';
 // Authored with ChatGPT/WAG after Kiro CLI reached its usage limit.
 // The session log importer remains authoritative for event chronology.
 const SCHEMA='SPECTER_FRESHNESS_WITNESS_V1';
 const MAX_EVENTS=100000;
+const MAX_RECENT_IDS=16;
+const ID_DIGEST=/^[0-9a-f]{64}$/;
 const STATUSES=new Set(['NO_PASS_RECEIPT','PASS_RECEIPT_OBSERVED','RETEST_REQUIRED','INSUFFICIENT_HOOK_EVIDENCE']);
 const MESSAGES=Object.freeze({
  NO_PASS_RECEIPT:'No isolated passing test receipt has been observed by this hook.',
@@ -19,7 +22,10 @@ const order=x=>x===null||count(x);
 const safeState=s=>record(s)&&s.schema===SCHEMA&&
  STATUSES.has(s.status)&&count(s.eventCount)&&count(s.testCount)&&count(s.editCount)&&
  order(s.lastPassOrder)&&order(s.lastEditOrder)&&typeof s.uncertain==='boolean'&&
- Object.keys(s).length===8&&
+ Object.keys(s).length===9&&
+ Array.isArray(s.recentIds)&&s.recentIds.length<=MAX_RECENT_IDS&&
+ s.recentIds.every(id=>typeof id==='string'&&ID_DIGEST.test(id))&&
+ new Set(s.recentIds).size===s.recentIds.length&&
  (s.testCount===0)===(s.lastPassOrder===null)&&
  (s.editCount===0)===(s.lastEditOrder===null)&&
  (s.status!=='PASS_RECEIPT_OBSERVED'||(s.testCount>0&&!s.uncertain&&
@@ -37,7 +43,7 @@ function badState(){
 }
 export function createInitialWitnessState(){
  return {schema:SCHEMA,status:'NO_PASS_RECEIPT',eventCount:0,testCount:0,editCount:0,
-  lastPassOrder:null,lastEditOrder:null,uncertain:false};
+  lastPassOrder:null,lastEditOrder:null,uncertain:false,recentIds:[]};
 }
 export function validateWitnessState(state){return safeState(state)}
 export function summarizeWitness(state){
@@ -72,14 +78,32 @@ function validInput(event){
   return typeof serialized==='string'&&Buffer.byteLength(serialized,'utf8')<=65536;
  }catch{return false}
 }
+function eventIdentity(event){
+ const hasUse=Object.hasOwn(event,'tool_use_id');
+ const hasCall=Object.hasOwn(event,'tool_call_id');
+ if(!hasUse&&!hasCall)return {kind:'absent'};
+ const a=hasUse?event.tool_use_id:event.tool_call_id;
+ if(typeof a!=='string'||!/^[a-zA-Z0-9_-]{1,128}$/.test(a)||
+   (hasUse&&hasCall&&event.tool_call_id!==a))return {kind:'invalid'};
+ // Only the SHA-256 digest is retained. It is a bounded replay detector
+ // for explicit tool IDs, not a cryptographic attestation of execution.
+ return {kind:'present',digest:createHash('sha256').update(a,'utf8').digest('hex')};
+}
 export function reduceWitnessEvent(state,event){
  if(!safeState(state)||state.eventCount>=MAX_EVENTS||!validInput(event)){
   const s=badState();return {state:s,advice:summarizeWitness(s)};
  }
- const next={...state,eventCount:state.eventCount+1};
+ const next={...state,recentIds:[...state.recentIds],eventCount:state.eventCount+1};
  const uncertain=()=>{next.uncertain=true;next.status='INSUFFICIENT_HOOK_EVIDENCE'};
+ const identity=eventIdentity(event);
+ if(identity.kind==='invalid'||(identity.kind==='present'&&
+    next.recentIds.includes(identity.digest)))uncertain();
+ if(identity.kind==='present'&&!next.uncertain){
+  next.recentIds=[...next.recentIds,identity.digest].slice(-MAX_RECENT_IDS);
+ }
  const type=event.tool_name;
- if(READ_TOOLS.has(type)){
+ if(next.uncertain){/* Conflicting or malformed tool identity: no elevation. */}
+ else if(READ_TOOLS.has(type)){
   if(event.tool_response.success!==true)uncertain();
  }else if(EDIT_TOOLS.has(type)){
   if(event.tool_response.success!==true)uncertain();
