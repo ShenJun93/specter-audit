@@ -130,3 +130,27 @@ test('legitimate unrelated event timestamp skew does not discard Kiro tool chron
  assert.equal(r.parsed.errorCode,null);
  assert.equal(r.verdict,'CURRENT_SELF_RECORDED_TEST');
 });
+test('P0: a later serialized PASS retraction with backdated timestamp fails closed',()=>{
+ for(const statement of ['I retract this.','The tests failed.','I withdraw that statement.']){
+  const rows=currentFixture();
+  rows.splice(5,0,e(1,{type:'assistant',operationType:'Say',content:statement}));
+  const r=status(rows);
+  assert.equal(r.parsed.input,null,statement);
+  assert.equal(r.parsed.errorCode,'LATER_AGENT_TEST_CLAIM_RETRACTED',statement);
+ }
+});
+test('P0: a new affirmative agent claim serialized later with older timestamp cannot be ignored',()=>{
+ const rows=currentFixture();
+ rows.splice(5,0,e(1,{type:'assistant',operationType:'Say',content:'All 12 tests pass, 0 fail.'}));
+ const r=status(rows);
+ assert.equal(r.parsed.input,null);
+ assert.equal(r.parsed.errorCode,'NON_MONOTONIC_AGENT_CLAIM_CHRONOLOGY');
+});
+test('P0: a later affirmative claim with coherent event order is selected normally',()=>{
+ const rows=currentFixture();
+ rows.splice(5,0,e(5,{type:'assistant',operationType:'Say',content:'All 8 tests pass, 0 fail.'}));
+ rows[6].timestamp=t(6);
+ const r=status(rows);
+ assert.equal(r.parsed.errorCode,null);
+ assert.equal(r.verdict,'CURRENT_SELF_RECORDED_TEST');
+});

@@ -173,7 +173,7 @@ function result(events) {
     if(p.type!=='assistant'||p.operationType!=='Say')continue;
     const n=safeClaim(p.content);
     if(n!==null)claims.push({at:e.timestamp,ms:iso(e.timestamp),count:n,position});
-    else if(isTestRetraction(p.content)||contradictsClaim(typeof p.content==='string'?p.content:''))retractions.push(iso(e.timestamp));
+    else if(isTestRetraction(p.content)||contradictsClaim(typeof p.content==='string'?p.content:''))retractions.push({ms:iso(e.timestamp),position});
   }
   if(!claims.length)return safeError('NO_RECORDED_AGENT_TEST_CLAIM',{
     sessionEvents:events.length,
@@ -181,6 +181,13 @@ function result(events) {
     observedToolResults:resultById.size,
     scope:'ONE_SAVED_LOCAL_KIRO_SESSION_ONLY'
   });
+  // Two explicit agent PASS claims whose timestamps run backwards in the
+  // saved file cannot reliably establish which statement was latest.
+  for(let i=1;i<claims.length;i++){
+    if(claims[i].ms<claims[i-1].ms){
+      return safeError('NON_MONOTONIC_AGENT_CLAIM_CHRONOLOGY',{recognizedClaims:claims.length});
+    }
+  }
   claims.sort((a,b)=>b.ms-a.ms);
   if(claims.length>1&&claims[0].ms===claims[1].ms)return safeError('AMBIGUOUS_AGENT_CLAIMS');
   const claim=claims[0];
@@ -196,7 +203,7 @@ function result(events) {
   }
   // A correction at/after the chosen claim leaves the claim's truth unresolved.
   // A newer affirmative claim can supersede an earlier correction.
-  if(retractions.some(ms=>ms>=claim.ms))return safeError('LATER_AGENT_TEST_CLAIM_RETRACTED',{recognizedClaims:claims.length});
+  if(retractions.some(r=>r.ms>=claim.ms||r.position>=claim.position))return safeError('LATER_AGENT_TEST_CLAIM_RETRACTED',{recognizedClaims:claims.length});
   if(claim.ms>lastTime)return safeError('INVALID_CHRONOLOGY');
   const tests=[],edits=[],unverifiedOperations=[];
   const testWindows=[],editWindows=[],uncertainWindows=[];
