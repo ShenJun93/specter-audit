@@ -6,6 +6,26 @@ const SCHEMA='SPECTER_FRESHNESS_WITNESS_V1';
 const MAX_EVENTS=100000;
 const MAX_RECENT_IDS=16;
 const ID_DIGEST=/^[0-9a-f]{64}$/;
+// Bounded Bloom filter preserves all observed ID fingerprints without
+// evicting older identifiers. Collisions fail closed; never assert PASS.
+const BLOOM_BYTES=1024;
+const BLOOM_HASHES=5;
+const EMPTY_BLOOM=Buffer.alloc(BLOOM_BYTES).toString('base64');
+const validBloom=x=>typeof x==='string'&&x.length===EMPTY_BLOOM.length&&
+ /^[A-Za-z0-9+/]+={0,2}$/.test(x)&&
+ Buffer.from(x,'base64').toString('base64')===x;
+function bloomCheckAndAdd(encoded,digestHex){
+ const bytes=Buffer.from(encoded,'base64');
+ const digest=Buffer.from(digestHex,'hex');
+ let seen=true;
+ for(let i=0;i<BLOOM_HASHES;i++){
+  const bit=digest.readUInt32BE(i*4)%(BLOOM_BYTES*8);
+  const mask=1<<(bit&7),index=bit>>3;
+  if((bytes[index]&mask)===0)seen=false;
+  bytes[index]|=mask;
+ }
+ return {seen,nextBloom:bytes.toString('base64')};
+}
 const STATUSES=new Set(['NO_PASS_RECEIPT','PASS_RECEIPT_OBSERVED','RETEST_REQUIRED','INSUFFICIENT_HOOK_EVIDENCE']);
 const MESSAGES=Object.freeze({
  NO_PASS_RECEIPT:'No isolated passing test receipt has been observed by this hook.',
@@ -22,7 +42,8 @@ const order=x=>x===null||count(x);
 const safeState=s=>record(s)&&s.schema===SCHEMA&&
  STATUSES.has(s.status)&&count(s.eventCount)&&count(s.testCount)&&count(s.editCount)&&
  order(s.lastPassOrder)&&order(s.lastEditOrder)&&typeof s.uncertain==='boolean'&&
- Object.keys(s).length===9&&
+ Object.keys(s).length===10&&
+ validBloom(s.seenIdsBloom)&&
  Array.isArray(s.recentIds)&&s.recentIds.length<=MAX_RECENT_IDS&&
  s.recentIds.every(id=>typeof id==='string'&&ID_DIGEST.test(id))&&
  new Set(s.recentIds).size===s.recentIds.length&&
@@ -43,7 +64,7 @@ function badState(){
 }
 export function createInitialWitnessState(){
  return {schema:SCHEMA,status:'NO_PASS_RECEIPT',eventCount:0,testCount:0,editCount:0,
-  lastPassOrder:null,lastEditOrder:null,uncertain:false,recentIds:[]};
+  lastPassOrder:null,lastEditOrder:null,uncertain:false,recentIds:[],seenIdsBloom:EMPTY_BLOOM};
 }
 export function validateWitnessState(state){return safeState(state)}
 export function summarizeWitness(state){
@@ -96,10 +117,14 @@ export function reduceWitnessEvent(state,event){
  const next={...state,recentIds:[...state.recentIds],eventCount:state.eventCount+1};
  const uncertain=()=>{next.uncertain=true;next.status='INSUFFICIENT_HOOK_EVIDENCE'};
  const identity=eventIdentity(event);
- if(identity.kind==='invalid'||(identity.kind==='present'&&
-    next.recentIds.includes(identity.digest)))uncertain();
+ if(identity.kind==='invalid')uncertain();
  if(identity.kind==='present'&&!next.uncertain){
-  next.recentIds=[...next.recentIds,identity.digest].slice(-MAX_RECENT_IDS);
+  const checked=bloomCheckAndAdd(next.seenIdsBloom,identity.digest);
+  if(checked.seen||next.recentIds.includes(identity.digest))uncertain();
+  else{
+   next.seenIdsBloom=checked.nextBloom;
+   next.recentIds=[...next.recentIds,identity.digest].slice(-MAX_RECENT_IDS);
+  }
  }
  const type=event.tool_name;
  if(next.uncertain){/* Conflicting or malformed tool identity: no elevation. */}

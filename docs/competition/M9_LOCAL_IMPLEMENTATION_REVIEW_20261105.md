@@ -14,8 +14,8 @@ This continues work after the interactive Kiro CLI V3 account hit its monthly us
 - test/freshness-witness.replay.test.mjs — replay/duplicate tool ID tests, including a persisted-state subprocess run and bounded metadata checks.
 
 ## Verified local gates
-- M9 contract + wrapper + replay tests: **31 PASS / 0 FAIL** (26 previous + 5 new).
-- Full project Node tests: **330 PASS / 0 FAIL**, 11 suites.
+- M9 contract + wrapper + replay tests: **33 PASS / 0 FAIL** (26 initial + 7 replay).
+- Full project Node tests: **332 PASS / 0 FAIL**, 11 suites.
 - npm run check: PASS. node --check on both new source files: PASS.
 - git diff --check: PASS.
 - M7/M8 engine, browser UI, PR #4, Vercel and production unchanged.
@@ -25,13 +25,14 @@ This continues work after the interactive Kiro CLI V3 account hit its monthly us
 2. **Completion is not source snapshot proof.** A PASS_RECEIPT_OBSERVED event is explicitly self-recorded only, and is not CURRENT_SELF_RECORDED_TEST or proof of correctness.
 3. **M9 Kiro-authored provenance remains missing.** Kiro CLI hit MONTHLY USAGE LIMIT after inspecting requirements; it had no recorded successful M9 source-write tool call. This WAG implementation does not satisfy the new genuine Kiro-code gate.
 4. **Fail closed.** Unknown tools, missing explicit success, dynamic shell commands, partial writes, corrupted or expired state and abandoned locks do not produce passing statuses.
-5. **No private material in repository.** Hook state stores only fixed status codes, counters and at most **16 SHA-256 tool-ID digests**; never raw prompts, tool command text, source paths, or session IDs.
+5. **No private material in repository.** Hook state stores fixed status codes/counters, at most 16 recent SHA-256 tool-ID digests, and a canonical 1024-byte Bloom filter (base64). Never raw prompts, commands, source paths, tool IDs, or session IDs. Serialized state stays under the 4 KiB wrapper limit.
 6. **Replay hardening (2026-11-05).** A red-team test reproduced false PASS_RECEIPT_OBSERVED after a stale tool result was replayed with the same tool ID. Baseline: **2/3 failing**; after bounded digest deduplication: **5/5 PASS**, including persisted wrapper state. Duplicate/malformed tool IDs fail closed; a new identified test remains allowed.
-7. **Replay detection limits.** Detection applies only when events carry a stable top-level tool_use_id/tool_call_id and their hashes remain in the latest 16-entry window. ID-less events, older evicted IDs or tampered local state cannot be fully disambiguated. No claim of tamper-proof or complete replay protection; tests/edits remain self-recorded.
-8. **Runtime payload still unknown.** Official Kiro Hook documentation covers standalone JSON, PostToolUse and stdin context, but this account has not produced a successful native Hook invocation after hitting quota. Exact event IDs, result shape and version behavior remain unverified. Hook stays disabled.
+7. **Beyond-16 replay fix (2026-11-05).** A separate red test established that a PASS replayed after 20 distinct later read-tool IDs incorrectly became PASS_RECEIPT_OBSERVED. It failed before the fix. The immutable reducer now also keeps a fixed-size Bloom filter of all known explicit IDs; repeating an ID is rejected even after eviction from the 16-item recent cache. Both pure and real persisted subprocess regression tests PASS. Bloom collisions are **false positives that fail closed**, not green outcomes.
+8. **Replay limits.** Only stable top-level tool_use_id/tool_call_id values can be deduplicated; ID-less events or locally tampered state cannot be independently validated. The Bloom filter is not an attestation, cannot authenticate an untrusted event stream, and may conservatively reject a new ID by collision. No claim of complete replay defense, CI correctness, or source snapshot proof.
+9. **Runtime payload still unknown.** Official Kiro Hook documentation covers standalone JSON, PostToolUse and stdin context, but this account has not produced a successful native Hook invocation after hitting quota. Exact event IDs, result shape and version behavior remain unverified. Hook stays disabled.
 
 ## Next Kiro-owned acceptance
-After credits are available, start a fresh Kiro V3 session. Inspect the actual PostToolUse input fields and tool ids without publishing private input, deliberately enable the Hook, and verify a genuine test → source edit → RETEST_REQUIRED sequence with Kiro-written files and credible tool-write provenance. Run the 330+ tests, exact-SHA CI and independent review before marking release-ready.
+After credits are available, start a fresh Kiro V3 session. Inspect the actual PostToolUse input fields and tool ids without publishing private input, deliberately enable the Hook, and verify a genuine test → source edit → RETEST_REQUIRED sequence with Kiro-written files and credible tool-write provenance. Run the 332+ tests, exact-SHA CI and independent review before marking release-ready.
 
 References: https://kiro.dev/docs/hooks/ and https://kiro.dev/docs/cli/v3/hooks-migration/
 

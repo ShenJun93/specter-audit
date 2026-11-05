@@ -70,6 +70,51 @@ test('subprocess persisted state rejects repeated passing tool id after a later 
   await rm(lockPath,{force:true});
  }
 });
+test('replaying an old PASS beyond 16 later tool calls cannot erase RETEST_REQUIRED',()=>{
+ let state=createInitialWitnessState();
+ state=reduce(state,pass('old-pass-001'));
+ state=reduce(state,edit('new-edit-001'));
+ for(let i=0;i<20;i++){
+  state=reduce(state,{hook_event_name:'PostToolUse',session_id:sid,
+   tool_name:'fs_read',tool_use_id:'read-after-'+i,
+   tool_input:{},tool_response:{success:true}});
+ }
+ assert.equal(summarizeWitness(state).code,'RETEST_REQUIRED');
+ state=reduce(state,pass('old-pass-001'));
+ assert.equal(summarizeWitness(state).code,'INSUFFICIENT_HOOK_EVIDENCE');
+});
+test('persisted wrapper rejects PASS replay after more than sixteen separate tool calls',async()=>{
+ const session=randomUUID(),dir=join(tmpdir(),'specter-freshness-witness-local-v1');
+ const digest=createHash('sha256').update(session,'utf8').digest('hex');
+ const statePath=join(dir,digest+'.json'),lockPath=join(dir,digest+'.lock');
+ const script=resolve(import.meta.dirname,'../scripts/kiro-freshness-witness-hook.mjs');
+ const invoke=(event)=>{
+  const r=spawnSync(process.execPath,[script],{
+   input:JSON.stringify({...event,session_id:session}),
+   encoding:'utf8',timeout:10000,maxBuffer:10000
+  });
+  assert.equal(r.status,0,r.stderr);
+  return r.stdout;
+ };
+ try{
+  assert.match(invoke(pass('old-test-99')),/PASS_RECEIPT_OBSERVED/);
+  assert.match(invoke(edit('edit-after-99')),/RETEST_REQUIRED/);
+  for(let i=0;i<20;i++){
+   const output=invoke({hook_event_name:'PostToolUse',
+    tool_name:'fs_read',tool_use_id:'later-read-'+i,
+    tool_input:{},tool_response:{success:true}});
+   assert.match(output,/RETEST_REQUIRED/);
+  }
+  assert.match(invoke(pass('old-test-99')),/INSUFFICIENT_HOOK_EVIDENCE/);
+  const text=await readFile(statePath,'utf8');
+  assert.ok(Buffer.byteLength(text)<4096);
+  assert.doesNotMatch(text,/old-test-99|edit-after-99|later-read-/);
+  assert.equal(JSON.parse(text).seenIdsBloom.length,1368);
+ }finally{
+  await rm(statePath,{force:true});
+  await rm(lockPath,{force:true});
+ }
+});
 test('malformed conflicting tool identities fail closed, and recent hashes remain bounded',()=>{
  let state=createInitialWitnessState();
  for(let i=0;i<23;i++){
