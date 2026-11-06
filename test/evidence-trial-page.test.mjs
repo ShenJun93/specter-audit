@@ -57,3 +57,14 @@ test('local parser and trial UI retain safe static-script isolation',async()=>{
  assert.doesNotMatch(ui,/localStorage|sessionStorage|indexedDB/);
  assert.doesNotMatch(ui,/document\.cookie/);
 });
+
+test('Clear, synthetic switch and new selection invalidate an in-flight file read',async()=>{
+ const src=await(await get('/trial-ui.mjs')).text();
+ assert.match(src,/sessionEpoch=0/);
+ assert.match(src,/const epoch=\+\+sessionEpoch/);
+ assert.match(src,/if\(epoch!==sessionEpoch\)return/);
+ assert.match(src,/file\.addEventListener\('change',\(\)=>\{\s*sessionEpoch\+\+/);
+ assert.match(src,/function example\(kind\)\{\s*sessionEpoch\+\+/);
+ assert.match(src,/\$\('trial-clear'\)\.addEventListener\('click',\(\)=>\{\s*sessionEpoch\+\+/);
+ assert.match(src,/if\(epoch===sessionEpoch\)\{clearFile\(\);render\(\)\}/);
+});

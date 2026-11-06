@@ -25,6 +25,16 @@ The public PR Proof Chain page now presents a Haunting Evidence Trial. It compos
 - Actual WAG browser selected a 787-byte explicitly synthetic JSONL fixture from ignored `qa/private`. After clicking Analyze, the UI labeled it `USER SELECTED · BROWSER ONLY`, reported `STALE RECEIPT` and cleared the file selection. The fixture and browser-script files are gitignored; **no genuine private user log was uploaded**.
 - Static WAG accessibility heuristic on the experimental HTML: score 100/100, 0 reported heuristic violations. Not a WCAG or real screen-reader signoff.
 
+## M10.1 — async file-read invalidation regression (red/green verified)
+
+A real Chrome test reproduced a UI race on the original M10 commit: start an asynchronous `File.text()` read, press **Clear session** before the read finishes, then resolve the previous read. The cleared local exhibit incorrectly revived as `STALE RECEIPT` (expected `NOT INSPECTED`). This is a state/privacy control defect; no external upload was observed. The test is retained as a gitignored, reproducible local Chrome CDP harness: `qa/private/m10-race-qa.mjs`.
+
+Fix: increment `sessionEpoch` on file selection, reading, clearing and switching to synthetic examples; ignore late completions whose captured epoch is no longer current. A superseded read cannot override the selected hearing, even when it resolves after Clear or after choosing another example. The file input is re-enabled when invalidated. `test/evidence-trial-page.test.mjs` includes a permanent regression contract for the invalidation code.
+
+**Post-fix evidence:** local Chrome real PR #7 + adversarial deferred `File.text()` with Clear and synthetic switch: **PASS on 1280px desktop and mobile 390px**, 2 deliberate GitHub public GETs per device, no additional requests on local-file interactions and no browser console/runtime errors. `npm test`: **457/457 PASS** (zero fail/skipped); `npm run check` PASS; `git diff --check` PASS. QA harness self-starts and stops its local server and exits code 0.
+
+Independent-review caveat: Codex broad integrated review timed out; a separate read-only Claude CLI review failed with `OAuth session expired and could not be refreshed`. **No independent full signoff** was obtained; do not call the release security-approved.
+
 ## Remaining gates
 1. Full suite and local Chrome acceptance: PASS as documented. Keep independent integrated review and actual hosted Preview/CSP acceptance separate; neither can be inferred from local tests.
 2. Independent audit of integrated PR and actual Vercel deployed CSP/header behavior, before any exact-SHA Preview release.

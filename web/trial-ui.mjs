@@ -4,7 +4,7 @@ import {summarizeLocalSession,combineTrial,syntheticTrial} from './evidence-tria
 const $=id=>document.getElementById(id);
 const file=$('trial-file'),analyze=$('trial-analyze'),notice=$('trial-notice');
 const maxSize=8*1024*1024;
-let local=null,provider=null;
+let local=null,provider=null,sessionEpoch=0;
 const localText={
  STALE_LOCAL_TEST_EVIDENCE:['STALE RECEIPT','A passing test preceded a successful source edit in this saved chronology. Retest the final source state.'],
  CURRENT_SELF_RECORDED_TEST:['SELF-RECORDED CURRENT','The latest passing test followed observed edits in the saved log. This remains editable, self-recorded evidence.'],
@@ -40,8 +40,10 @@ function render(){
  $('trial-pr-source').textContent=pr?'HEAD: '+pr.headSha+' · PROVIDER-REPORTED':'PROVIDER: NOT QUERIED';
  $('trial-next').textContent=nextText[hearing.suggestedAction]??nextText.GATHER_BOTH_EVIDENCE_SOURCES;
 }
-function clearFile(){file.value='';analyze.disabled=true}
+// Invalidate any pending async file read before clearing or replacing a session.
+function clearFile(){file.value='';file.disabled=false;analyze.disabled=true}
 file.addEventListener('change',()=>{
+ sessionEpoch++;
  const selected=file.files?.[0];
  analyze.disabled=!selected||selected.size>maxSize;
  notice.textContent=!selected?'No local file selected.':selected.size>maxSize?
@@ -51,19 +53,23 @@ file.addEventListener('change',()=>{
 analyze.addEventListener('click',async()=>{
  const selected=file.files?.[0];
  if(!selected||selected.size>maxSize){clearFile();return}
+ const epoch=++sessionEpoch;
  analyze.disabled=true;file.disabled=true;
  try{
   const raw=await selected.text();
+  if(epoch!==sessionEpoch)return; // A clear/example/new file superseded this read.
   local=summarizeLocalSession(raw,{synthetic:false});
   notice.textContent='Local session examined in this browser only. The file selection was cleared.';
  }catch{
+  if(epoch!==sessionEpoch)return;
   local=null;
   notice.textContent='Unable to read this local file safely. Nothing was transmitted.';
  }finally{
-  clearFile();file.disabled=false;render();
+  if(epoch===sessionEpoch){clearFile();render()}
  }
 });
 function example(kind){
+ sessionEpoch++;
  clearFile();
  local=summarizeLocalSession(syntheticTrial(kind),{synthetic:true});
  notice.textContent='EXPLICITLY SYNTHETIC — generated demonstration, NOT a Kiro-authored or real session.';
@@ -72,6 +78,7 @@ function example(kind){
 $('trial-stale').addEventListener('click',()=>example('stale'));
 $('trial-retest').addEventListener('click',()=>example('retested'));
 $('trial-clear').addEventListener('click',()=>{
+ sessionEpoch++;
  local=null;clearFile();render();
  notice.textContent='Local session cleared from this view. No raw text was stored or uploaded.';
 });
