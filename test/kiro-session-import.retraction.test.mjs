@@ -27,13 +27,28 @@ test('M7 regression: a later explicit retraction cannot leave earlier PASS CURRE
     assert.equal(parsed.input,null,correction);
   }
 });
-test('M7 regression: a new affirmative claim after a retraction can be evaluated',()=>{
+test('M7/M8.5 regression: repeating PASS after a retraction without a new test is insufficient',()=>{
   const {parsed,verdict}=inspect([
     [2,'All 8 tests pass, 0 fail.'],
     [3,'Actually, tests failed.'],
     [4,'All 8 tests pass, 0 fail.']
   ]);
+  assert.equal(parsed.errorCode,'CORRECTION_WITHOUT_NEW_TEST_RECEIPT');
+  assert.equal(verdict,null);
+});
+test('M7/M8.5 regression: a fresh matching receipt supports a new claim after correction',()=>{
+  const events=[
+    event(0,{type:'tool_call',toolCallId:'test-1',toolName:'execute_pwsh',args:{command:'node --test'}}),
+    event(1,{type:'tool_result',toolCallId:'test-1',success:true,content:passLog}),
+    event(2,{type:'assistant',operationType:'Say',content:'All 8 tests pass, 0 fail.'}),
+    event(3,{type:'assistant',operationType:'Say',content:'Actually, tests failed.'}),
+    event(4,{type:'tool_call',toolCallId:'test-2',toolName:'execute_pwsh',args:{command:'node --test'}}),
+    event(5,{type:'tool_result',toolCallId:'test-2',success:true,content:passLog}),
+    event(6,{type:'assistant',operationType:'Say',content:'All 8 tests pass, 0 fail.'}),
+    event(9,{type:'turn_end'})
+  ];
+  const parsed=parseKiroSession(events.map(e=>JSON.stringify(e)).join('\n'));
   assert.equal(parsed.errorCode,null);
-  assert.equal(verdict,'CURRENT_SELF_RECORDED_TEST');
-  assert.equal(parsed.input.claimAt,at(4));
+  assert.equal(auditLocalSession(parsed.input).status,'CURRENT_SELF_RECORDED_TEST');
+  assert.equal(parsed.input.claimAt,at(6));
 });

@@ -42,11 +42,16 @@ const errors={
  INVALID_CHRONOLOGY:'Event timestamps do not form a supported chronology.',
  TOO_MANY_RELEVANT_EVENTS:'Too many test or edit tool events to analyze safely.',
  RESULT_BEFORE_TOOL:'A result appears before its originating tool call.',
+ RESULT_PRECEDES_TOOL_CALL_IN_FILE:'A tool result appears before its matching call in the saved file; chronology cannot be verified.',
+ NON_MONOTONIC_TOOL_CHRONOLOGY:'Tool timestamps contradict their recorded order. This file cannot establish test freshness.',
+ CLAIM_PRECEDES_TEST_RESULT_IN_FILE:'The agent claimed PASS before its supporting tool result appeared in the saved session.',
+ NON_MONOTONIC_AGENT_CLAIM_CHRONOLOGY:'Agent PASS statements appear in a conflicting recorded order; their freshness cannot be established.',
  INCOMPLETE_RELEVANT_TOOL_EVIDENCE:'Some test or edit tool results are unmatched or unsupported.',
  CLAIM_TEST_COUNT_MISMATCH:'The agent claim count does not match the latest observed test report.',
  POST_CLAIM_TEST_EVIDENCE_UNRESOLVED:'A later test cannot confirm the earlier claim. The available evidence does not establish a current result.',
  OVERLAPPING_RELEVANT_TOOL_OPERATIONS:'A test overlaps a source edit or an uncertain tool operation. Its completion cannot prove which code was tested.',
  LATER_AGENT_TEST_CLAIM_RETRACTED:'A later agent message retracts the passing-test claim; the prior PASS cannot establish a current result.',
+ CORRECTION_WITHOUT_NEW_TEST_RECEIPT:'A later claim follows a test correction without a fresh matching test result; current evidence is insufficient.',
  AMBIGUOUS_EVENT_TIMESTAMPS:'Multiple test or edit events share an ambiguous timestamp.'
 };
 function showError(text) {
@@ -68,6 +73,13 @@ function status(kind) {
  $('live-verdict-reason').textContent=text.reason;
  $('live-next-step-body').textContent=safeNextAction[kind]??safeNextAction.INSUFFICIENT_SESSION_EVIDENCE;
  $('live-verdict-label').parentElement.className='live-verdict '+text.css;
+ $('next-copy-status').textContent='';
+ $('copy-next-step').onclick=async()=>{
+  // Fixed instructions only; never copy private logs, commands or paths.
+  const instruction=safeNextAction[kind]??safeNextAction.INSUFFICIENT_SESSION_EVIDENCE;
+  try{await navigator.clipboard.writeText(instruction);$('next-copy-status').textContent='Next step copied.'}
+  catch{$('next-copy-status').textContent='Clipboard unavailable. No command was run.'}
+ };
 }
 function showTimeline(parsed,verdict,lastPassMs) {
  const list=$('live-timeline');
@@ -96,6 +108,14 @@ function showTimeline(parsed,verdict,lastPassMs) {
  const firstLate=list.querySelector('[data-phase="after-test"]');
  if(firstLate)list.scrollTop=Math.max(0,firstLate.offsetTop-list.offsetTop-100);
 }
+// Move keyboard and screen-reader focus to the newly rendered finding on narrow
+// layouts. The desktop side-by-side workflow keeps its current position.
+function exposeMobileFinding(){
+ if(!window.matchMedia('(max-width:850px)').matches)return;
+ const heading=$('results-heading');
+ heading.focus({preventScroll:true});
+ heading.scrollIntoView({block:'start',behavior:'instant'});
+}
 function analyzeText(raw,origin) {
  const parsed=parseKiroSession(raw);
  $('live-unverified').hidden=true;
@@ -111,6 +131,7 @@ function analyzeText(raw,origin) {
    $('metric-unverified-events').textContent=String(summary.sessionEvents);
    $('metric-unverified-calls').textContent=String(summary.observedToolCalls);
    $('metric-unverified-results').textContent=String(summary.observedToolResults);
+   exposeMobileFinding();
    return;
   }
  }
@@ -159,6 +180,7 @@ function analyzeText(raw,origin) {
   try{await navigator.clipboard.writeText(info);$('copy-state').textContent='Sanitized finding copied.'}
   catch{$('copy-state').textContent='Clipboard unavailable. No file was uploaded.'}
  };
+ exposeMobileFinding();
 }
 const sample=(()=>{
  const at=(s)=>'2026-11-04T10:'+s+'.000Z';

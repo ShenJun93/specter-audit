@@ -118,7 +118,8 @@ test('multiple recognized claims choose newest timestamp and never expose claim 
 });
 test('same-timestamp testing calls fail closed',()=>{
  const e=data();
- e.push(event(at('00:00'),{type:'tool_call',toolCallId:'tc2',toolName:'execute_pwsh',args:{command:'node --test'}}),
- event(at('00:03'),{type:'tool_result',toolCallId:'tc2',content:'pass 8\nfail 0\nExit Code: 0',success:true}));
+ // Keep valid chronological tool order while duplicating result timestamps.
+ e.splice(1,0,event(at('00:00'),{type:'tool_call',toolCallId:'tc2',toolName:'execute_pwsh',args:{command:'node --test'}}));
+ e.splice(3,0,event(at('00:03'),{type:'tool_result',toolCallId:'tc2',content:'pass 8\nfail 0\nExit Code: 0',success:true}));
  assert.equal(parseKiroSession(text(e)).errorCode,'AMBIGUOUS_EVENT_TIMESTAMPS');
 });

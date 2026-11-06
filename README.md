@@ -6,13 +6,27 @@ Specter Audit is a local-first, read-only Git metadata investigator for AI codin
 
 **Kiroween 2026** — proposed category: **Costume Contest**.
 
-**Live judge demo:** https://specter-audit.vercel.app
+**Live M8.8 judge demo (exact source SHA `8fc24af`):** https://specter-audit-bc2qeacr6-nvhoa1691993-6852s-projects.vercel.app/live.html
+
+**Four-case Alibi Room (same Preview):** https://specter-audit-bc2qeacr6-nvhoa1691993-6852s-projects.vercel.app/alibi.html
+
+**Stable production (older M5L release):** https://specter-audit.vercel.app
 
 **Public repository:** https://github.com/ShenJun93/specter-audit
 
-## M7 — Analyze your own Kiro session (draft PR #4; production unreleased)
+## Judge entry — M8.8 release candidate (2026-11-06)
 
-**New local-only user flow:** start the Node server and open `/live.html`.
+The tested M8.8 application source is commit [`8fc24af`](https://github.com/ShenJun93/specter-audit/commit/8fc24affba4cfa00ee91b9ed0a65ad5941cdfe24) in [Draft PR #7](https://github.com/ShenJun93/specter-audit/pull/7). **Use the Preview links above to evaluate M8.8.** `main` and the stable production hostname remain on M5L until the owner's separate release authorization; neither PR #7 nor its historical stacked predecessors have been merged. New documentation-only commits may be newer than the tested application source SHA.
+
+M8.8 local verification: **335/335 Node tests PASS** and `npm run check` PASS. Exact-application-SHA public Chrome file-picker regression: **80/80 synthetic checks PASS** on desktop and mobile 390 px; 0 observed unexpected analysis uploads. Keyboard navigation was checked on the same Preview. These checks are bounded and **not an independent whole-PR security or accessibility certification**. PR #7 remains Draft and its integrated independent review is still open.
+
+The video review candidate is locally rendered at 116.6 seconds, but has **not** been published on YouTube or entered into a confirmed Kiroween submission. The Devpost project description points at this M8.8 Preview; its hackathon website field still lists older production until the submission form is updated. M9 hooks are disabled.
+
+Three proof boundaries matter: a stale test is not proof code is broken; a matching CI PASS is provider-reported, not semantic correctness; and `CURRENT_SELF_RECORDED_TEST` is derived only from an editable saved session, never independent attestation. The Live Investigator parses visitor-selected files only in the browser. Authentic Kiro-authored core work is documented below and separately from ChatGPT/WAG contributions.
+
+## Historical M7 milestone — now integrated into M8.8 Preview
+
+**Originally local-only in M7; also available on the public M8.8 Preview:** start the Node server and open `/live.html` when evaluating locally.
 Select a Kiro CLI `messages.jsonl` file (up to 8 MiB, 4,000 lines).
 The tab reads and processes the selected file in memory; the browser does
 **not** upload it. The privacy-focused output shows tool-observed test
@@ -33,15 +47,11 @@ implemented by ChatGPT/WAG; a separate Kiro implementation attempt timed
 out and did not create this module. Do not attribute M7 parser authorship
 to Kiro. See `docs/competition/M7_LOCAL_RELEASE_REVIEW_20261105.md`.
 
-**Release gate (2026-11-05):** M7 is committed as `937da7876bf7766e85e77b94e540843e11151294` in [draft PR #4](https://github.com/ShenJun93/specter-audit/pull/4), stacked on still-open PR #3. Exact-SHA GitHub Actions completed successfully with 296 passing Node tests. The no-Toolbar Vercel Preview and its Chrome acceptance were verified only for the **previous** SHA `0e5a22b`; a current-SHA Preview and production release remain **unverified/unreleased**. Never describe the prior Preview as validating the new Judge Journey.
+**Historical M8.0 release gate (2026-11-05; superseded by M8.8 above):** [Draft PR #4](https://github.com/ShenJun93/specter-audit/pull/4) at SHA `73068263f5c50c5a1dcb8c50d2747d3ab61f2c20` has a [matching READY Vercel Preview](https://specter-audit-96h1fqej1-nvhoa1691993-6852s-projects.vercel.app/live.html). Browser QA checked six desktop/mobile synthetic verdict flows, asset bytes against source and absence of unexpected click-triggered requests. **Production remains unreleased for M8.** The separate M8.1 UX branch improves discoverability, file-selection help and actionable next-step copying; it requires its own CI/Preview. M9 Hook remains disabled and unverified on actual Kiro V3. See `docs/competition/M8_JUDGE_ENTRY_RELEASE_GATE_20261105.md`.
 
-## Alibi Room v2 — four evidence exhibits (M6F local candidate)
+## Alibi Room v2 — four evidence exhibits (public M8.8 Preview)
 
-**Unreleased candidate:** `/alibi.html` on the local Node server. The current
-public Vercel production site remains the earlier M5L release. The branch
-`feat/agent-alibi-v2` contains M6D–M6F in **Ready for review PR #3**
-at SHA `156efb1fb0a5f771af9d39f66aae626432a142a4`, with exact-SHA
-Preview acceptance. M7 is committed in a separate draft PR #4; it has not been deployed to production.
+**Available now on the M8.8 public Preview:** `/alibi.html`; also available locally from the Node server. The stable production site remains the earlier M5L release. Historical PRs #3 and #4 were staged milestones and must **not** be merged separately; the reviewed integrated candidate is Draft PR #7.
 
 Alibi Room asks two different questions: *Is the cited CI for the correct
 commit?* and *Was the recorded test result still current after the agent
@@ -95,7 +105,7 @@ The public demo requires no account or installation. It is visibly labeled **SYN
 
 A separate **Public CI evidence** button shows a timestamped record of the fixed GitHub Actions workflow for the **production merge release** (`374af141...`). Hosted visitors never trigger an outbound GitHub API call. The recorded result is provider-reported CI metadata for that *one published commit*, not an attestation and not proof that arbitrary agent claims are true.
 
-**Live production provenance:** M5L has deployed at merge SHA `b6e1407d...`. Its CI panel intentionally displays the separately labeled historical M5K release record (`374af141...`), not CI proof for M5L. The M5L merge CI is [run 41742626694](https://github.com/ShenJun93/specter-audit/actions/runs/41742626694). Alibi Room v2 remains an unreleased candidate.
+**Live production provenance:** M5L has deployed at merge SHA `b6e1407d...`. Its CI panel intentionally displays the separately labeled historical M5K release record (`374af141...`), not CI proof for M5L. The M5L merge CI is [run 41742626694](https://github.com/ShenJun93/specter-audit/actions/runs/41742626694). Alibi Room v2 is available in the M8.8 Preview but not yet in stable production.
 
 ## Local read-only inspection
 
@@ -138,7 +148,7 @@ Tests cover Git inspection, evaluator verdict semantics, synthetic mode, API lim
 
 ## Release, security and submission
 
-Production M5L currently serves merge SHA `b6e1407d1218e4ff4b44cb2dd3cae1388a5f533e`; its GitHub workflow was verified separately, with public browser/API post-deploy acceptance. `docs/M5K_PRODUCTION_RELEASE_20261104.md` documents the prior M5K release and limitations; M6F four-case Alibi Room is local-only until reviewed, committed, CI-verified and deployed.
+Stable production M5L currently serves merge SHA `b6e1407d1218e4ff4b44cb2dd3cae1388a5f533e`; its workflow was verified separately. The M8.8 four-case Alibi Room and local-session Live Investigator are available on the exact-SHA public Preview linked above; stable production promotion is **HOLD** pending owner authorization and integrated review. `docs/M5K_PRODUCTION_RELEASE_20261104.md` describes the earlier production release.
 
 The app is not a security certification or an independent semantic code auditor. `SUPPORTED` means **Git path alignment**, not that tests passed or code works.
 

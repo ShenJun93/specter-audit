@@ -353,6 +353,12 @@ export function auditLocalSession(input) {
   // A passing test is only valid evidence if it was the latest test at or before claim time
   const hasValidPassingTest = (latestTestPassed && latestPassingTestMs !== null);
 
+  // This exported function describes the saved session, not merely the
+  // instant of the agent's statement. A later failing test rules out CURRENT.
+  const failedAfterClaim = input.tests.some(test =>
+    parseTimestamp(test.at) > claimAtMs &&
+    (test.pass <= 0 || test.fail > 0 || test.exitCode !== 0));
+
   let status;
   let reason;
 
@@ -362,9 +368,15 @@ export function auditLocalSession(input) {
   } else if (!hasValidPassingTest) {
     status = 'INSUFFICIENT_SESSION_EVIDENCE';
     reason = 'No passing tests found despite successful source edits';
+  } else if (failedAfterClaim) {
+    status = 'INSUFFICIENT_SESSION_EVIDENCE';
+    reason = 'A later failed test prevents a current session verdict';
   } else if (latestSuccessfulEditMs === null) {
     status = 'CURRENT_SELF_RECORDED_TEST';
     reason = 'Passing test exists but no source edits recorded';
+  } else if (latestSuccessfulEditMs === latestPassingTestMs) {
+    status = 'INSUFFICIENT_SESSION_EVIDENCE';
+    reason = 'Passing test and successful source edit share an ambiguous timestamp; their order cannot be established';
   } else if (latestSuccessfulEditMs > latestPassingTestMs) {
     status = 'STALE_LOCAL_TEST_EVIDENCE';
     reason = 'Successful source edit after latest passing test with no later passing test';

@@ -52,3 +52,12 @@
 .live-next-step p{font-size:12px;color:#c7d9e5;line-height:1.65;margin:0}
 .live-next-hint{font-size:12px;line-height:1.65;padding:14px 16px;color:#c7d9e5;background:#182b3c;border-left:3px solid #8294b6}
 .live-actions button:focus-visible{outline:3px solid #8bd6df;outline-offset:3px}
+/* A focused mobile verdict must not disappear behind the page header. */
+#results-heading{scroll-margin-block-start:24px}
+#results-heading:focus{outline:2px solid #8bd6df;outline-offset:5px}
+.live-howto{margin:10px 0 16px;padding:12px 14px;border:1px solid #354b61;border-radius:8px;background:#121f2d;color:#b7cedc;font-size:12px;line-height:1.7}
+.live-howto summary{cursor:pointer;color:#d1ecf5;font-weight:700}
+.live-howto p{margin:10px 0 0}
+.live-howto summary:focus-visible{outline:3px solid #8bd6df;outline-offset:3px}
+#copy-next-step{min-height:36px;margin-top:12px}
+#copy-next-step:focus-visible{outline:3px solid #8bd6df;outline-offset:3px}
