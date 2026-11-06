@@ -23,6 +23,12 @@ const STATIC_FILES = new Map([
   ['/live.html', ['live.html', 'text/html; charset=utf-8']],
   ['/live.css', ['live.css', 'text/css; charset=utf-8']],
   ['/live.js', ['live.js', 'text/javascript; charset=utf-8']],
+  ['/pr-proof.html', ['pr-proof.html', 'text/html; charset=utf-8']],
+  ['/pr-proof.js', ['pr-proof.js', 'text/javascript; charset=utf-8']],
+  ['/pr-proof.css', ['pr-proof.css', 'text/css; charset=utf-8']],
+  ['/public-pr-evidence.mjs', ['public-pr-evidence.mjs', 'text/javascript; charset=utf-8']],
+  ['/evidence-trial.mjs', ['evidence-trial.mjs', 'text/javascript; charset=utf-8']],
+  ['/trial-ui.mjs', ['trial-ui.mjs', 'text/javascript; charset=utf-8']],
   ['/kiro-session-import.mjs', ['kiro-session-import.mjs', 'text/javascript; charset=utf-8']],
   ['/kiro-session-staleness.mjs', ['kiro-session-staleness.mjs', 'text/javascript; charset=utf-8']],
   ['/favicon.svg', ['favicon.svg', 'image/svg+xml']],
@@ -30,14 +36,16 @@ const STATIC_FILES = new Map([
 ]);
 const WEB_DIR = fileURLToPath(new URL('../web/', import.meta.url));
 const POLICY = "default-src 'none'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'self' data:; font-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'";
+// Only the opt-in public PR page may contact api.github.com. Local Kiro pages remain offline.
+const PR_POLICY = POLICY.replace("connect-src 'self'","connect-src 'self' https://api.github.com");
 
-function headers(res, mime) {
+function headers(res, mime, policy=POLICY) {
   res.setHeader('Content-Type', mime);
   res.setHeader('Cache-Control', 'no-store, max-age=0');
   res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('X-Frame-Options', 'DENY');
   res.setHeader('Referrer-Policy', 'no-referrer');
-  res.setHeader('Content-Security-Policy', POLICY);
+  res.setHeader('Content-Security-Policy', policy);
   res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
 }
 function send(res, status, payload) {
@@ -139,7 +147,7 @@ export async function createAppServer({repoPath,port=0,publicCiFetchImpl}={}) {
       if(req.method==='GET'&&STATIC_FILES.has(rawPath)){
         const [filename,mime]=STATIC_FILES.get(rawPath);
         const buf=await readFile(path.join(WEB_DIR,filename));
-        headers(res,mime);res.writeHead(200);res.end(buf);return;
+        headers(res,mime,rawPath==='/pr-proof.html'?PR_POLICY:POLICY);res.writeHead(200);res.end(buf);return;
       }
       if(req.method!=='GET'&&req.method!=='POST')return send(res,405,{error:'Method not allowed'});
       return send(res,404,{error:'Route not found'});
