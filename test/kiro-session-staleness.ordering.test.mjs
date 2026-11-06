@@ -27,3 +27,20 @@ test('unknown or malformed top-level input fails conservatively rather than cras
  assert.doesNotThrow(()=>auditLocalSession(null));
  assert.equal(auditLocalSession(null).status,'INSUFFICIENT_SESSION_EVIDENCE');
 });
+test('P1: same-instant test and successful source edit must not be CURRENT',()=>{
+ const ambiguous=auditLocalSession({
+  ...base,
+  tests:[{at:'2026-11-04T10:25:00.000Z',pass:10,fail:0,exitCode:0}],
+  edits:[{at:'2026-11-04T10:25:00.000+00:00',file:'src/example.mjs',successful:true}]
+ });
+ assert.equal(ambiguous.status,'INSUFFICIENT_SESSION_EVIDENCE');
+ assert.match(ambiguous.reason,/ambiguous|same instant|same timestamp/i);
+});
+test('P1: one-millisecond ordered edit and retest is still CURRENT',()=>{
+ const fresh=auditLocalSession({
+  ...base,
+  tests:[{at:'2026-11-04T10:25:00.001Z',pass:10,fail:0,exitCode:0}],
+  edits:[{at:'2026-11-04T10:25:00.000Z',file:'src/example.mjs',successful:true}]
+ });
+ assert.equal(fresh.status,'CURRENT_SELF_RECORDED_TEST');
+});

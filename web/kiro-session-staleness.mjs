@@ -374,6 +374,9 @@ export function auditLocalSession(input) {
   } else if (latestSuccessfulEditMs === null) {
     status = 'CURRENT_SELF_RECORDED_TEST';
     reason = 'Passing test exists but no source edits recorded';
+  } else if (latestSuccessfulEditMs === latestPassingTestMs) {
+    status = 'INSUFFICIENT_SESSION_EVIDENCE';
+    reason = 'Passing test and successful source edit share an ambiguous timestamp; their order cannot be established';
   } else if (latestSuccessfulEditMs > latestPassingTestMs) {
     status = 'STALE_LOCAL_TEST_EVIDENCE';
     reason = 'Successful source edit after latest passing test with no later passing test';
