@@ -64,11 +64,26 @@ function observedResult(data){
  // Public metadata only. No local Kiro session data is ever sent in this event.
  window.dispatchEvent(new CustomEvent('specter:pr-observed',{detail:data}));
 }
-form.addEventListener('submit',async e=>{
- e.preventDefault();clearError();
- if(button.disabled)return;
+// A PR URL is a new evidence target. Never leave the prior target's green
+// observation on screen during input changes or a pending new inspection.
+function invalidatePrObservation(){
  latest=null;
+ $('pr-report').hidden=true;
+ $('pr-empty').hidden=false;
+ $('pr-provenance').textContent='NOT YET REQUESTED';
+ $('pr-copy-status').textContent='';
  window.dispatchEvent(new CustomEvent('specter:pr-observed',{detail:null}));
+}
+input.addEventListener('input',()=>{
+ if(button.disabled)return;
+ clearError();
+ invalidatePrObservation();
+});
+form.addEventListener('submit',async e=>{
+ e.preventDefault();
+ if(button.disabled)return;
+ clearError();
+ invalidatePrObservation();
  button.disabled=true;input.disabled=true;button.textContent='Checking public GitHub evidence…';
  try{
   latest=await inspectPublicPr(input.value);

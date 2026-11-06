@@ -46,7 +46,9 @@ test('no automatic external request or private-file network upload in trial UI',
 });
 test('PR inspector clears previous observation before new fetch',async()=>{
  const src=await(await get('/pr-proof.js')).text();
- assert.match(src,/latest=null;\s*window\.dispatchEvent\(new CustomEvent\('specter:pr-observed',\{detail:null\}\)\)/);
+ assert.match(src,/function invalidatePrObservation\(\)\{\s*latest=null;/);
+ assert.match(src,/window\.dispatchEvent\(new CustomEvent\('specter:pr-observed',\{detail:null\}\)\)/);
+ assert.match(src,/form\.addEventListener\('submit',async e=>\{[\s\S]*?invalidatePrObservation\(\);\s*button\.disabled=true;/);
  assert.match(src,/window\.dispatchEvent\(new CustomEvent\('specter:pr-observed',\{detail:data\}\)\)/);
 });
 test('local parser and trial UI retain safe static-script isolation',async()=>{

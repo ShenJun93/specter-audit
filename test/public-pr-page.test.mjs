@@ -95,3 +95,15 @@ test('UNKNOWN and invalid PR URL must not claim a GitHub provider observation',a
  assert.match(s,/PR HEAD OBSERVED.*CI UNKNOWN/);
  assert.match(s,/data\.status===['"]OBSERVED_EXACT_SHA_RUNS['"]/);
 });
+
+test('changing the public PR target invalidates prior green provider evidence',async()=>{
+ const s=await(await get('/pr-proof.js')).text();
+ assert.match(s,/function invalidatePrObservation\(\)\{/);
+ const block=s.match(/function invalidatePrObservation\(\)\{([\s\S]*?)\n\}/);
+ assert.ok(block);
+ for(const safe of ["latest=null", "$('pr-report').hidden=true", "$('pr-empty').hidden=false", "$('pr-provenance').textContent='NOT YET REQUESTED'", "CustomEvent('specter:pr-observed',{detail:null})"]){
+  assert.ok(block[1].includes(safe),'missing invalidation: '+safe);
+ }
+ assert.match(s,/input\.addEventListener\('input',\(\)=>\{\s*if\(button\.disabled\)return;\s*clearError\(\);\s*invalidatePrObservation\(\);/);
+ assert.match(s,/form\.addEventListener\('submit',async e=>\{[\s\S]*?clearError\(\);\s*invalidatePrObservation\(\);\s*button\.disabled=true;/);
+});
