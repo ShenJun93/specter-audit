@@ -115,7 +115,11 @@ function contradictsClaim(statement) {
 function isExplicitTestCorrection(content) {
  if(typeof content!=='string')return false;
  const statement=content.trim().slice(0,500);
- const prefix=statement.match(/^(?:correction|update|revision|revised\s+(?:test\s+)?results?|actually)\s*[:,-]\s*/i);
+ // Recognize an explicit test-result correction even when punctuation differs
+ // or the author introduces it as an update about testing.
+ const prefix=statement.match(
+  /^(?:(?:correction|update|revision|revised\s+(?:test\s+)?results?|actually|oops)\s*[:,\u2013\u2014-]\s*|(?:correction|update|revision)\s+(?:on|to|about|regarding)\s+(?:(?:my|our|the)\s+)?(?:test\s+)?(?:results?|tests?|passing\s+claim|pass\s+count|fail(?:ure)?\s+count)\s*[:,\u2013\u2014-]\s*|(?:(?:(?:i|we)\s+(?:need|want|have)\s+to|to)\s+)?correct\s+(?:(?:my|our|the)\s+)?(?:(?:earlier|previous)\s+)?(?:test\s+)?(?:results?|tests?|passing\s+claim|pass\s+count|fail\s+count)\s*[:,\u2013\u2014-]\s*)/i
+ );
  return !!prefix && /\b(?:tests?|passes?|passed|passing|fail(?:ed|ures?)?|results?)\b/i.test(statement.slice(prefix[0].length));
 }
 function safeClaim(content) {
