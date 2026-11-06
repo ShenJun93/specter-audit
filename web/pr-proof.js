@@ -61,10 +61,14 @@ function observedResult(data){
  }
  $('pr-copy-status').textContent='';
  $('pr-results-heading').focus({preventScroll:true});
+ // Public metadata only. No local Kiro session data is ever sent in this event.
+ window.dispatchEvent(new CustomEvent('specter:pr-observed',{detail:data}));
 }
 form.addEventListener('submit',async e=>{
  e.preventDefault();clearError();
  if(button.disabled)return;
+ latest=null;
+ window.dispatchEvent(new CustomEvent('specter:pr-observed',{detail:null}));
  button.disabled=true;input.disabled=true;button.textContent='Checking public GitHub evidence…';
  try{
   latest=await inspectPublicPr(input.value);

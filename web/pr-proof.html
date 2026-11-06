@@ -11,6 +11,7 @@
  <link rel="stylesheet" href="/live.css">
  <link rel="stylesheet" href="/pr-proof.css">
  <script type="module" src="/pr-proof.js"></script>
+ <script type="module" src="/trial-ui.mjs"></script>
 </head>
 <body>
  <a class="skip-link" href="#pr-investigation">Skip to PR investigation</a>
@@ -68,6 +69,51 @@
      </div>
     </section>
    </div>
+   <section id="trial-court" class="trial-court" aria-labelledby="trial-heading">
+    <div class="trial-kicker">03 / EVIDENCE TRIAL — OPTIONAL, BROWSER-ONLY SESSION</div>
+    <div class="trial-header">
+     <div><h2 id="trial-heading">Put your agent's <em>alibi</em> on trial.</h2>
+      <p>Compare an observed PR HEAD with the Kiro agent's saved test chronology. Two green receipts are <strong>not</strong> independent evidence that this session tested that commit.</p></div>
+     <span class="trial-seal">NO FALSE VERDICTS</span>
+    </div>
+    <div class="trial-upload">
+     <div><label for="trial-file">Optional Kiro messages.jsonl (8 MiB maximum)</label>
+      <input id="trial-file" type="file" accept=".jsonl,.txt,text/plain" aria-describedby="trial-help">
+      <p id="trial-help">Only read when you click Analyze. This file stays inside your browser tab.</p>
+      <button type="button" id="trial-analyze" class="live-primary" disabled>Analyze local file</button></div>
+     <div><span class="tiny-label">STAGED EVIDENCE / EXPLICITLY SYNTHETIC</span>
+      <div class="trial-buttons"><button type="button" id="trial-stale" class="live-secondary">After source edit</button>
+       <button type="button" id="trial-retest" class="live-secondary">After fresh retest</button>
+       <button type="button" id="trial-clear" class="live-secondary">Clear session</button></div>
+      <p>The synthetic scenes exercise the real parser, not a hard-coded PASS. Inspect a public PR above to observe real provider metadata.</p></div>
+    </div>
+    <p id="trial-notice" role="status" aria-live="polite">No local file has been read.</p>
+    <div class="trial-chain" aria-label="Separated evidence and the missing link">
+     <article class="trial-step"><span>EXHIBIT A / KIRO SESSION</span><h3>Agent's testimony</h3>
+      <strong id="trial-local-status" class="trial-mark">NOT INSPECTED</strong>
+      <p id="trial-local-detail">Choose a local session or a synthetic example.</p>
+      <small id="trial-local-source">SOURCE: NONE</small></article>
+     <article class="trial-step"><span>EXHIBIT B / GITHUB ACTIONS</span><h3>Commit's alibi</h3>
+      <strong id="trial-pr-status" class="trial-mark">NOT INSPECTED</strong>
+      <p id="trial-pr-detail">Inspect a public PR above to retrieve its current HEAD SHA.</p>
+      <small id="trial-pr-source">PROVIDER: NOT QUERIED</small></article>
+     <article class="trial-step trial-gap"><span>EXHIBIT C / MISSING LINK</span><h3>The broken chain</h3>
+      <strong class="trial-mark">NOT LINKED</strong>
+      <p>No independent evidence binds an editable Kiro session to the PR HEAD. The bridge stays broken, even when both exhibits look green.</p>
+      <small>INDEPENDENT BINDING: ABSENT</small></article>
+    </div>
+    <div class="trial-disposition" role="status" aria-live="polite">
+     <span class="trial-disposition-icon" aria-hidden="true">◇</span>
+     <div><small>FINAL DISPOSITION</small><h3>RELEASE EVIDENCE INCOMPLETE</h3>
+      <p id="trial-next">Inspect the local session and public PR separately. Independently verify which code the session actually tested.</p></div>
+    </div>
+    <div class="trial-buttons trial-export">
+     <button type="button" id="trial-copy" class="live-secondary">Copy sanitized hearing</button>
+     <button type="button" id="trial-download" class="live-secondary">Download report JSON</button>
+     <p id="trial-export-status" role="status" aria-live="polite"></p>
+    </div>
+    <p class="trial-caveat">A matching GitHub Actions run is provider-reported; a local PASS is self-recorded. Neither is a correctness guarantee. No raw transcript, prompts, commands or local file paths are included in this report.</p>
+   </section>
    <section class="live-footer"><div><span class="tiny-label">03 / HONEST LIMITS</span><h2>Observe a run. Don't invent a PASS.</h2><p>GitHub Actions only reports what GitHub knows about its own workflows. A single green run never proves every required check passed, that a Kiro log tested this exact commit, or that the code is safe.</p></div><a class="primary-link" href="/live.html">Explore a saved Kiro session <span aria-hidden="true">↗</span></a></section>
   </main>
   <footer class="live-bottom">SPECTER AUDIT · EXPERIMENTAL PUBLIC PR PROBE · NO PRIVATE LOG UPLOAD · NO RELEASE APPROVAL · <a href="https://github.com/ShenJun93/specter-audit" target="_blank" rel="noopener noreferrer">OPEN SOURCE</a></footer>

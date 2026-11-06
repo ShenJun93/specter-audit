@@ -27,6 +27,8 @@ const STATIC_FILES = new Map([
   ['/pr-proof.js', ['pr-proof.js', 'text/javascript; charset=utf-8']],
   ['/pr-proof.css', ['pr-proof.css', 'text/css; charset=utf-8']],
   ['/public-pr-evidence.mjs', ['public-pr-evidence.mjs', 'text/javascript; charset=utf-8']],
+  ['/evidence-trial.mjs', ['evidence-trial.mjs', 'text/javascript; charset=utf-8']],
+  ['/trial-ui.mjs', ['trial-ui.mjs', 'text/javascript; charset=utf-8']],
   ['/kiro-session-import.mjs', ['kiro-session-import.mjs', 'text/javascript; charset=utf-8']],
   ['/kiro-session-staleness.mjs', ['kiro-session-staleness.mjs', 'text/javascript; charset=utf-8']],
   ['/favicon.svg', ['favicon.svg', 'image/svg+xml']],
