@@ -110,6 +110,14 @@ function isTestCommand(command) {
 function contradictsClaim(statement) {
  return /\b(?:this|that|the|my|above|earlier|previous)\s+(?:(?:above|earlier|previous|original|test|passing|pass|result)\s+){0,3}(?:claim|statement|assertion|result|results)\s+(?:is|was|are|were|has\s+been|have\s+been)\s+(?:wrong|false|incorrect|inaccurate|invalid|untrue|mistaken|retracted)\b|\b(?:i|we)\s+(?:retract|withdraw|disavow)\s+(?:(?:this|that|the|my|earlier|previous)\s+)?(?:test\s+|passing\s+)?(?:claim|statement|assertion|result|results)\b|\b(?:this|that)\s+was\s+(?:a\s+)?(?:mistaken|false|wrong|incorrect)\s+(?:claim|statement|assertion|result)\b/i.test(statement)||/\b(?:i|we)\s+(?:(?:retract|withdraw|disavow)\s+(?:this|that|it)|take\s+(?:this|that|it)\s+back)\b|\b(?:that|this|it)\s+was\s+(?:a\s+)?(?:lie|fabrication|falsehood)\b|\b(?:please\s+)?(?:ignore|disregard|discard)\s+(?:(?:my|the|our|that|this)\s+)?(?:(?:earlier|previous|preceding|above)\s+)?(?:claim|statement|assertion|test\s+results?)\b/i.test(statement);
 }
+// Explicit agent corrections about testing invalidate earlier positive assertions.
+// Conservatively recognize anchored corrections without interpreting free prose.
+function isExplicitTestCorrection(content) {
+ if(typeof content!=='string')return false;
+ const statement=content.trim().slice(0,500);
+ const prefix=statement.match(/^(?:correction|update|revision|revised\s+(?:test\s+)?results?|actually)\s*[:,-]\s*/i);
+ return !!prefix && /\b(?:tests?|passes?|passed|passing|fail(?:ed|ures?)?|results?)\b/i.test(statement.slice(prefix[0].length));
+}
 function safeClaim(content) {
   if(typeof content!=='string')return null;
   // Only a short, explicit affirmative result claim qualifies.
@@ -120,7 +128,7 @@ function safeClaim(content) {
   const match=content.match(/^\s*(?:all\s+)?(\d{1,5})\s+tests?\s+pass(?:ed)?(?:\s*,\s*0\s+fail(?:ures?)?)?(?:\s*\([^()\r\n]{1,120}\))?\s*[.!](?:\s|$)/i);
   if(!match)return null;
   const suffix=content.slice(match[0].length);
-  if(/\b(?:but|however|actually|false|failed|didn.t|not|hypothetical|conditional)\b/i.test(suffix)||contradictsClaim(suffix))return null;
+  if(/\b(?:but|however|actually|false|failed|didn.t|not|hypothetical|conditional)\b/i.test(suffix)||contradictsClaim(suffix)||isExplicitTestCorrection(suffix))return null;
   const count=Number(match[1]);
   return count>0&&Number.isSafeInteger(count)?count:null;
 }
@@ -173,7 +181,7 @@ function result(events) {
     if(p.type!=='assistant'||p.operationType!=='Say')continue;
     const n=safeClaim(p.content);
     if(n!==null)claims.push({at:e.timestamp,ms:iso(e.timestamp),count:n,position});
-    else if(isTestRetraction(p.content)||contradictsClaim(typeof p.content==='string'?p.content:''))retractions.push({ms:iso(e.timestamp),position});
+    else if(isTestRetraction(p.content)||contradictsClaim(typeof p.content==='string'?p.content:'')||isExplicitTestCorrection(p.content))retractions.push({ms:iso(e.timestamp),position});
   }
   if(!claims.length)return safeError('NO_RECORDED_AGENT_TEST_CLAIM',{
     sessionEvents:events.length,
@@ -206,6 +214,7 @@ function result(events) {
   if(retractions.some(r=>r.ms>=claim.ms||r.position>=claim.position))return safeError('LATER_AGENT_TEST_CLAIM_RETRACTED',{recognizedClaims:claims.length});
   if(claim.ms>lastTime)return safeError('INVALID_CHRONOLOGY');
   const tests=[],edits=[],unverifiedOperations=[];
+  const testResultOrder=new WeakMap();
   const testWindows=[],editWindows=[],uncertainWindows=[];
   let unclassifiedEdits=0,unpairedRelevant=0;
   const readOnlyTools=new Set(['read_file','list_directory','update_session_information','get_session_information','list_files']);
@@ -262,7 +271,9 @@ function result(events) {
         uncertainWindows.push({start:iso(call.timestamp),end:iso(at)});
         continue;
       }
-      tests.push({at,...data});
+      const recordedTest={at,...data};
+      tests.push(recordedTest);
+      testResultOrder.set(recordedTest,resultPositions.get(id));
       testWindows.push({start:iso(call.timestamp),end:iso(at)});
     }
     if(tests.length>60||edits.length>60)return safeError('TOO_MANY_RELEVANT_EVENTS');
@@ -303,6 +314,17 @@ function result(events) {
   // Only a completed test strictly before the claim can support it.
   // Later test results are chronology, not retroactive confirmation.
   const candidate=tests.filter(t=>iso(t.at)<claim.ms).sort((a,b)=>iso(b.at)-iso(a.at))[0];
+  // A newer claim cannot re-use the receipt that an earlier explicit test
+  // correction already disputed. Require a fresh successful matching receipt,
+  // later than the correction in both timestamp and physical JSONL order.
+  const priorCorrection=retractions.filter(r=>r.position<claim.position).sort((a,b)=>b.position-a.position)[0];
+  if(priorCorrection&&(!candidate||
+      candidate.pass!==claim.count||candidate.fail!==0||candidate.exitCode!==0||
+      iso(candidate.at)<=priorCorrection.ms||
+      testResultOrder.get(candidate)<=priorCorrection.position||
+      testResultOrder.get(candidate)>=claim.position)){
+    return safeError('CORRECTION_WITHOUT_NEW_TEST_RECEIPT',info);
+  }
   if(candidate&&candidate.pass!==claim.count)return safeError('CLAIM_TEST_COUNT_MISMATCH',info);
   const afterClaim=tests.filter(t=>iso(t.at)>=claim.ms);
   if(afterClaim.length){

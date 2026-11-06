@@ -154,3 +154,72 @@ test('P0: a later affirmative claim with coherent event order is selected normal
  assert.equal(r.parsed.errorCode,null);
  assert.equal(r.verdict,'CURRENT_SELF_RECORDED_TEST');
 });
+test('P0 M8.5: independently verified 5-event correction of pass count cannot produce CURRENT',()=>{
+ const rows=[
+  e(0,{type:'tool_call',toolCallId:'test',toolName:'execute_pwsh',args:{command:'node --test'}}),
+  e(1,{type:'tool_result',toolCallId:'test',success:true,content:'pass 8\nfail 0\nExit Code: 0'}),
+  e(2,{type:'assistant',operationType:'Say',content:'All 8 tests pass, 0 fail.'}),
+  e(3,{type:'assistant',operationType:'Say',content:'Correction: 7 tests passed.'}),
+  e(9,{type:'turn_end'})
+ ];
+ const r=status(rows);
+ assert.equal(r.verdict,'INSUFFICIENT_SESSION_EVIDENCE');
+ assert.equal(r.parsed.errorCode,'LATER_AGENT_TEST_CLAIM_RETRACTED');
+ assert.equal(r.parsed.input,null);
+});
+test('P0 M8.5: newer correction of failed test is not silently ignored',()=>{
+ for(const correction of ['Correction: one test failed.','Update: 7 tests passed.','Actually, 7 tests passed.']){
+  const rows=currentFixture();
+  rows.splice(5,0,e(5,{type:'assistant',operationType:'Say',content:correction}));
+  rows[6].timestamp=t(9);
+  const r=status(rows);
+  assert.equal(r.verdict,'INSUFFICIENT_SESSION_EVIDENCE',correction);
+  assert.equal(r.parsed.errorCode,'LATER_AGENT_TEST_CLAIM_RETRACTED',correction);
+ }
+});
+test('P0 M8.5: later serialized test correction still blocks CURRENT when backdated',()=>{
+ for(const correction of ['Correction: 7 tests passed.','Correction: one test failed.']){
+  const rows=currentFixture();
+  rows.splice(5,0,e(1,{type:'assistant',operationType:'Say',content:correction}));
+  const r=status(rows);
+  assert.equal(r.parsed.errorCode,'LATER_AGENT_TEST_CLAIM_RETRACTED',correction);
+  assert.equal(r.verdict,'INSUFFICIENT_SESSION_EVIDENCE');
+ }
+});
+test('M8.5: same-message correction of an affirmative test claim is not CURRENT',()=>{
+ const r=status(currentFixture('All 8 tests pass, 0 fail. Correction: 7 tests passed.'));
+ assert.equal(r.verdict,'INSUFFICIENT_SESSION_EVIDENCE');
+ assert.equal(r.parsed.errorCode,'NO_RECORDED_AGENT_TEST_CLAIM');
+});
+test('M8.5: unrelated documentation correction does not invalidate valid CURRENT',()=>{
+ const rows=currentFixture();
+ rows.splice(5,0,e(5,{type:'assistant',operationType:'Say',content:'Correction: renamed the README section.'}));
+ const r=status(rows);
+ assert.equal(r.parsed.errorCode,null);
+ assert.equal(r.verdict,'CURRENT_SELF_RECORDED_TEST');
+});
+test('P0 M8.5: reasserting a corrected PASS requires a new supporting tool receipt',()=>{
+ const rows=currentFixture();
+ rows.splice(5,0,
+   e(5,{type:'assistant',operationType:'Say',content:'Correction: one test failed.'}),
+   e(7,{type:'assistant',operationType:'Say',content:'All 8 tests pass, 0 fail.'})
+ );
+ rows[7].timestamp=t(9);
+ const r=status(rows);
+ assert.equal(r.verdict,'INSUFFICIENT_SESSION_EVIDENCE');
+ assert.equal(r.parsed.errorCode,'CORRECTION_WITHOUT_NEW_TEST_RECEIPT');
+});
+test('M8.5: a valid new test after a correction may support a newer explicit claim',()=>{
+ const rows=currentFixture();
+ rows.splice(5,0,
+   e(5,{type:'assistant',operationType:'Say',content:'Correction: one test failed.'}),
+   e(6,{type:'tool_call',toolCallId:'retest',toolName:'execute_pwsh',args:{command:'node --test'}}),
+   e(7,{type:'tool_result',toolCallId:'retest',success:true,content:'pass 8\nfail 0\nExit Code: 0'}),
+   e(8,{type:'assistant',operationType:'Say',content:'All 8 tests pass, 0 fail.'})
+ );
+ rows[9].timestamp=t(9);
+ const r=status(rows);
+ assert.equal(r.parsed.errorCode,null);
+ assert.equal(r.verdict,'CURRENT_SELF_RECORDED_TEST');
+ assert.equal(r.parsed.summary.recognizedClaims,2);
+});

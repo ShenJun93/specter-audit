@@ -51,6 +51,7 @@ const errors={
  POST_CLAIM_TEST_EVIDENCE_UNRESOLVED:'A later test cannot confirm the earlier claim. The available evidence does not establish a current result.',
  OVERLAPPING_RELEVANT_TOOL_OPERATIONS:'A test overlaps a source edit or an uncertain tool operation. Its completion cannot prove which code was tested.',
  LATER_AGENT_TEST_CLAIM_RETRACTED:'A later agent message retracts the passing-test claim; the prior PASS cannot establish a current result.',
+ CORRECTION_WITHOUT_NEW_TEST_RECEIPT:'A later claim follows a test correction without a fresh matching test result; current evidence is insufficient.',
  AMBIGUOUS_EVENT_TIMESTAMPS:'Multiple test or edit events share an ambiguous timestamp.'
 };
 function showError(text) {
