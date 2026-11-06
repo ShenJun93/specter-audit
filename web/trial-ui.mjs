@@ -56,6 +56,21 @@ function render(){
   pr?'PR HEAD is observed; the GitHub Actions evidence is unknown or unavailable.':
   'Inspect a public PR above to retrieve its current HEAD SHA.';
  $('trial-pr-source').textContent=pr?'HEAD: '+pr.headSha+' · PROVIDER-REPORTED':'PROVIDER: NOT QUERIED';
+ // Render only fixed, bounded planner text derived from the validated hearing.
+ const repairList=$('trial-repair-list');
+ repairList.replaceChildren();
+ for(const step of hearing.repairPlan.checks){
+  const li=document.createElement('li');
+  const label=document.createElement('strong');
+  const state=document.createElement('span');
+  const action=document.createElement('p');
+  label.textContent=step.label;
+  state.textContent=step.state.replaceAll('_',' ');
+  action.textContent=step.nextAction;
+  li.append(label,state,action);
+  repairList.append(li);
+ }
+ $('trial-repair-status').textContent='3 independent checks · release still unapproved';
  $('trial-next').textContent=nextText[hearing.suggestedAction]??nextText.GATHER_BOTH_EVIDENCE_SOURCES;
 }
 // Invalidate any pending async file read before clearing or replacing a session.

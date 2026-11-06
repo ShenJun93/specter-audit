@@ -86,6 +86,58 @@ export function summarizeLocalSession(text,{synthetic=false}={}){
   counts,...NO_ATTESTATION
  };
 }
+// A reviewer-facing repair plan derived only from already normalized, bounded
+// observations. No edge here is a release gate or independent attestation.
+function repairPlanFor(session,pr){
+ let localState='NOT_INSPECTED',localAction='Inspect a saved Kiro session or a clearly labeled synthetic example.';
+ if(session){
+  if(session.source==='EXPLICITLY_SYNTHETIC_EXAMPLE'){
+   localState=session.status==='STALE_LOCAL_TEST_EVIDENCE'?'SYNTHETIC_STALE':
+    session.status==='CURRENT_SELF_RECORDED_TEST'?'SYNTHETIC_CURRENT':'SYNTHETIC_UNKNOWN';
+   localAction=localState==='SYNTHETIC_STALE'?
+    'Demo only: retest after the final source edit. Import a genuine Kiro session for actual review.':
+    'Demo only: a synthetic retest cannot establish a genuine Kiro run or any PR commit identity.';
+  }else if(session.status==='STALE_LOCAL_TEST_EVIDENCE'){
+   localState='RETEST_REQUIRED';
+   localAction='Run relevant tests after the last observed source edit, then inspect the genuine receipt.';
+  }else if(session.status==='CURRENT_SELF_RECORDED_TEST'){
+   localState='SELF_RECORDED_CURRENT';
+   localAction='Confirm the observed receipt against independently available test execution and code identity.';
+  }else{
+   localState='UNKNOWN';
+   localAction='Obtain a supported, complete local test receipt; an unknown result is not a passing test.';
+  }
+ }
+ let ciState='NOT_INSPECTED',ciAction='Inspect a public GitHub PR HEAD with explicit consent.';
+ if(pr){
+  const finding=pr.workflowFinding;
+  if(finding==='FAILED_RUNS_OBSERVED'){
+   ciState='FAILED';ciAction='Inspect failed exact-SHA workflow runs, fix the cause and rerun CI.';
+  }else if(finding==='RUNS_IN_PROGRESS'){
+   ciState='IN_PROGRESS';ciAction='Wait for in-progress exact-SHA workflows and re-inspect their results.';
+  }else if(finding==='NON_PASS_RUNS_OBSERVED'){
+   ciState='NON_PASS';ciAction='Review neutral, skipped or stale runs; do not treat them as successful tests.';
+  }else if(finding==='PARTIAL_RUN_SAMPLE'){
+   ciState='TRUNCATED';ciAction='Inspect the unobserved workflow history and required checks before relying on CI.';
+  }else if(finding==='SUCCESSFUL_RUNS_OBSERVED'){
+   ciState='PROVIDER_SUCCESS_OBSERVED';
+   ciAction='GitHub reports success for observed runs; independently inspect required checks and test scope.';
+  }else{
+   ciState='UNKNOWN';ciAction='Provider evidence is insufficient or invalid; obtain a trustworthy exact-SHA CI receipt.';
+  }
+ }
+ return {
+  schema:'SPECTER_EVIDENCE_REPAIR_PLAN_V1',
+  readyForRelease:false,
+  checks:[
+   {id:'KIRO_TEST_FRESHNESS',label:'Kiro test chronology',state:localState,nextAction:localAction},
+   {id:'PR_HEAD_CI',label:'Exact-commit CI evidence',state:ciState,nextAction:ciAction},
+   {id:'SESSION_TO_COMMIT',label:'Independent session-to-commit link',state:'UNBOUND',
+    nextAction:'Obtain independent evidence that the relevant tests ran against the exact PR HEAD. An editable session log or copied SHA alone cannot prove this.'}
+  ]
+ };
+}
+
 export function combineTrial(local=null,provider=null){
  const validLocal=local&&STATUSES.has(local.verdict)&&
    ['EXPLICITLY_SYNTHETIC_EXAMPLE','USER_SELECTED_BROWSER_ONLY'].includes(local.source);
@@ -138,6 +190,7 @@ export function combineTrial(local=null,provider=null){
  return {
   schema:'SPECTER_UNJOINED_EVIDENCE_TRIAL_V1',
   session,pr,
+  repairPlan:repairPlanFor(session,pr??(provider!==null?{workflowFinding:'CI_UNVERIFIED'}:null)),
   localStep:sessionStep,providerStep,
   bridge:'NO_INDEPENDENT_SESSION_TO_PR_COMMIT_BINDING',
   finalFinding:'RELEASE_EVIDENCE_INCOMPLETE',
