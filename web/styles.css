@@ -30,6 +30,9 @@ button:focus-visible,textarea:focus-visible,summary:focus-visible,a:focus-visibl
 .nav-item{padding:12px 13px;display:flex;align-items:center;gap:13px;color:#7f89a2;font-size:12px;font-weight:650;border-radius:9px}
 .nav-item.selected{background:linear-gradient(95deg,#382a5b,#201c34);color:#e8dcff;border:1px solid #534075;box-shadow:inset 3px 0 0 var(--violet)}
 .nav-item.passive{opacity:.86}
+a.nav-item{text-decoration:none;transition:background .18s ease,color .18s ease}
+a.nav-item:not(.selected):hover{background:#28223c;color:#e5deff}
+a.nav-item:focus-visible{outline:3px solid var(--teal);outline-offset:2px}
 .nav-icon{font-size:19px;color:#9b92bf;line-height:1}
 .nav-arrow{margin-left:auto;color:#bfa8fb}
 .protocol-step{display:flex;gap:15px;padding:5px 9px 11px;align-items:flex-start}
@@ -194,3 +197,15 @@ textarea::placeholder{color:#626d84}
 .provider-link{color:var(--teal);display:inline-block;font-size:12px;text-decoration:underline;text-underline-offset:3px}
 .provider-link:hover{color:#b9ffeb}
 .provider-caveat{border-top:1px solid #2b3445;padding-top:11px;margin:15px 0 0;color:#98a6bf;font-size:11px;line-height:1.65}
+
+/* M6C: prominent, bounded entrypoint to the separate read-only Alibi Room. */
+.alibi-room-cta{display:flex;flex-direction:column;gap:6px;max-width:580px;margin-top:24px;padding:15px 18px;border:1px solid #7357a2;border-left:3px solid var(--violet);border-radius:10px;background:linear-gradient(100deg,#332849aa,#1a2236c9);color:var(--ink);text-decoration:none;box-shadow:0 12px 30px #140c2c50}
+.alibi-room-cta:hover{border-color:var(--teal);background:linear-gradient(100deg,#443269bb,#1d2f3ccf)}
+.alibi-cta-label{font-size:9px;letter-spacing:1.6px;color:var(--teal);font-weight:850}
+.alibi-room-cta strong{font-size:15px;line-height:1.35;letter-spacing:-.2px}
+.alibi-cta-action{font-size:11px;font-weight:850;color:#c7aeff;letter-spacing:.6px}
+.alibi-room-cta:focus-visible{outline:3px solid var(--teal);outline-offset:4px}
+.hero-secondary-path{max-width:580px;font-size:12px;line-height:1.6;color:#a5b2c9;margin-top:12px}
+.hero-secondary-path a{color:var(--teal);text-decoration:underline;text-underline-offset:3px}
+.hero-secondary-path a:focus-visible{outline:3px solid var(--teal);outline-offset:3px}
+@media(max-width:600px){.alibi-room-cta{margin-top:17px;padding:13px 15px}.alibi-room-cta strong{font-size:14px}}
