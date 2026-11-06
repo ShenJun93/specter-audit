@@ -68,3 +68,13 @@ test('Clear, synthetic switch and new selection invalidate an in-flight file rea
  assert.match(src,/\$\('trial-clear'\)\.addEventListener\('click',\(\)=>\{\s*sessionEpoch\+\+/);
  assert.match(src,/if\(epoch===sessionEpoch\)\{clearFile\(\);render\(\)\}/);
 });
+
+test('choosing a different input invalidates earlier hearing before analysis',async()=>{
+ const src=await(await get('/trial-ui.mjs')).text();
+ const change=src.match(/file\.addEventListener\('change',\(\)=>\{([\s\S]*?)const selected=file\.files\?\.\[0\];/);
+ assert.ok(change,'file selection handler must exist');
+ assert.match(change[1],/sessionEpoch\+\+;/);
+ assert.match(change[1],/local=null;/);
+ assert.match(change[1],/render\(\);/);
+ assert.ok(change[1].indexOf('local=null')<change[1].indexOf('render()'),'clear before rendering');
+});

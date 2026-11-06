@@ -44,6 +44,9 @@ function render(){
 function clearFile(){file.value='';file.disabled=false;analyze.disabled=true}
 file.addEventListener('change',()=>{
  sessionEpoch++;
+ // Selection is NOT analysis. Never present an earlier hearing for a newly chosen file.
+ local=null;
+ render();
  const selected=file.files?.[0];
  analyze.disabled=!selected||selected.size>maxSize;
  notice.textContent=!selected?'No local file selected.':selected.size>maxSize?

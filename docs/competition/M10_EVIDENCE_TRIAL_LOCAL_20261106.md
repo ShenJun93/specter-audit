@@ -52,3 +52,11 @@ Independent-review caveat: Codex broad integrated review timed out; a separate r
 - Local QA is not a full system assurance, independent audit or release authorization.
 
 **Release decision: HOLD.**
+
+## M10.2 — stale hearing after selecting a new local file (red/green)
+
+Adversarial Chrome QA found that a previously analyzed `STALE RECEIPT` remained visible after choosing a *different* local JSONL file, before pressing Analyze. This could falsely attribute the first file's verdict to the next selected file. The pre-fix Chrome test failed on desktop with actual `STALE RECEIPT` vs expected `NOT INSPECTED`. Fix in `web/trial-ui.mjs`: the `change` handler increments `sessionEpoch`, sets `local=null`, and immediately rerenders the local exhibit, without touching the separately observed GitHub PR metadata.
+
+**Post-fix:** real Chrome desktop 1280px and mobile390 **PASS** with delayed File.text() races, synthetic-switch and new-selection cases. The GitHub PR #7 public source still required exactly 2 deliberate GET requests per viewport; selecting a new local file generated no additional public provider fetches. No browser console/runtime errors. The Chrome harness is an ignored local QA artifact `qa/private/m10-selection-qa.mjs`; no genuine user transcripts were sent or published.
+
+The static Node regression `test/evidence-trial-page.test.mjs` now guards the selection invalidation sequence. This is local browser acceptance; it is **not** an independent full security review or hosted Vercel acceptance.
