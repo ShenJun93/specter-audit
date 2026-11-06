@@ -19,14 +19,14 @@ The public PR Proof Chain page now presents a Haunting Evidence Trial. It compos
 - `test/evidence-trial.test.mjs`, `test/evidence-trial-page.test.mjs`: correctness, provenance, privacy and route/CSP tests.
 
 ## Verified evidence
-- New core and page Node tests: **25/25 PASS**.
+- Full Node suite on final M10 implementation: **456/456 PASS**, zero fail/skipped. New core and page tests: **25/25 PASS**. Tested application source commit: `d1dd7ebc52f5d43a0f51a8075cb390e96e0242c7`.
 - M10 `npm run check` and `git diff --check`: PASS.
 - **Chrome real PR #7** at localhost M10; desktop 1280 and mobile390: **PASS**, 2 public GitHub GETs per valid explicit user inspection, zero GETs for forged host or synthetic clicks. Three provider-reported successful runs at HEAD `bba991f7ecc3eb9b4fda5404c7b6dcbcb60d7a5d`. Stale and retest local synthetic both result in `NOT LINKED` and `RELEASE EVIDENCE INCOMPLETE`. No unexpected browser console/runtime errors or horizontal overflow. Keyboard skip and post-fetch focus passed.
 - Actual WAG browser selected a 787-byte explicitly synthetic JSONL fixture from ignored `qa/private`. After clicking Analyze, the UI labeled it `USER SELECTED · BROWSER ONLY`, reported `STALE RECEIPT` and cleared the file selection. The fixture and browser-script files are gitignored; **no genuine private user log was uploaded**.
 - Static WAG accessibility heuristic on the experimental HTML: score 100/100, 0 reported heuristic violations. Not a WCAG or real screen-reader signoff.
 
 ## Remaining gates
-1. Run full Node suite again after the last test additions; capture precise counts.
+1. Full suite and local Chrome acceptance: PASS as documented. Keep independent integrated review and actual hosted Preview/CSP acceptance separate; neither can be inferred from local tests.
 2. Independent audit of integrated PR and actual Vercel deployed CSP/header behavior, before any exact-SHA Preview release.
 3. Deploy only a separate opt-in Preview after technical signoff and owner permission; do not merge PR #7 without release gates.
 4. Await Kiro credits and implement/test M9B Hook with genuine Kiro CLI V3 authorship. Present a real test → source save → warning → retest sequence.
