@@ -196,6 +196,9 @@ export async function inspectPublicPr(input,{fetchImpl=globalThis.fetch,now=()=>
  try{
   const base=API_ORIGIN+'/repos/'+target.owner+'/'+target.repo;
   const pull=validatePull(await fetchOne(fetchImpl,base+'/pulls/'+target.number,MAX_PR_BYTES,timeoutMs),target);
+  // Preserve only the validated PR HEAD if the second provider call fails.
+  // This does not establish that CI ran or passed for the commit.
+  context.headSha=pull.headSha;
   const runs=validateRuns(await fetchOne(fetchImpl,base+'/actions/runs?head_sha='+pull.headSha+
    '&per_page='+MAX_RUNS+'&page=1',MAX_RUNS_BYTES,timeoutMs),target,pull);
   const counts={success:0,failure:0,inProgress:0,other:0};

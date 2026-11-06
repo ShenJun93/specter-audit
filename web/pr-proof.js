@@ -23,11 +23,14 @@ function showError(message){$('pr-error').textContent=message;$('pr-error').hidd
 function clearError(){$('pr-error').hidden=true;$('pr-error').textContent=''}
 function observedResult(data){
  $('pr-empty').hidden=true;$('pr-report').hidden=false;
- $('pr-provenance').textContent='PUBLIC GITHUB · OBSERVED';
+ $('pr-provenance').textContent=data.status==='OBSERVED_EXACT_SHA_RUNS'?
+  'PUBLIC GITHUB · WORKFLOWS OBSERVED':data.headSha?
+  'PR HEAD OBSERVED · CI UNKNOWN':'NO PROVIDER EVIDENCE';
  $('pr-status-card').className='pr-status '+(data.status==='OBSERVED_EXACT_SHA_RUNS'?'observed':'unknown');
  $('pr-status').textContent=data.status==='OBSERVED_EXACT_SHA_RUNS'?'PROVIDER RUNS OBSERVED':'EVIDENCE UNKNOWN';
  $('pr-headline').textContent=data.status==='OBSERVED_EXACT_SHA_RUNS'?
-  'GitHub reports workflows for this exact commit.':'The PR evidence chain is not established.';
+  'GitHub reports workflows for this exact commit.':data.headSha?
+  'PR HEAD observed; GitHub Actions evidence unavailable.':'The PR evidence chain is not established.';
  $('pr-summary').textContent=data.status==='OBSERVED_EXACT_SHA_RUNS'?
   'Observed public GitHub Actions metadata for PR #'+data.prNumber+'. This is not proof that all required checks passed.':
   (unknown[data.reason]??'A bounded public observation was not possible.');

@@ -245,3 +245,26 @@ test('invalid URL never initiates a fetch',async()=>{
  assert.equal(called,false);
  assert.equal(result.localSessionLinkedToPr,false);
 });
+
+test('validated PR HEAD survives later workflow endpoint rate limiting, but never implies CI PASS',async()=>{
+ let calls=0;
+ const result=await inspectPublicPr(url,{fetchImpl:async()=>{
+  calls++;
+  return calls===1?ok(pr()):response(429);
+ }});
+ assert.equal(calls,2);
+ assert.equal(result.status,'UNKNOWN');
+ assert.equal(result.reason,'RATE_LIMITED_OR_FORBIDDEN');
+ assert.equal(result.headSha,head,'validated PR HEAD must remain inspectable');
+ assert.equal(result.repository,repo);
+ assert.equal(result.prNumber,7);
+ assert.deepEqual(result.runs,[]);
+ assert.equal(result.counts,null);
+ assert.equal(result.independentlyAttested,false);
+ assert.equal(result.allRequiredChecksVerified,false);
+});
+test('PR lookup failure does not invent a confirmed HEAD',async()=>{
+ const result=await inspectPublicPr(url,{fetchImpl:async()=>response(404)});
+ assert.equal(result.status,'UNKNOWN');
+ assert.equal(result.headSha,null);
+});

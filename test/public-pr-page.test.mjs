@@ -88,3 +88,10 @@ test('PR form prevents changing the URL while evidence lookup is in flight',asyn
  assert.match(src,/button\.disabled=true;input\.disabled=true;/);
  assert.match(src,/finally\{input\.disabled=false;button\.disabled=false;/);
 });
+
+test('UNKNOWN and invalid PR URL must not claim a GitHub provider observation',async()=>{
+ const s=await(await get('/pr-proof.js')).text();
+ assert.match(s,/NO PROVIDER EVIDENCE/);
+ assert.match(s,/PR HEAD OBSERVED.*CI UNKNOWN/);
+ assert.match(s,/data\.status===['"]OBSERVED_EXACT_SHA_RUNS['"]/);
+});
