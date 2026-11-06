@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+ <meta charset="utf-8">
+ <meta name="viewport" content="width=device-width,initial-scale=1">
+ <meta name="theme-color" content="#090e18">
+ <meta name="description" content="Inspect public GitHub PR HEAD and its observed workflow runs without confusing provider metadata with verified tests.">
+ <title>Proof Chain | Specter Audit</title>
+ <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+ <link rel="stylesheet" href="/alibi.css">
+ <link rel="stylesheet" href="/live.css">
+ <link rel="stylesheet" href="/pr-proof.css">
+ <script type="module" src="/pr-proof.js"></script>
+</head>
+<body>
+ <a class="skip-link" href="#pr-investigation">Skip to PR investigation</a>
+ <div class="stars" aria-hidden="true"></div>
+ <div class="app">
+  <header class="topbar">
+   <a class="identity" href="/"><span class="logo-mark" aria-hidden="true">◈</span><span class="identity-text"><b>SPECTER<span>AUDIT</span></b><small>AGENT EVIDENCE / PUBLIC PR INSPECTION</small></span></a>
+   <nav aria-label="Main navigation"><a href="/alibi.html">Recorded cases</a><a href="/live.html">Your session</a><span class="nav-active" aria-current="page">Proof chain</span><a href="/">Git inspector</a></nav>
+   <span class="status-pill"><span class="status-dot"></span> OPT-IN PUBLIC GITHUB LOOKUP</span>
+  </header>
+  <main id="pr-investigation">
+   <section class="live-hero">
+    <div class="live-eyebrow">EXPERIMENT M9A / TWO PUBLIC READ-ONLY REQUESTS</div>
+    <h1>Every green badge needs <em>a commit.</em></h1>
+    <p>Inspect a public GitHub pull request. We ask which commit the workflow actually ran on—and expose the evidence that is still missing. <strong>No claim of code correctness.</strong></p>
+    <div class="live-promise"><span>01. FIX PR HEAD</span><span>02. INSPECT WORKFLOW RUNS</span><span>03. REVEAL THE UNJOINED LINK</span></div>
+   </section>
+   <div class="live-workspace">
+    <section class="live-upload" aria-labelledby="pr-input-heading">
+     <div class="live-panel-header"><span class="tiny-label">01 / PUBLIC PR SOURCE</span><span class="live-count">USER-INITIATED ONLY</span></div>
+     <h2 id="pr-input-heading">Whose alibi is this?</h2>
+     <p>Paste the URL of a public GitHub pull request. We fetch only its HEAD and matching GitHub Actions runs. No local Kiro session file is read or sent.</p>
+     <form id="pr-form" novalidate>
+      <label class="pr-label" for="pr-url">GitHub pull request URL</label>
+      <input id="pr-url" name="pr-url" type="url" inputmode="url" required maxlength="320"
+       spellcheck="false" autocomplete="off" placeholder="https://github.com/owner/repo/pull/7"
+       value="https://github.com/ShenJun93/specter-audit/pull/7"
+       aria-describedby="pr-format-help">
+      <p class="pr-hint" id="pr-format-help">Exact public GitHub URLs only · no tokens · no arbitrary hosts</p>
+      <div class="live-actions"><button class="live-primary" type="submit" id="pr-inspect">Inspect this PR <span aria-hidden="true">→</span></button></div>
+     </form>
+     <p id="pr-error" class="live-error" role="alert" hidden></p>
+     <div class="live-privacy" role="note"><strong>Network and privacy.</strong> Clicking Inspect makes two read-only requests to <code>api.github.com</code>. GitHub receives the public PR identifiers and your network IP. No local session log, prompt, credential or source file is uploaded. GitHub may rate-limit unauthenticated users.</div>
+     <div class="pr-boundary" role="note"><strong>Missing link:</strong> Even a CURRENT self-recorded Kiro session is <em>not independently bound</em> to the HEAD commit of this PR. Do not conflate these two sources of evidence.</div>
+    </section>
+    <section class="live-results" aria-labelledby="pr-results-heading">
+     <div class="live-panel-header"><span class="tiny-label">02 / OBSERVED EVIDENCE</span><span class="live-count" id="pr-provenance">NOT YET REQUESTED</span></div>
+     <h2 id="pr-results-heading" tabindex="-1">The proof chain</h2>
+     <div id="pr-empty" class="live-empty"><span aria-hidden="true">◇</span><strong>No provider records queried yet</strong><p>Click Inspect to request public evidence. A local Kiro session remains a separate, self-recorded source.</p></div>
+     <div id="pr-report" hidden>
+      <div class="pr-status unknown" id="pr-status-card"><span id="pr-status">UNKNOWN</span><h3 id="pr-headline">No provider observation</h3><p id="pr-summary"></p></div>
+      <div class="pr-sha-row"><span>Target PR HEAD</span><code id="pr-head-sha">—</code></div>
+      <div class="live-metrics">
+       <div><span>OBSERVED SUCCESS</span><strong id="pr-success">0</strong></div>
+       <div><span>OBSERVED FAILED</span><strong id="pr-failure">0</strong></div>
+       <div><span>OBSERVED IN PROGRESS</span><strong id="pr-progress">0</strong></div>
+       <div><span>OTHER / NON-PASS</span><strong id="pr-other">0</strong></div>
+      </div>
+      <p id="pr-truncation" class="live-caveat">Only observed GitHub Actions are counted. Required status checks and other CI providers are not determined.</p>
+      <div class="live-timeline-head"><h3>Inspectable source receipts</h3><span>PUBLIC PROVIDER LINKS</span></div>
+      <ol id="pr-runs" class="pr-runs"></ol>
+      <p class="live-caveat">Provider metadata is not independent attestation. No evidence binds a local Kiro session to this PR HEAD. Test freshness and code correctness require separate verification.</p>
+      <div class="live-actions"><button id="pr-copy" type="button" class="live-secondary">Copy redacted report</button><button id="pr-download" type="button" class="live-secondary">Download review JSON</button></div>
+      <p id="pr-copy-status" class="live-copy-status" role="status" aria-live="polite"></p>
+     </div>
+    </section>
+   </div>
+   <section class="live-footer"><div><span class="tiny-label">03 / HONEST LIMITS</span><h2>Observe a run. Don't invent a PASS.</h2><p>GitHub Actions only reports what GitHub knows about its own workflows. A single green run never proves every required check passed, that a Kiro log tested this exact commit, or that the code is safe.</p></div><a class="primary-link" href="/live.html">Explore a saved Kiro session <span aria-hidden="true">↗</span></a></section>
+  </main>
+  <footer class="live-bottom">SPECTER AUDIT · EXPERIMENTAL PUBLIC PR PROBE · NO PRIVATE LOG UPLOAD · NO RELEASE APPROVAL · <a href="https://github.com/ShenJun93/specter-audit" target="_blank" rel="noopener noreferrer">OPEN SOURCE</a></footer>
+ </div>
+</body>
+</html>

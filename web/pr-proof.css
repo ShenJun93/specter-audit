@@ -1,0 +1,23 @@
+/* M9A opt-in public GitHub probe; shares M8.8 Alibi Room visual primitives. */
+.pr-label{display:block;margin-top:26px;color:#e9f7ff;font-size:13px;font-weight:800}
+#pr-url{width:100%;margin-top:10px;box-sizing:border-box;border:1px solid #58758b;background:#0b1524;color:#edf7ff;border-radius:9px;padding:14px;font:500 13px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;min-height:48px}
+#pr-url:focus-visible{outline:3px solid #93f1e0;outline-offset:2px}
+.pr-hint{font-size:12px;color:#a8bbc8;line-height:1.6;margin:9px 0 0}
+.pr-boundary{border:1px solid #936b5d;background:linear-gradient(145deg,#3d2b2b99,#252437);padding:17px 18px;border-radius:9px;color:#f9dfce;font-size:13px;line-height:1.85;margin-top:15px}
+.pr-boundary strong{color:#ffc993}
+.pr-status{border-left:4px solid #8ba5bf;background:#1c2a40;border-radius:9px;margin:22px 0;padding:16px 18px}
+.pr-status.observed{border-left-color:#83dfd1;background:linear-gradient(95deg,#1a3f3c,#1b263a)}
+.pr-status span{font-size:11px;letter-spacing:1px;font-weight:800;color:#b1d8db}
+.pr-status h3{font-size:23px;line-height:1.24;margin:8px 0;color:#fff}
+.pr-status p{font-size:12px;line-height:1.75;color:#b8ccd6;margin-bottom:0}
+.pr-sha-row{display:grid;gap:6px;padding:16px;border:1px solid #38485f;border-radius:8px;background:#111a2c;min-width:0}
+.pr-sha-row span{font-size:10px;color:#a8b7ca;letter-spacing:1px;font-weight:750}
+.pr-sha-row code{font-size:11px;word-break:break-all;color:#a4f5df}
+.pr-runs{padding:8px 0 14px 22px;max-height:365px;overflow:auto}
+.pr-runs li{border-bottom:1px solid #36465b;padding:12px 5px;color:#c5d4de;font-size:12px;line-height:1.65}
+.pr-runs li a{display:block;margin-top:5px;color:#92f1e0;overflow-wrap:anywhere}
+.pr-runs li strong{color:#e8f2ff}
+#pr-copy-status{display:block;min-height:1.6em}
+#pr-inspect:focus-visible,#pr-download:focus-visible,#pr-copy:focus-visible{outline:3px solid #98f4db;outline-offset:3px}
+@media(max-width:600px){.pr-status h3{font-size:20px}.pr-sha-row code{font-size:10px}.pr-runs{max-height:280px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
