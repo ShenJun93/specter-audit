@@ -26,13 +26,23 @@ function observedResult(data){
  $('pr-provenance').textContent=data.status==='OBSERVED_EXACT_SHA_RUNS'?
   'PUBLIC GITHUB · WORKFLOWS OBSERVED':data.headSha?
   'PR HEAD OBSERVED · CI UNKNOWN':'NO PROVIDER EVIDENCE';
- $('pr-status-card').className='pr-status '+(data.status==='OBSERVED_EXACT_SHA_RUNS'?'observed':'unknown');
- $('pr-status').textContent=data.status==='OBSERVED_EXACT_SHA_RUNS'?'PROVIDER RUNS OBSERVED':'EVIDENCE UNKNOWN';
- $('pr-headline').textContent=data.status==='OBSERVED_EXACT_SHA_RUNS'?
-  'GitHub reports workflows for this exact commit.':data.headSha?
+ const observed=data.status==='OBSERVED_EXACT_SHA_RUNS';
+ const failed=observed&&data.counts?.failure>0;
+ const pending=observed&&data.counts?.inProgress>0;
+ const incomplete=observed&&(data.truncated===true||data.counts?.other>0||data.counts?.success===0);
+ $('pr-status-card').className='pr-status '+(failed?'risk':pending||incomplete?'pending':observed?'observed':'unknown');
+ $('pr-status').textContent=failed?'FAILED RUNS OBSERVED':pending?'RUNS STILL ACTIVE':
+  incomplete?'PARTIAL WORKFLOW SAMPLE':observed?'RUNS OBSERVED, NOT CERTIFIED':'EVIDENCE UNKNOWN';
+ $('pr-headline').textContent=failed?'At least one exact-SHA workflow failed.':
+  pending?'Some exact-SHA workflows have not completed.':
+  incomplete?'The observed workflow sample cannot establish success.':
+  observed?'GitHub reports runs for this exact commit.':data.headSha?
   'PR HEAD observed; GitHub Actions evidence unavailable.':'The PR evidence chain is not established.';
- $('pr-summary').textContent=data.status==='OBSERVED_EXACT_SHA_RUNS'?
-  'Observed public GitHub Actions metadata for PR #'+data.prNumber+'. This is not proof that all required checks passed.':
+ $('pr-summary').textContent=failed?
+  'Investigate the failed runs before relying on any green workflow. Required checks and source correctness remain unverified.':
+  pending?'Wait for remaining runs; an in-progress workflow cannot prove a test passed.':
+  incomplete?'Observed records include non-successful or unobserved runs. Required checks remain unverified.':
+  observed?'Provider-reported public runs for PR #'+data.prNumber+' are not certification of required checks or Kiro source binding.':
   (unknown[data.reason]??'A bounded public observation was not possible.');
  $('pr-head-sha').textContent=data.headSha??'NOT CONFIRMED';
  for(const [id,n] of [

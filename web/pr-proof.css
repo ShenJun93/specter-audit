@@ -7,6 +7,8 @@
 .pr-boundary strong{color:#ffc993}
 .pr-status{border-left:4px solid #8ba5bf;background:#1c2a40;border-radius:9px;margin:22px 0;padding:16px 18px}
 .pr-status.observed{border-left-color:#83dfd1;background:linear-gradient(95deg,#1a3f3c,#1b263a)}
+.pr-status.risk{border-left-color:#ffae8f;background:linear-gradient(95deg,#522c30,#252538)}
+.pr-status.pending{border-left-color:#e9bf7f;background:linear-gradient(95deg,#473b2f,#24293b)}
 .pr-status span{font-size:11px;letter-spacing:1px;font-weight:800;color:#b1d8db}
 .pr-status h3{font-size:23px;line-height:1.24;margin:8px 0;color:#fff}
 .pr-status p{font-size:12px;line-height:1.75;color:#b8ccd6;margin-bottom:0}
@@ -48,6 +50,7 @@
 .trial-step small{font-size:10px;line-height:1.65;color:#93abbe;overflow-wrap:anywhere;display:block}
 .trial-mark{display:inline-block;padding:8px 10px;border-radius:6px;background:#2b3c58;color:#f6e1fd;font-size:11px;font-weight:850;letter-spacing:.8px;line-height:1.5}
 .trial-mark.trial-positive{background:#224942;color:#b6f9dc}
+.trial-mark.trial-observed{background:#263a50;color:#c7e7fb}
 .trial-mark.trial-warning{background:#583b2d;color:#ffd1a0}
 .trial-mark.trial-unknown{background:#2b3c58;color:#b8cfe9}
 .trial-gap{border-style:dashed;border-color:#c77b90;background:radial-gradient(circle at center 95%,#582f4544,transparent 65%),linear-gradient(135deg,#30223a,#141b2d)}

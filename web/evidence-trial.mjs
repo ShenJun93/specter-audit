@@ -106,10 +106,19 @@ export function combineTrial(local=null,provider=null){
    typeof provider.repository==='string'&&/^[A-Za-z0-9-]+\/[A-Za-z0-9._-]{1,100}$/.test(provider.repository);
  const counts=validPr?countObservedRuns(provider,provider.headSha.toLowerCase()):null;
  const runStatus=counts?'OBSERVED_EXACT_SHA_RUNS':'UNKNOWN';
+ // An observed workflow is not necessarily a successful one.
+ // A failure or in-progress run takes precedence over green observations.
+ const workflowFinding=counts?
+  counts.failure>0?'FAILED_RUNS_OBSERVED':
+  counts.inProgress>0?'RUNS_IN_PROGRESS':
+  counts.other>0?'NON_PASS_RUNS_OBSERVED':
+  provider.truncated===true?'PARTIAL_RUN_SAMPLE':
+  counts.success>0?'SUCCESSFUL_RUNS_OBSERVED':'NO_SUCCESSFUL_RUN_OBSERVED':
+  'CI_UNVERIFIED';
  const pr=validPr?{
   repository:provider.repository,
   prNumber:provider.prNumber,headSha:provider.headSha.toLowerCase(),
-  status:runStatus,counts,
+  status:runStatus,counts,workflowFinding,
   truncated:provider.truncated===true
  }:null;
  const sessionStep=session?.status==='STALE_LOCAL_TEST_EVIDENCE'?
@@ -117,7 +126,11 @@ export function combineTrial(local=null,provider=null){
   'CURRENT_SELF_RECORDED_ONLY':session?'INSUFFICIENT_SESSION_EVIDENCE':'AWAITING_LOCAL_SESSION';
  const providerStep=pr?.status==='OBSERVED_EXACT_SHA_RUNS'?
   'MATCHING_GITHUB_WORKFLOWS_OBSERVED':pr?'CI_UNVERIFIED':'AWAITING_PUBLIC_PR';
- const action=sessionStep==='STALE_TEST_RECEIPT'?
+ const action=workflowFinding==='FAILED_RUNS_OBSERVED'?
+  'INVESTIGATE_FAILED_PR_WORKFLOWS':workflowFinding==='RUNS_IN_PROGRESS'?
+  'WAIT_FOR_PR_WORKFLOWS':workflowFinding==='NON_PASS_RUNS_OBSERVED'?
+  'REQUIRE_SUCCESSFUL_EXACT_SHA_CI':workflowFinding==='PARTIAL_RUN_SAMPLE'?
+  'REVIEW_UNOBSERVED_CI_RUNS':sessionStep==='STALE_TEST_RECEIPT'?
   'RETEST_AFTER_FINAL_EDIT':sessionStep==='CURRENT_SELF_RECORDED_ONLY'?
   'VERIFY_COMMIT_BINDING_AND_REQUIRED_CHECKS':sessionStep==='INSUFFICIENT_SESSION_EVIDENCE'?
   'OBTAIN_COMPLETE_TEST_RECEIPT':pr?.status==='OBSERVED_EXACT_SHA_RUNS'?

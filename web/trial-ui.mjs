@@ -11,6 +11,10 @@ const localText={
  INSUFFICIENT_SESSION_EVIDENCE:['SESSION UNKNOWN','Missing or unsupported local chronology cannot establish a current test result.']
 };
 const nextText={
+ INVESTIGATE_FAILED_PR_WORKFLOWS:'At least one exact-SHA workflow failed. Inspect its provider receipt, resolve the failure and rerun; separately verify any stale local test.',
+ WAIT_FOR_PR_WORKFLOWS:'At least one exact-SHA workflow is still running. Wait for a completed result and inspect again; other required checks remain unverified.',
+ REQUIRE_SUCCESSFUL_EXACT_SHA_CI:'The observed exact-SHA workflows include non-passing results. Review skipped or neutral runs and obtain a valid successful run before relying on CI.',
+ REVIEW_UNOBSERVED_CI_RUNS:'Only a truncated sample of exact-SHA workflows was observed. Inspect the remaining provider history and required checks before deciding.',
  RETEST_AFTER_FINAL_EDIT:'Run relevant tests after the last source edit, then inspect the new receipt. Independently verify commit identity.',
  VERIFY_COMMIT_BINDING_AND_REQUIRED_CHECKS:'The saved session reports a current test, but no evidence links it to the PR HEAD. Verify the actual commit and required CI checks.',
  OBTAIN_COMPLETE_TEST_RECEIPT:'Obtain a complete, genuine test receipt and supported chronology. Unknown evidence is not a PASS.',
@@ -30,11 +34,25 @@ function render(){
   ' · '+localStage.counts.observedPassingTests+' PASS RECEIPT(S) · '+localStage.counts.observedSourceEdits+' EDIT(S)':
   'SOURCE: NONE';
  const pr=hearing.pr;
- $('trial-pr-status').textContent=pr?.status==='OBSERVED_EXACT_SHA_RUNS'?'RUNS OBSERVED':
-  pr?'CI UNKNOWN':'NOT INSPECTED';
- $('trial-pr-status').className='trial-mark '+(pr?.status==='OBSERVED_EXACT_SHA_RUNS'?'trial-positive':'trial-unknown');
+ const finding=pr?.workflowFinding;
+ const labels={
+  FAILED_RUNS_OBSERVED:'FAILED RUN OBSERVED',
+  RUNS_IN_PROGRESS:'RUNS IN PROGRESS',
+  NON_PASS_RUNS_OBSERVED:'NON-PASS OBSERVED',
+  PARTIAL_RUN_SAMPLE:'PARTIAL SAMPLE',
+  SUCCESSFUL_RUNS_OBSERVED:'RUNS OBSERVED',
+  NO_SUCCESSFUL_RUN_OBSERVED:'NO PASS OBSERVED',
+  CI_UNVERIFIED:'CI UNKNOWN'
+ };
+ $('trial-pr-status').textContent=pr?(labels[finding]??'CI UNKNOWN'):'NOT INSPECTED';
+ $('trial-pr-status').className='trial-mark '+(finding==='FAILED_RUNS_OBSERVED'?'trial-warning':
+  finding==='SUCCESSFUL_RUNS_OBSERVED'?'trial-observed':'trial-unknown');
+ const caution=finding==='FAILED_RUNS_OBSERVED'?'WARNING: failed exact-SHA CI observed. ':
+  finding==='RUNS_IN_PROGRESS'?'Pending results cannot be treated as a PASS. ':
+  finding==='NON_PASS_RUNS_OBSERVED'?'Some workflow results were not successful. ':
+  finding==='PARTIAL_RUN_SAMPLE'?'This is only a partial provider sample. ':'';
  $('trial-pr-detail').textContent=pr?.status==='OBSERVED_EXACT_SHA_RUNS'?
-  pr.counts.success+' success, '+pr.counts.failure+' failure, '+pr.counts.inProgress+' ongoing, '+pr.counts.other+' other public GitHub Actions observations. These do not establish required checks.':
+  caution+pr.counts.success+' success, '+pr.counts.failure+' failure, '+pr.counts.inProgress+' ongoing, '+pr.counts.other+' other public GitHub Actions observations. Required checks remain unverified.':
   pr?'PR HEAD is observed; the GitHub Actions evidence is unknown or unavailable.':
   'Inspect a public PR above to retrieve its current HEAD SHA.';
  $('trial-pr-source').textContent=pr?'HEAD: '+pr.headSha+' · PROVIDER-REPORTED':'PROVIDER: NOT QUERIED';
