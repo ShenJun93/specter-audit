@@ -21,6 +21,33 @@ const NO_ATTESTATION=Object.freeze({
 });
 const number=(x,max=4000)=>Number.isSafeInteger(x)&&x>=0&&x<=max?x:0;
 const formatReason=(s)=>typeof s==='string'&&/^[A-Z_]{3,72}$/.test(s)?s:UNSUPPORTED;
+const RUN_STATES=new Set(['completed','queued','requested','pending','waiting','in_progress']);
+const RUN_CONCLUSIONS=new Set([
+ 'success','failure','cancelled','timed_out','action_required','neutral','skipped','stale','startup_failure'
+]);
+// A DOM event is not an attestation. Verify each normalized GitHub run again
+// at the presentation boundary and derive counts; never trust headline counts.
+function countObservedRuns(provider,headSha){
+ if(provider?.status!=='OBSERVED_EXACT_SHA_RUNS'||!Array.isArray(provider.runs)||
+    provider.runs.length<1||provider.runs.length>30)return null;
+ const counts={success:0,failure:0,inProgress:0,other:0};
+ const seen=new Set();
+ for(const r of provider.runs){
+  if(!r||!Number.isSafeInteger(r.id)||r.id<=0||seen.has(r.id)||
+     typeof r.headSha!=='string'||r.headSha.toLowerCase()!==headSha||
+     !RUN_STATES.has(r.status))return null;
+  seen.add(r.id);
+  if(r.status!=='completed'){
+   if(r.conclusion!==null)return null;
+   counts.inProgress++;continue;
+  }
+  if(!RUN_CONCLUSIONS.has(r.conclusion))return null;
+  if(r.conclusion==='success')counts.success++;
+  else if(['failure','cancelled','timed_out','action_required','startup_failure'].includes(r.conclusion))counts.failure++;
+  else counts.other++;
+ }
+ return counts;
+}
 function cleanSummary(parsed){
  const a=parsed.summary??{};
  return {
@@ -77,14 +104,8 @@ export function combineTrial(local=null,provider=null){
    provider?.headSha&&SHA.test(provider.headSha)&&
    Number.isSafeInteger(provider.prNumber)&&provider.prNumber>0&&
    typeof provider.repository==='string'&&/^[A-Za-z0-9-]+\/[A-Za-z0-9._-]{1,100}$/.test(provider.repository);
- const runStatus=provider?.status==='OBSERVED_EXACT_SHA_RUNS'&&
-  Array.isArray(provider.runs)&&provider.runs.length>0&&provider.runs.length<=30?
-  'OBSERVED_EXACT_SHA_RUNS':'UNKNOWN';
- const counts=runStatus==='OBSERVED_EXACT_SHA_RUNS'?
-  {success:number(provider.counts?.success,30),
-   failure:number(provider.counts?.failure,30),
-   inProgress:number(provider.counts?.inProgress,30),
-   other:number(provider.counts?.other,30)}:null;
+ const counts=validPr?countObservedRuns(provider,provider.headSha.toLowerCase()):null;
+ const runStatus=counts?'OBSERVED_EXACT_SHA_RUNS':'UNKNOWN';
  const pr=validPr?{
   repository:provider.repository,
   prNumber:provider.prNumber,headSha:provider.headSha.toLowerCase(),

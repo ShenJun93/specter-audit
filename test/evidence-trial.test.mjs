@@ -6,7 +6,8 @@ const sha='bba991f7ecc3eb9b4fda5404c7b6dcbcb60d7a5d';
 const provider=(status='OBSERVED_EXACT_SHA_RUNS')=>({
  source:'GITHUB_PUBLIC_REST_OPT_IN',status,repository:'ShenJun93/specter-audit',
  prNumber:7,headSha:sha,
- runs:[{id:45,status:'completed',conclusion:'success'},{id:46,status:'completed',conclusion:'success'}],
+ runs:[{id:45,headSha:sha,status:'completed',conclusion:'success'},
+  {id:46,headSha:sha,status:'completed',conclusion:'success'}],
  counts:{success:2,failure:0,other:0,inProgress:0},truncated:false,
  // These supplied strings must never leak, even if a provider returns them:
  privateSessionId:'LEAK_SESSION_CANARY',html:'<script>LEAK_SCRIPT_CANARY</script>',
@@ -109,7 +110,8 @@ test('counts are bounded and not derived from untrusted raw object labels',()=>{
  assert.equal(h.session.counts.observedSourceEdits,0);
  assert.equal(h.session.counts.observedPassingTests,0);
  assert.equal(h.session.reason,'UNSUPPORTED_LOCAL_SESSION');
- assert.equal(h.pr.counts.success,0);
+ // Never copy untrusted headline counts: derive 2 from two validated run entries.
+ assert.equal(h.pr.counts.success,2);
 });
 test('reported outcome cannot claim certification even if all observed runs passed',()=>{
  const h=combineTrial(summarizeLocalSession(syntheticTrial('retested')),provider());
@@ -120,4 +122,26 @@ test('reported outcome cannot claim certification even if all observed runs pass
 });
 test('unsupported synthetic scenario is rejected without fallback',()=>{
  assert.throws(()=>syntheticTrial('real'),/UNSUPPORTED_SYNTHETIC_CASE/);
+});
+
+test('malformed provider event cannot manufacture matching runs or green counts',()=>{
+ const base=provider();
+ for(const input of [
+  {...base,runs:[{}],counts:{success:1}},
+  {...base,runs:[{id:45,headSha:'a'.repeat(40),status:'completed',conclusion:'success'}]},
+  {...base,runs:[{id:45,headSha:sha,status:'completed',conclusion:'unexpected'}]},
+  {...base,runs:[{id:45,headSha:sha,status:'in_progress',conclusion:'success'}]},
+  {...base,runs:[{id:45,headSha:sha,status:'completed',conclusion:'success'},{id:45,headSha:sha,status:'completed',conclusion:'success'}]}
+ ]){
+  const h=combineTrial(null,input);
+  assert.equal(h.pr.status,'UNKNOWN');
+  assert.equal(h.pr.counts,null);
+  assert.equal(h.providerStep,'CI_UNVERIFIED');
+  assert.equal(h.releaseApproved,false);
+ }
+});
+test('provider headline counts are derived from validated runs, never copied',()=>{
+ const h=combineTrial(null,{...provider(),counts:{success:9999,failure:9999,other:100,inProgress:-1}});
+ assert.equal(h.pr.status,'OBSERVED_EXACT_SHA_RUNS');
+ assert.deepEqual(h.pr.counts,{success:2,failure:0,inProgress:0,other:0});
 });
