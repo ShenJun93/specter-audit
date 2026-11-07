@@ -25,12 +25,18 @@ function render(){
  const hearing=combineTrial(local,provider);
  const localStage=hearing.session;
  const copy=localStage?localText[localStage.status]??localText.INSUFFICIENT_SESSION_EVIDENCE:null;
- $('trial-local-status').textContent=copy?.[0]??'NOT INSPECTED';
+ const syntheticLocal=localStage?.source==='EXPLICITLY_SYNTHETIC_EXAMPLE';
+ // A current self-recorded result is an observation, never a verified green PASS.
+ const localLabel=syntheticLocal&&localStage?.status==='STALE_LOCAL_TEST_EVIDENCE'?
+  'SYNTHETIC STALE RECEIPT':syntheticLocal&&localStage?.status==='CURRENT_SELF_RECORDED_TEST'?
+  'SYNTHETIC RETEST — UNVERIFIED':copy?.[0]??'NOT INSPECTED';
+ $('trial-local-status').textContent=localLabel;
  $('trial-local-status').className='trial-mark '+(localStage?.status==='STALE_LOCAL_TEST_EVIDENCE'?'trial-warning':
-  localStage?.status==='CURRENT_SELF_RECORDED_TEST'?'trial-positive':'trial-unknown');
- $('trial-local-detail').textContent=copy?.[1]??'Choose a local session or a synthetic example.';
+  localStage?.status==='CURRENT_SELF_RECORDED_TEST'?'trial-observed':'trial-unknown');
+ $('trial-local-detail').textContent=(syntheticLocal?'Synthetic demonstration only. ':'')+
+  (copy?.[1]??'Choose a local session or a synthetic example.');
  $('trial-local-source').textContent=localStage?
-  (localStage.source==='EXPLICITLY_SYNTHETIC_EXAMPLE'?'SOURCE: SYNTHETIC EXAMPLE — NOT REAL KIRO':'SOURCE: USER SELECTED · BROWSER ONLY')+
+  (syntheticLocal?'SOURCE: SYNTHETIC EXAMPLE — NOT REAL KIRO':'SOURCE: USER-SELECTED LOG — NOT INDEPENDENTLY VERIFIED · BROWSER ONLY')+
   ' · '+localStage.counts.observedPassingTests+' PASS RECEIPT(S) · '+localStage.counts.observedSourceEdits+' EDIT(S)':
   'SOURCE: NONE';
  const pr=hearing.pr;
@@ -70,7 +76,7 @@ function render(){
   li.append(label,state,action);
   repairList.append(li);
  }
- $('trial-repair-status').textContent='3 independent checks · release still unapproved';
+ $('trial-repair-status').textContent='3 separate reviews · independent attestation absent';
  $('trial-next').textContent=nextText[hearing.suggestedAction]??nextText.GATHER_BOTH_EVIDENCE_SOURCES;
 }
 // Invalidate any pending async file read before clearing or replacing a session.
