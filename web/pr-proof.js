@@ -45,6 +45,12 @@ function observedResult(data){
   observed?'Provider-reported public runs for PR #'+data.prNumber+' are not certification of required checks or Kiro source binding.':
   (unknown[data.reason]??'A bounded public observation was not possible.');
  $('pr-head-sha').textContent=data.headSha??'NOT CONFIRMED';
+ const closed=data.state==='closed'&&typeof data.draft==='boolean';
+ const draft=data.state==='open'&&data.draft===true;
+ const open=data.state==='open'&&data.draft===false;
+ $('pr-lifecycle').textContent=closed?'CLOSED · MERGE NOT DETERMINED':
+  draft?'OPEN · DRAFT':open?'OPEN · NOT DRAFT (NOT APPROVED)':'PR STATE UNKNOWN';
+ $('pr-lifecycle').className=closed?'lifecycle-risk':draft?'lifecycle-pending':'lifecycle-unknown';
  for(const [id,n] of [
   ['pr-success',data.counts?.success],
   ['pr-failure',data.counts?.failure],

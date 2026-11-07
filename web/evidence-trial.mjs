@@ -125,6 +125,12 @@ function repairPlanFor(session,pr){
   }else{
    ciState='UNKNOWN';ciAction='Provider evidence is insufficient or invalid; obtain a trustworthy exact-SHA CI receipt.';
   }
+  // Show lifecycle cautions alongside CI without concealing failed workflows.
+  if(pr.reviewState==='CLOSED'){
+   ciAction='PR is closed; merge status not determined. '+ciAction;
+  }else if(pr.reviewState==='OPEN_DRAFT'){
+   ciAction='PR is a draft and is not ready for normal review. '+ciAction;
+  }
  }
  return {
   schema:'SPECTER_EVIDENCE_REPAIR_PLAN_V1',
@@ -167,10 +173,14 @@ export function combineTrial(local=null,provider=null){
   provider.truncated===true?'PARTIAL_RUN_SAMPLE':
   counts.success>0?'SUCCESSFUL_RUNS_OBSERVED':'NO_SUCCESSFUL_RUN_OBSERVED':
   'CI_UNVERIFIED';
+ // PR lifecycle is provider-reported, not a CI verdict or release gate.
+ const reviewState=provider?.state==='closed'&&typeof provider.draft==='boolean'?'CLOSED':
+  provider?.state==='open'&&provider.draft===true?'OPEN_DRAFT':
+  provider?.state==='open'&&provider.draft===false?'OPEN_NON_DRAFT':'UNKNOWN';
  const pr=validPr?{
   repository:provider.repository,
   prNumber:provider.prNumber,headSha:provider.headSha.toLowerCase(),
-  status:runStatus,counts,workflowFinding,
+  status:runStatus,counts,workflowFinding,reviewState,
   truncated:provider.truncated===true
  }:null;
  const sessionStep=session?.status==='STALE_LOCAL_TEST_EVIDENCE'?

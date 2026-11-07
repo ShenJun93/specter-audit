@@ -54,6 +54,9 @@
      <div id="pr-report" hidden>
       <div class="pr-status unknown" id="pr-status-card"><span id="pr-status">UNKNOWN</span><h3 id="pr-headline">No provider observation</h3><p id="pr-summary"></p></div>
       <div class="pr-sha-row"><span>Target PR HEAD</span><code id="pr-head-sha">—</code></div>
+      <div class="pr-sha-row pr-lifecycle-row"><span>Provider-reported PR review status</span>
+       <strong id="pr-lifecycle" role="status" aria-live="polite">NOT INSPECTED</strong>
+       <small>A draft or closed PR can have successful CI. Open/non-draft is not a merge or release approval.</small></div>
       <div class="live-metrics">
        <div><span>OBSERVED SUCCESS</span><strong id="pr-success">0</strong></div>
        <div><span>OBSERVED FAILED</span><strong id="pr-failure">0</strong></div>
