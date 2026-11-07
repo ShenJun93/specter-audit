@@ -26,7 +26,7 @@ This was a **test-harness false acceptance risk**, not a demonstrated vulnerabil
 - After hardening and synchronizing the approved warning to the exact M9B spec: **13/13 tests PASS**, 0 fail, 0 skipped, including the 18-scenario mock handler exercise, injected warnings, ANSI contamination, silent-event output, stderr contamination and missing warning.
 - `node --check scripts/kiro-v3-hook-preflight.mjs`: PASS.
 - `npm run check`: PASS (includes static-live-web check).
-- **Full `node --test` was attempted but did not finish** within the WAG foreground execution window (approximately 12 seconds); its result is UNKNOWN, not PASS. A full suite run via a durable verification mechanism remains a separate gate.
+- **Full repository `node --test --test-reporter=tap`: 464/464 PASS** on MAIN-PC on 2026-11-08, 11 suites, 0 fail, 0 skipped, 0 cancelled, 0 TODO; process exit 0, duration 18,047.4444 ms. The run used a durable WAG shell process with its TAP report captured privately under `%TEMP%/specter-m9b-safe-full-20261108.tap` (not committed). Earlier WAG foreground attempts timed out and were inconclusive; this successful run closes the missing full-suite local gate.
 
 ## Residual gates
 
