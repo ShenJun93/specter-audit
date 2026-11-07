@@ -83,3 +83,32 @@
 .trial-caveat{font-size:12px;line-height:1.85;color:#bac6d8;max-width:900px;margin:20px 0 0}
 @media(max-width:900px){.trial-chain{grid-template-columns:1fr}.trial-upload{grid-template-columns:1fr}.trial-step p{min-height:0}.trial-seal{display:none}}
 @media(max-width:600px){.trial-court{margin:24px 0;padding:20px 16px}.trial-header h2{font-size:28px}.trial-upload{padding:16px}.trial-step{padding:17px}}
+
+/* M16 judge self-verification: immutable, historically verified CI example. */
+.ci-hero-jump{margin:16px 0 4px;font-size:13px}
+.ci-hero-jump a{color:#a9f3e3;text-decoration:underline;text-underline-offset:4px}
+.ci-hero-jump a:focus-visible,.ci-reference a:focus-visible,.ci-reference summary:focus-visible,.ci-reference button:focus-visible{outline:3px solid #9cf5dd;outline-offset:3px}
+.ci-reference{margin:36px 0 18px;padding:27px;border:1px solid #4c6780;border-radius:17px;background:linear-gradient(135deg,#112b34,#101d31 60%,#192236)}
+.ci-reference-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:24px}
+.ci-reference-heading>div{min-width:0}
+.ci-reference h2{font-size:clamp(23px,3vw,33px);line-height:1.2;margin:10px 0 11px;color:#f1fbff}
+.ci-reference p{font-size:13px;line-height:1.8;color:#c3d7df}
+.ci-reference strong{color:#fff0d8}
+.ci-reference-run{display:inline-flex;align-items:center;flex:none;border-radius:8px;border:1px solid #5eb2a4;padding:12px 13px;color:#b9fff1;text-decoration:none;font-size:12px;line-height:1.45;font-weight:800}
+.ci-reference-facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:20px 0}
+.ci-reference-facts>div{min-width:0;border:1px solid #3b5767;background:#091b2b;border-radius:9px;padding:15px}
+.ci-reference-facts dt{font-size:10px;color:#a3c6d2;text-transform:uppercase;letter-spacing:1px}
+.ci-reference-facts dd{font-size:12px;color:#e9fbfb;margin:8px 0 0;overflow-wrap:anywhere;font-weight:650}
+.ci-reference code{overflow-wrap:anywhere}
+.ci-reference-boundary{border-left:3px solid #e8bc7c;padding:11px 14px;background:#192d35;border-radius:0 8px 8px 0}
+.ci-reference-commands{border:1px solid #48677c;background:#101d2f;border-radius:10px;padding:16px;margin-top:20px;min-width:0}
+.ci-reference-commands summary{cursor:pointer;font-weight:800;color:#b7f7e7;font-size:14px;padding:3px}
+.ci-reference-commands summary::marker{color:#b7f7e7}
+.ci-reference-command-wrap{overflow-x:auto;max-width:100%;border:1px solid #35526b;background:#071421;border-radius:8px;margin-top:14px}
+.ci-reference-command-wrap pre{margin:0;padding:15px;font-size:12px;line-height:1.8;white-space:pre;min-width:max-content}
+.ci-reference-command-wrap code{color:#e4f4ff;overflow-wrap:normal}
+.ci-reference-actions{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:14px}
+.ci-reference-actions button{min-height:44px}
+#ci-reference-copy-status{margin:0;min-height:1.5em;color:#aff3da}
+@media(max-width:800px){.ci-reference-heading{flex-direction:column}.ci-reference-run{flex:none}.ci-reference-facts{grid-template-columns:1fr}}
+@media(max-width:600px){.ci-reference{padding:18px 15px;margin:26px 0}.ci-reference-commands{padding:13px}.ci-reference-facts>div{padding:12px}.ci-reference-run{max-width:100%;box-sizing:border-box}}

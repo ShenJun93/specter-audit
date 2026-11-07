@@ -25,6 +25,7 @@ const STATIC_FILES = new Map([
   ['/live.js', ['live.js', 'text/javascript; charset=utf-8']],
   ['/pr-proof.html', ['pr-proof.html', 'text/html; charset=utf-8']],
   ['/pr-proof.js', ['pr-proof.js', 'text/javascript; charset=utf-8']],
+  ['/ci-reference.js', ['ci-reference.js', 'text/javascript; charset=utf-8']],
   ['/pr-proof.css', ['pr-proof.css', 'text/css; charset=utf-8']],
   ['/public-pr-evidence.mjs', ['public-pr-evidence.mjs', 'text/javascript; charset=utf-8']],
   ['/evidence-trial.mjs', ['evidence-trial.mjs', 'text/javascript; charset=utf-8']],
