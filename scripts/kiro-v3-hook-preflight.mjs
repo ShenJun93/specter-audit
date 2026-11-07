@@ -5,6 +5,19 @@ import {access} from 'node:fs/promises';
 import {resolve} from 'node:path';
 import {pathToFileURL} from 'node:url';
 const MAX_OUTPUT=512;
+const APPROVED_WARNING='SPECTER SOURCE CHANGE: A source file was saved after earlier evidence may have been collected. Any previous PASS claim is not sufficient to verify this new source state. Rerun the relevant tests and inspect the new receipt before claiming current results.';
+// Kiro forwards hook stdout to the agent's context. Whitelist the entire output.
+function validateOutput(kind,stdout,stderr){
+ const output=stdout.trim();
+ if(kind==='warn'){
+  if(!output.includes('SPECTER SOURCE CHANGE:'))return {ok:false,reason:'EXPECTED_SOURCE_WARNING'};
+  if(output!==APPROVED_WARNING||stderr.trim())return {ok:false,reason:'UNEXPECTED_HOOK_OUTPUT'};
+  return {ok:true};
+ }
+ if(output.includes('SPECTER SOURCE CHANGE:'))return {ok:false,reason:'FALSE_SOURCE_WARNING'};
+ if(output||stderr.trim())return {ok:false,reason:'UNEXPECTED_HOOK_OUTPUT'};
+ return {ok:true};
+}
 const SENSITIVE=/(?:C:\\Users\\|\/Users\/|\/home\/|\/root\/|Bearer\s+|sk-[A-Za-z0-9]|private[_-]?key|api[_-]?key|CANARY_PRIVATE_)/i;
 const FALSE_CLAIM=/(?:ALL_TESTS_PASS|RELEASE_APPROVED|INDEPENDENTLY_VERIFIED|TESTS_VERIFIED|CURRENT_SELF_RECORDED_TEST)/i;
 const event=(name,file)=>JSON.stringify({hook_event_name:name,cwd:'C:\\SPECTER_SYNTHETIC_WORKSPACE',file_path:file,session_id:'CANARY_PRIVATE_SESSION_123',prompt:'CANARY_PRIVATE_PROMPT_123',api_key:'CANARY_PRIVATE_KEY_123'});
@@ -73,10 +86,7 @@ export async function evaluateHandler(handlerPath,{
         clearTimeout(timer);
         const base=completed(code,stdout,stderr,timeout,err);
         if(!base.ok){resolve(base);return}
-        const warned=stdout.includes('SPECTER SOURCE CHANGE:');
-        if(scenario.kind==='warn'&&!warned)return resolve({ok:false,reason:'EXPECTED_SOURCE_WARNING'});
-        if(scenario.kind==='silent'&&warned)return resolve({ok:false,reason:'FALSE_SOURCE_WARNING'});
-        resolve({ok:true});
+        resolve(validateOutput(scenario.kind,stdout,stderr));
       });
       child.stdin.on('error',()=>{});
       child.stdin.end(scenario.payload);
