@@ -5,6 +5,8 @@ dist/
 build/
 playwright-report/
 test-results/
+# Locally generated CI receipts and raw TAP are never committed.
+out/ci/
 *.log
 .env
 .env.*

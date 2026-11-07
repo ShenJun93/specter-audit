@@ -129,6 +129,14 @@ The process binds to `127.0.0.1` and executes only bounded, fixed Git metadata o
 
 A pasted receipt reporting exitCode 0, command, SHA and timestamp is still **self-reported**. It cannot independently prove that tests ran.
 
+## Attested CI receipt (M15 candidate)
+
+On a **push** to a branch containing M15, GitHub Actions first runs the syntax checks and deterministic Node tests with read-only repository access, produces a bounded `receipt.json` and `test.tap`, and uploads them as the `specter-ci-evidence` artifact. A **separate job**, with scoped OIDC/attestation permission and no source checkout, can then sign provenance for the exact receipt bytes using GitHub Artifact Attestations.
+
+This feature is not considered verified merely because the workflow file exists. After the remote push workflow completes, obtain its run ID, download the artifact, and verify the report with `gh attestation verify` against the expected repository, signer workflow and **exact push commit SHA**. Compare the report's `sourceCommit` and `tapSha256` to the verified source and downloaded TAP bytes.
+
+The attestation proves where the *report artifact* originated, **not** that a local Kiro session ran on that SHA, that every required check passed, or that the software is correct. Missing, invalid, or nonmatching attestations stay **UNKNOWN**. See [M15 verifier steps](docs/competition/M15_CI_RECEIPT_ATTESTATION_20261107.md).
+
 ## Verify
 
 ```powershell
