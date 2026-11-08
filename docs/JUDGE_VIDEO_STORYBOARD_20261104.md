@@ -1,6 +1,8 @@
-# Specter Audit — 2:45 judge video storyboard (DRAFT)
+# Specter Audit — 2:45 judge video storyboard (historical M5L draft)
 
-**Format:** English voiceover + real product screen recording at 1920x1080; clean captions; no copyrighted soundtrack. Target **165 seconds** (strictly less than 3:00). Primary path: https://specter-audit.vercel.app. Do not use generated fake terminal output or fabricated Kiro sessions.
+**SUPERSEDED FOR M19:** Use [M20 165-second judge video capture plan](competition/M20_JUDGE_VIDEO_CAPTURE_PLAN_20261108.md), built from the verified exact-M19 Preview with a real Kiro session case. This older plan starts from the M5L production Git inspector. **No approved public final video exists yet.**
+
+**Historical format:** English voiceover + real product screen recording at 1920x1080; clean captions; no copyrighted soundtrack. Target **165 seconds** (strictly less than 3:00). Primary path: https://specter-audit.vercel.app. Do not use generated fake terminal output or fabricated Kiro sessions.
 
 **Core promise:** "Agents claim completion. Specter asks what Git actually supports." The product distinguishes Git path alignment from correctness and refuses self-reported test success.
 

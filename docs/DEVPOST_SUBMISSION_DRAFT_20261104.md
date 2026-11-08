@@ -1,6 +1,8 @@
-# Kiroween 2026 — Specter Audit submission draft
+# Kiroween 2026 — Specter Audit submission draft (historical 2026-11-04)
 
-**STATUS: DRAFT, NOT SUBMITTED.** Based on verified production behavior as of 2026-11-04. Must be reconciled with final published SHA and uploaded video before submission.
+**SUPERSEDED FOR FINAL PREPARATION:** This document describes the older M5L/M8.8 experience. Use [M20 Devpost submission candidate](competition/M20_DEVPOST_SUBMISSION_CANDIDATE_20261108.md) for the M19 exact-SHA Preview, current Devpost field status, attribution and submission gates. **NOT OFFICIALLY SUBMITTED; no YouTube video is available.**
+
+**Historical status: DRAFT, NOT SUBMITTED.** Based on verified production behavior as of 2026-11-04. Preserve below for provenance; do not copy the old production URL into the live submission.
 
 ## Required details
 

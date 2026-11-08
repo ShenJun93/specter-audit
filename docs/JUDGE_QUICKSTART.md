@@ -1,25 +1,27 @@
 # Specter Audit — Judge Quickstart
 
-**Stable production (older M5L):** https://specter-audit.vercel.app
+**Current recommended M19 public Preview:** https://specter-audit-bc84gljaz-nvhoa1691993-6852s-projects.vercel.app/ — exact deployed SHA `09952ed7e2728cdc030051ee14c66e61d0953d98`, [GitHub signed CI receipt run 42451296583](https://github.com/ShenJun93/specter-audit/actions/runs/42451296583), 524/524 PASS.
 
-**Verified M16 public Preview (feature-complete earlier candidate):** https://specter-audit-750p0my50-nvhoa1691993-6852s-projects.vercel.app/ — exact deployed commit `2e6cfe2d4852defa16ccad3d1311cb710b9ffab1`.
+**Stable production (older M5L):** https://specter-audit.vercel.app — not the current M19 judge experience. GitHub `main` is also older.
 
-**M19 first-run improvement (this branch):** LOCAL ONLY until its exact SHA is independently deployed and checked. It is not yet on the M16 URL above.
+**Historical M16 Preview:** https://specter-audit-750p0my50-nvhoa1691993-6852s-projects.vercel.app/ — M19 supersedes it for judging.
+
+**Final submission status:** Devpost `published` project but **not submitted**; YouTube video pending. See `docs/competition/M20_DEVPOST_SUBMISSION_CANDIDATE_20261108.md`.
 
 **Public source:** https://github.com/ShenJun93/specter-audit
 
 **Category proposal:** Costume Contest (Kiroween 2026).
 
-## M19 judge-first-run candidate (local until separately deployed)
+## M19 verified judge-first-run walkthrough
 
-No file upload, login or Kiro credits are needed for the first judge scenario. On the **M19 local candidate** home page:
+No file upload, login or Kiro credits are needed for the first judge scenario. On the **verified M19 Preview** home page:
 
-1. Activate **JUDGE FAST PATH — Investigate the Midnight Rewrite**. It opens `/alibi.html#case-room`.
-2. The Alibi Room loads **case 04, The Midnight Rewrite**, from a redacted authentic saved Kiro CLI session. Select **Expose the alibi** to see `STALE_LOCAL_TEST_EVIDENCE`: 120 recorded passing tests, an agent assertion, then five successful source edits without a further test observed in that saved session.
-3. Go to **PR proof chain** and explicitly choose **Inspect this PR** to see current public GitHub provider metadata. PR #7 is not approved and its CI evidence is not independently bound to the Kiro session.
-4. If a judge has their own `messages.jsonl`, **Your session** analyzes it locally in the browser. Never upload or publish raw private Kiro logs.
+1. Click **JUDGE FAST PATH — Investigate the Midnight Rewrite**. It opens `/alibi.html#case-room`.
+2. The Alibi Room loads **case 04, The Midnight Rewrite**, from a redacted genuine saved Kiro CLI session. Select **Expose the alibi** to see `STALE_LOCAL_TEST_EVIDENCE`: 120 recorded passing tests, an agent assertion, then five later source edits with no post-edit retest seen **in that saved session**. This is not proof that code is broken.
+3. Go to **PR proof chain** and explicitly choose **Inspect this PR** to see fresh, public GitHub provider metadata. PR #7 was `OPEN · DRAFT` at M19 acceptance, and its CI evidence is not independently bound to the Kiro session. The actual state may change.
+4. If a judge has their own `messages.jsonl`, **Your session** analyzes it locally in the browser. Do not publish or upload private Kiro logs.
 
-The M19 first-run and narrow-screen navigation change have **local browser acceptance only**; the M16 Preview predates them. The old production Git inspector three-claim path below is retained as a separate, historical demo. Do not show M19 as deployed until a distinct exact-SHA Preview is tested.
+The M19 Preview passed exact-SHA signed GitHub CI (524/524 tests) and independent browser/HTTP/CSP smoke checks; see `docs/competition/M20_DEVPOST_SUBMISSION_CANDIDATE_20261108.md` for the exact URLs and acceptance scope. The old production Git inspector three-claim path below is retained as a **historical, separate demo**, not the current featured M19 experience.
 
 ## Try the older stable production app in 60 seconds
 
