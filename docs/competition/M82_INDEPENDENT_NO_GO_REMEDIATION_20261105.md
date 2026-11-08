@@ -1,7 +1,7 @@
 # M8.2 — Independent NO-GO Correctness Remediation
 
-Date: 2026-11-05  
-Parent release candidate: `bc773ba4f5050af7e5f79e86b59d62fa2f156c9b`  
+Date: 2026-11-05\
+Parent release candidate: `bc773ba4f5050af7e5f79e86b59d62fa2f156c9b`\
 Feature branch: `feat/m8-judge-entry-ux` (stacked on PR #4, then PR #3).
 
 ## Independent reviewer findings
