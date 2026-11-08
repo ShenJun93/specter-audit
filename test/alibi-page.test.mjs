@@ -72,7 +72,8 @@ test('arbitrary path traversal and source routes remain blocked',async()=>{
 test('homepage clearly links to the newer alibi evidence investigation',async()=>{
   const html=await (await fetch(server.url+'/')).text();
   assert.match(html,/href="\/alibi\.html"/);
-  assert.match(html,/The CI passed|tests passed on the wrong commit/i);
+  assert.match(html,/<a class="alibi-room-cta" href="\/alibi\.html#case-room">/);
+  assert.match(html,/120 tests passed.*five later edits/i);
   assert.match(html,/id="instance-kind"/);
 });
 test('fourth recorded Kiro case is distinctly labeled, initially disabled and bounded',async()=>{

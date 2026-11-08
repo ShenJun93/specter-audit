@@ -1,12 +1,27 @@
 # Specter Audit — Judge Quickstart
 
-**Live hosted demo:** https://specter-audit.vercel.app
+**Stable production (older M5L):** https://specter-audit.vercel.app
+
+**Verified M16 public Preview (feature-complete earlier candidate):** https://specter-audit-750p0my50-nvhoa1691993-6852s-projects.vercel.app/ — exact deployed commit `2e6cfe2d4852defa16ccad3d1311cb710b9ffab1`.
+
+**M19 first-run improvement (this branch):** LOCAL ONLY until its exact SHA is independently deployed and checked. It is not yet on the M16 URL above.
 
 **Public source:** https://github.com/ShenJun93/specter-audit
 
 **Category proposal:** Costume Contest (Kiroween 2026).
 
-## Try the live app in 60 seconds
+## M19 judge-first-run candidate (local until separately deployed)
+
+No file upload, login or Kiro credits are needed for the first judge scenario. On the **M19 local candidate** home page:
+
+1. Activate **JUDGE FAST PATH — Investigate the Midnight Rewrite**. It opens `/alibi.html#case-room`.
+2. The Alibi Room loads **case 04, The Midnight Rewrite**, from a redacted authentic saved Kiro CLI session. Select **Expose the alibi** to see `STALE_LOCAL_TEST_EVIDENCE`: 120 recorded passing tests, an agent assertion, then five successful source edits without a further test observed in that saved session.
+3. Go to **PR proof chain** and explicitly choose **Inspect this PR** to see current public GitHub provider metadata. PR #7 is not approved and its CI evidence is not independently bound to the Kiro session.
+4. If a judge has their own `messages.jsonl`, **Your session** analyzes it locally in the browser. Never upload or publish raw private Kiro logs.
+
+The M19 first-run and narrow-screen navigation change have **local browser acceptance only**; the M16 Preview predates them. The old production Git inspector three-claim path below is retained as a separate, historical demo. Do not show M19 as deployed until a distinct exact-SHA Preview is tested.
+
+## Try the older stable production app in 60 seconds
 
 No signup, credentials, CLI, or extension is required to use the hosted demo.
 
@@ -57,7 +72,7 @@ The checked-in `.kiro/` specs and steering docs and Git history show development
 
 ## M16 candidate: self-verify the signed CI reference
 
-**Candidate-only until a new exact-SHA Preview is deployed.** The current production URL above does not automatically include M16.
+**M16 was deployed and verified on its own Preview:** https://specter-audit-750p0my50-nvhoa1691993-6852s-projects.vercel.app/pr-proof.html#ci-reference. Stable production still does not include M16. M19 is not deployed.
 
 On the M16 local app or an owner-approved Preview, open `/pr-proof.html#ci-reference`. This panel links to the actual [GitHub Actions run 42323178158](https://github.com/ShenJun93/specter-audit/actions/runs/42323178158) and presents reproducible `gh attestation verify` commands for the historical M15 source commit `70eec77327fee7e86e6b52b57e9ab539c372bd94`.
 

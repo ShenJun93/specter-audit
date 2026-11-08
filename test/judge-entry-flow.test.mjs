@@ -2,13 +2,27 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 const read=path=>readFile(new URL('../'+path,import.meta.url),'utf8');
-test('landing page guides judges to live Kiro session and recorded cases',async()=>{
+test('judge first-run begins with real recorded case, not a private file picker',async()=>{
  const html=await read('web/index.html');
+ const primary=html.match(/<a class="alibi-room-cta" href="([^"]+)">([\s\S]*?)<\/a>/);
+ assert.ok(primary,'prominent primary judge link');
+ assert.equal(primary[1],'/alibi.html#case-room');
+ assert.match(primary[2],/JUDGE FAST PATH/);
+ assert.match(primary[2],/120 tests passed/);
+ assert.match(primary[2],/five later edits/);
+ assert.match(primary[2],/INVESTIGATE THE MIDNIGHT REWRITE/);
+ assert.match(html,/No file required to start/);
+ assert.match(html,/href="\/pr-proof\.html"/);
  assert.match(html,/href="\/live\.html"/);
- assert.match(html,/href="\/alibi\.html"/);
- assert.match(html,/START HERE · BROWSER-ONLY KIRO SESSION ANALYSIS/);
- assert.match(html,/Try three synthetic cases/);
- assert.match(html,/INVESTIGATE A KIRO SESSION/);
+ const recorded=await read('web/alibi.html');
+ assert.match(recorded,/data-case="real-kiro-session"/);
+ assert.match(recorded,/REAL KIRO SESSION/);
+ assert.match(recorded,/id="case-room"/);
+});
+test('recorded Kiro case navigation fits narrow screens',async()=>{
+ const css=await read('web/alibi.css');
+ assert.match(css,/@media\(max-width:630px\)\{\.topbar\{flex-direction:column/);
+ assert.match(css,/\.topbar nav\{width:100%;flex-wrap:wrap/);
 });
 test('local session UI shows honest help and an actionable next step',async()=>{
  const html=await read('web/live.html');

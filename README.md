@@ -6,6 +6,16 @@ Specter Audit is a local-first, read-only Git metadata investigator for AI codin
 
 **Kiroween 2026** — proposed category: **Costume Contest**.
 
+## Current judge evaluation state (2026-11-08)
+
+- **Latest publicly verified feature Preview (M16):** https://specter-audit-750p0my50-nvhoa1691993-6852s-projects.vercel.app/ — [Alibi Room](https://specter-audit-750p0my50-nvhoa1691993-6852s-projects.vercel.app/alibi.html), [Public PR Proof Chain](https://specter-audit-750p0my50-nvhoa1691993-6852s-projects.vercel.app/pr-proof.html), [Kiro session investigator](https://specter-audit-750p0my50-nvhoa1691993-6852s-projects.vercel.app/live.html). Exact deployed source SHA: `2e6cfe2d4852defa16ccad3d1311cb710b9ffab1`.
+- **Newest independently checked GitHub CI source:** M18 `b6eb16d6c22cc40ade477ab1158cdccbfba993cd`, 523/523 tests and signed receipt verified at [Actions run 42436943389](https://github.com/ShenJun93/specter-audit/actions/runs/42436943389). This M18 artifact **does not attest the separate local Kiro transcript**.
+- **M19 first-run candidate (this branch, LOCAL ONLY):** makes a public recorded Kiro case the first judge action and fixes narrow-screen navigation. Not yet pushed, deployed or signed; do not treat the M16 Preview URL as serving M19.
+- **Stable production:** https://specter-audit.vercel.app remains the older M5L release. It is **not** the tested M16 or M19 experience.
+- **Important scope:** the M6E real Kiro session is self-recorded, redacted, and not linked independently to a specific PR HEAD. No Kiro PostFileSave hook has been activated. The final public YouTube video and Devpost entry are still pending.
+
+Earlier M8.8 evidence and Preview links below remain available as **historical milestones**, not the latest build.
+
 **Live M8.8 judge demo (exact source SHA `8fc24af`):** https://specter-audit-bc2qeacr6-nvhoa1691993-6852s-projects.vercel.app/live.html
 
 **Four-case Alibi Room (same Preview):** https://specter-audit-bc2qeacr6-nvhoa1691993-6852s-projects.vercel.app/alibi.html
