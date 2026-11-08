@@ -6,13 +6,13 @@ Specter Audit is a local-first, read-only Git metadata investigator for AI codin
 
 **Kiroween 2026** — proposed category: **Costume Contest**.
 
-## Current judge evaluation state (2026-11-08)
+## Current judge evaluation state (2026-11-09)
 
-- **Latest publicly verified feature Preview (M16):** https://specter-audit-750p0my50-nvhoa1691993-6852s-projects.vercel.app/ — [Alibi Room](https://specter-audit-750p0my50-nvhoa1691993-6852s-projects.vercel.app/alibi.html), [Public PR Proof Chain](https://specter-audit-750p0my50-nvhoa1691993-6852s-projects.vercel.app/pr-proof.html), [Kiro session investigator](https://specter-audit-750p0my50-nvhoa1691993-6852s-projects.vercel.app/live.html). Exact deployed source SHA: `2e6cfe2d4852defa16ccad3d1311cb710b9ffab1`.
-- **Newest independently checked GitHub CI source:** M18 `b6eb16d6c22cc40ade477ab1158cdccbfba993cd`, 523/523 tests and signed receipt verified at [Actions run 42436943389](https://github.com/ShenJun93/specter-audit/actions/runs/42436943389). This M18 artifact **does not attest the separate local Kiro transcript**.
-- **M19 first-run candidate (this branch, LOCAL ONLY):** makes a public recorded Kiro case the first judge action and fixes narrow-screen navigation. Not yet pushed, deployed or signed; do not treat the M16 Preview URL as serving M19.
-- **Stable production:** https://specter-audit.vercel.app remains the older M5L release. It is **not** the tested M16 or M19 experience.
-- **Important scope:** the M6E real Kiro session is self-recorded, redacted, and not linked independently to a specific PR HEAD. No Kiro PostFileSave hook has been activated. The final public YouTube video and Devpost entry are still pending.
+- **Recommended working demo (M19 exact-SHA Preview):** https://specter-audit-bc84gljaz-nvhoa1691993-6852s-projects.vercel.app/ — verified application source [`09952ed7e2728cdc030051ee14c66e61d0953d98`](https://github.com/ShenJun93/specter-audit/tree/feat/m19-judge-first-run). Open [The Midnight Rewrite](https://specter-audit-bc84gljaz-nvhoa1691993-6852s-projects.vercel.app/alibi.html#case-room), [PR Proof Chain](https://specter-audit-bc84gljaz-nvhoa1691993-6852s-projects.vercel.app/pr-proof.html) or [private-in-browser Kiro session investigator](https://specter-audit-bc84gljaz-nvhoa1691993-6852s-projects.vercel.app/live.html).
+- **M19 release evidence:** [GitHub Actions run 42451296583](https://github.com/ShenJun93/specter-audit/actions/runs/42451296583) covers 524 passing tests at the M19 commit. Its signed CI artifact establishes workflow/commit provenance, **not** independent validity of a local Kiro session or code correctness. The 524 Node tests and `npm run check` were also rerun locally at M19.
+- **Actual Kiro involvement:** Kiro CLI authored parts of the Git inspector, contributed to provider evidence integration, and created the M6E session-staleness analyzer. The saved 120-PASS-then-five-edits case is a **self-recorded local session**, not independently signed Kiro provenance. ChatGPT/WAG assisted with UI, integration, adversarial QA and releases. The M9B `PostFileSave` hook was **not activated**.
+- **GitHub release boundary:** public default `main` remains the earlier M5L version (`b6e1407d...`). The judge-ready M19 runtime is available on the feature branch/Preview above. The docs-only M25 release-hygiene fix is a separate local commit, not a production release.
+- **Submission boundary:** stable production https://specter-audit.vercel.app remains older. Devpost still lists the M8.8 description and production alias, `submitted_at` remains null, and the reviewed 123-second V5B video is **not** public on YouTube. The verified M19 Preview is the judge demo until an explicitly approved release/update.
 
 Earlier M8.8 evidence and Preview links below remain available as **historical milestones**, not the latest build.
 
