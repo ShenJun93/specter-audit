@@ -1,71 +1,80 @@
-# Specter Audit
+# Specter Audit — Trust the Evidence
 
-**The agent said "done." What does Git say?**
+**The agent said "done." What does the evidence actually support?**
 
-Specter Audit is a local-first, read-only Git metadata investigator for AI coding-agent completion claims. It turns a confident assertion into an explainable, bounded evidence verdict: **UNVERIFIED**, **PARTIAL** or **SUPPORTED**. *Alignment is not code correctness.*
+Specter Audit is a Halloween-themed, local-first, **read-only evidence investigator** for AI-assisted software development. It distinguishes passing tests **before** a later source change from tests actually covering the recorded final state, and distinguishes a green GitHub Actions run from one for the **right commit**.
 
-**Kiroween 2026** — proposed category: **Costume Contest**.
+Built for **Kiroween 2026** using genuine Kiro CLI development sessions, Kiro specifications and steering. Registered draft competition category: **Costume Contest**.
 
-**Live judge demo:** https://specter-audit.vercel.app
+## Judge entry — public video and demo
 
-**Public repository:** https://github.com/ShenJun93/specter-audit
+- **[Live M19 judge demo](https://specter-audit-bc84gljaz-nvhoa1691993-6852s-projects.vercel.app/)** — no login required; this is the deployed app shown in the video.
+- **[V5D judge video — YouTube Public](https://youtu.be/kQKkw7Dkp-M)** — about 2 minutes 4 seconds, under the contest's 3-minute limit.
+- **[Devpost project page](https://devpost.com/software/specter-audit-trust-the-evidence)** — descriptive project page; **official Kiroween submission is not yet complete**.
+- **[Exact filmed M19 source](https://github.com/ShenJun93/specter-audit/tree/feat/m19-judge-first-run)** — commit 09952ed7e2728cdc030051ee14c66e61d0953d98, not the earlier default main release.
 
-## Try it in 60 seconds
+## Try the judge demo in 90 seconds
 
-The public demo requires no account or installation. It is visibly labeled **SYNTHETIC SNAPSHOT**, because it uses a frozen Git fixture, not a remote inspection of your machine or repositories. Its claim evaluator still runs on every request.
+**[Open the verified M19 judge demo](https://specter-audit-bc84gljaz-nvhoa1691993-6852s-projects.vercel.app/)** — public browser demo, no credentials or file uploads.
 
-| Claim | Verdict | Interpretation |
+1. Select **JUDGE FAST PATH — RECORDED KIRO EVIDENCE** and open *The Midnight Rewrite* (case 04).
+2. Click **Expose the alibi**: the saved Kiro session contains 120 passing tests, an agent completion statement and **five subsequent source edits**, with **no later passing test observed in that saved session**. Verdict: `STALE_LOCAL_TEST_EVIDENCE`.
+3. Explore *Wrong-commit CI*, *matching-commit CI* and *UNKNOWN*. A green provider result for the wrong revision cannot certify the revision under review.
+4. Open **PR proof chain** and deliberately click **Inspect this PR**. Specter then fetches public PR/workflow metadata. It makes **no GitHub API request before that click**. A reported provider run is *not* proof that all required checks are certified.
+
+**Other views:** [The Midnight Rewrite](https://specter-audit-bc84gljaz-nvhoa1691993-6852s-projects.vercel.app/alibi.html#case-room) · [PR Proof Chain](https://specter-audit-bc84gljaz-nvhoa1691993-6852s-projects.vercel.app/pr-proof.html) · [Your session — browser-local importer](https://specter-audit-bc84gljaz-nvhoa1691993-6852s-projects.vercel.app/live.html).
+
+The **Your session** view optionally analyzes a user-selected Kiro `messages.jsonl` locally in the browser; it does not send the file to Specter servers. The record is editable and may be incomplete, so its conclusions are bounded to **that saved session**, not cryptographic provenance.
+
+## Three evidence boundaries that matter
+
+| Evidence | What Specter can say | What it cannot say |
 | --- | --- | --- |
-| `all tests pass` | `UNVERIFIED` | No independently witnessed test execution |
-| `updated auth login and all tests pass` | `PARTIAL` | Changed path aligns; test assertion unsupported |
-| `updated auth login validation` | `SUPPORTED` | Relevant path changed, but correctness is not proven |
+| Recorded test PASS followed by source edits | Earlier PASS may not cover the later recorded state | That the final code is broken or never tested elsewhere |
+| Exact-SHA GitHub Actions run | GitHub reports a workflow result for that commit | That arbitrary agent claims, local sessions, or code correctness were independently certified |
+| Incomplete or conflicting record | `INSUFFICIENT_SESSION_EVIDENCE` / UNKNOWN | An invented green check or a confident verdict without support |
 
-A separate **Public CI evidence** button shows a timestamped record of the fixed GitHub Actions workflow for the **production merge release** (`374af141...`). Hosted visitors never trigger an outbound GitHub API call. The recorded result is provider-reported CI metadata for that *one published commit*, not an attestation and not proof that arbitrary agent claims are true.
+The app does not execute arbitrary shell commands or tests for visitors. Local Git inspection is intentionally read-only and bounded.
 
-**Snapshot refresh status:** This production-merge CI snapshot is part of the M5L candidate branch. Until M5L is separately merged and deployed, the currently published page may still display the explicitly labeled **initial release** record. See `docs/M5K_PRODUCTION_RELEASE_20261104.md`.
+## How Kiro was actually used
 
-## Local read-only inspection
+- **Kiro CLI** authored the original Git inspection work and contributed to the GitHub Actions evidence adapter.
+- In authentic recorded Kiro sessions, an agent reported 120 passing tests and later changed code. Specter uses that **redacted self-recorded chronology** as a real demonstration of the stale-test problem, not as a signed attestation.
+- **Kiro CLI** also authored and revised the session-staleness analyzer (`src/kiro-session-staleness.mjs`); adversarial regressions and broader integration were independently reviewed.
+- The public root [`.kiro/specs/`](.kiro/specs/) and [`.kiro/steering/`](.kiro/steering/) preserve requirements, workflow and explicit trust boundaries.
+- **ChatGPT/WAG** contributed parts of the frontend, integration, red-team cases, browser verification, CI/release engineering and documentation. **Not all code was Kiro-authored.**
 
-Requires Node.js 24+ and Git. Zero runtime dependencies; no package installation required.
+The shipped M19 demo does **not** have an installed, active `PostFileSave` warning hook or independently signed Kiro session logs. See [Kiro development evidence](https://github.com/ShenJun93/specter-audit/blob/feat/m19-judge-first-run/docs/competition/M6E_KIRO_REAL_SESSION_EVIDENCE_20261104.md) for the authoring split and technical limits.
 
-```powershell
-git clone https://github.com/ShenJun93/specter-audit.git
+## Reproduce and verify
+
+The exact version filmed for judges is **M19**, commit `09952ed7e2728cdc030051ee14c66e61d0953d98`.
+
+Prerequisites for local use: **Node.js 24+ and Git**. Zero runtime npm dependencies.
+
+```bash
+git clone --branch feat/m19-judge-first-run --single-branch https://github.com/ShenJun93/specter-audit.git
 cd specter-audit
+npm test
+npm run check
 npm run demo
 ```
 
-This launches a disposable real Git fixture in the OS temporary directory and prints a loopback URL. Ctrl+C stops the server and normally deletes the fixture.
+`npm run demo` launches a local loopback Git-inspection demonstration. The public judge story uses the linked browser Preview above; these are distinct entry points.
 
-To inspect a chosen Git repository's working-tree and index metadata:
+**Verification:** [M19 GitHub Actions run](https://github.com/ShenJun93/specter-audit/actions/runs/42451296583) reports **524 passing tests** for the exact filmed source SHA. Its signed CI artifact attests the **origin of the CI receipt**, not Kiro-transcript integrity or semantic code correctness.
 
-```powershell
-node src/http-server.mjs --repo="C:\path\to\your\git-repository"
-```
+More detail: [Judge Quickstart](https://github.com/ShenJun93/specter-audit/blob/feat/m19-judge-first-run/docs/JUDGE_QUICKSTART.md) · [M19 browser acceptance](https://github.com/ShenJun93/specter-audit/blob/feat/m19-judge-first-run/docs/competition/M19_JUDGE_FIRST_RUN_LOCAL_ACCEPTANCE_20261108.md) · [M6E real Kiro evidence](https://github.com/ShenJun93/specter-audit/blob/feat/m19-judge-first-run/docs/competition/M6E_KIRO_REAL_SESSION_EVIDENCE_20261104.md). Older milestone notes remain in [docs/competition](https://github.com/ShenJun93/specter-audit/tree/feat/m19-judge-first-run/docs/competition).
 
-The process binds to `127.0.0.1` and executes only bounded, fixed Git metadata operations through argument-array `execFile` calls with `shell:false`. It does **not** read source contents, execute claimed test commands, accept arbitrary shell commands, modify the inspected repository or crawl GitHub repos. A locally initiated, fixed-target CI lookup is opt-in only.
+## Public release boundary (November 2026)
 
-A pasted receipt reporting exitCode 0, command, SHA and timestamp is still **self-reported**. It cannot independently prove that tests ran.
+| Surface | What it actually contains |
+| --- | --- |
+| [M19 verified Preview](https://specter-audit-bc84gljaz-nvhoa1691993-6852s-projects.vercel.app/) | The **working judge version** filmed in the video |
+| [`feat/m19-judge-first-run`](https://github.com/ShenJun93/specter-audit/tree/feat/m19-judge-first-run) | Exact filmed source |
+| [`fix/m25-m19-release-hygiene`](https://github.com/ShenJun93/specter-audit/tree/fix/m25-m19-release-hygiene) | Same runtime as M19 plus judge-documentation updates |
+| GitHub default `main` and [stable production](https://specter-audit.vercel.app/) | **Earlier M5L version**, not the linked M19 judge demo |
 
-## Verify
+The public Preview is not claimed to be stable production. Do not assume an old `main` checkout or production URL reproduces the filmed M19 features. Historical draft PR states and CI statuses can change.
 
-```powershell
-npm run check
-npm test
-```
-
-Tests cover Git inspection, evaluator verdict semantics, synthetic mode, API limits, CI ordering and provenance gates. The CLI and public hosted replay have different trust boundaries.
-
-## Development provenance
-
-- Kiro CLI genuinely implemented initial M1 Git inspection work, and contributed to the early M5A/M5B GitHub Actions adapter.
-- Root `.kiro/specs/specter-audit/` and `.kiro/steering/product.md` capture requirements, tasks and strict read-only/evidence semantics.
-- Subsequent API/UI, hosted release engineering, security hardening, testing and targeted remediation were developed with ChatGPT/WAG tooling. Kiro CLI also performed scoped read-only reviews. **Do not attribute all source code to Kiro.**
-- The public Git history and milestone documents are the authority for actual authorship and release state.
-
-## Release, security and submission
-
-The 2026-11-04 production release is the merged Git commit `374af1417b714619d9edc1af790f7e7db15a71ca`, with a verified GitHub workflow and public post-deploy browser/API acceptance. See `docs/M5K_PRODUCTION_RELEASE_20261104.md` for the exact evidence and limitations.
-
-The app is not a security certification or an independent semantic code auditor. `SUPPORTED` means **Git path alignment**, not that tests passed or code works.
-
-Judge resources: `docs/JUDGE_QUICKSTART.md`, `docs/JUDGE_VIDEO_STORYBOARD_20261104.md` and `docs/DEVPOST_SUBMISSION_DRAFT_20261104.md`. The final YouTube demo and confirmed Devpost submission are **not yet complete**.
+**License:** [MIT](LICENSE). Public source, root `.kiro/`, local-first read-only implementation. Public video and Devpost project links above do not mean the official Kiroween submission has been filed or stable production has been promoted.
