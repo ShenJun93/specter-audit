@@ -136,6 +136,7 @@ function isNaturalLanguageTestCorrection(content) {
   /^(?:i|we)\s+(?:gave|reported|stated|provided|got)\s+(?:(?:the|my|our)\s+)?(?:(?:wrong|incorrect)\s+(?:test|pass|passing)\s+(?:count|number|results?)|(?:test|pass|passing)\s+(?:count|number|results?)\s+(?:wrong|incorrect))\b/i,
   /^(?:i|we)\s+(?:need|want|have)\s+to\s+correct\s+(?:myself|ourselves)\b/i,
   /^(?:the|my|our)\s+(?:earlier|previous|original)\s+(?:test\s+)?(?:number|count|results?|claim)\s+(?:was|were)\s+(?:wrong|mistaken|incorrect|inaccurate)\b/i,
+  /^(?:the|my|our)\s+(?:test|pass(?:ing)?)\s+(?:count|number|results?)\s+(?:should\s+have\s+been|should\s+be|ought\s+to\s+have\s+been)\b/i,
   /^the\s+(?:test|passing)\s+results?\s+(?:i|we)\s+(?:gave|reported|stated)\s+(?:was|were)\s+(?:wrong|false|incorrect)\b/i,
   /^(?:recheck|re-check|recount|follow[- ]?up)\b/i,
   /^(?:i|we)\s+(?:need|want|have)\s+to\s+(?:amend|revise|correct|update)\s+(?:(?:my|our|the)\s+)?(?:test\s+)?(?:results?|count|number)\b/i,
@@ -149,8 +150,9 @@ function isExplicitTestCorrection(content) {
  const statement=content.trim().slice(0,500);
  // Recognize an explicit test-result correction even when punctuation differs
  // or the author introduces it as an update about testing.
- // A documentation correction containing the word "tests" is not a test-result correction.
- if(/^(?:(?:actually|correction|update|revision|oops)\s*[:,\u2013\u2014-]\s*)?(?:(?:the|my|our)\s+)?(?:README|docs?|documentation|user\s+guide)\b/i.test(statement) && !/\b(?:\d{1,5}|one|two|three|four|five|six|seven|eight|nine|ten)\s+(?:tests?\s+)?(?:passed|failed)\b/i.test(statement))return false;
+ const documentationLead=/^(?:(?:actually|correction|update|revision|oops)\s*[:,\u2013\u2014-]\s*)?(?:(?:the|my|our)\s+)?(?:README|docs?|documentation|user\s+guide)\b/i.test(statement);
+ const actualSuiteCorrection=/\b(?:but|however|instead|in\s+fact)\b[^.!?]{0,100}\b(?:actual|real|source|run|suite)\b[^.!?]{0,55}\b(?:passed|failed|pass\s+count|test\s+count)\b/i.test(statement);
+ if(documentationLead && !actualSuiteCorrection)return false;
  const prefix=statement.match(
   /^(?:(?:correction|update|revision|revised\s+(?:test\s+)?results?|actually|oops)\s*[:,\u2013\u2014-]\s*|(?:correction|update|revision)\s+(?:on|to|about|regarding)\s+(?:(?:my|our|the)\s+)?(?:test\s+)?(?:results?|tests?|passing\s+claim|pass\s+count|fail(?:ure)?\s+count)\s*[:,\u2013\u2014-]\s*|(?:(?:(?:i|we)\s+(?:need|want|have)\s+to|to)\s+)?correct\s+(?:(?:my|our|the)\s+)?(?:(?:earlier|previous)\s+)?(?:test\s+)?(?:results?|tests?|passing\s+claim|pass\s+count|fail\s+count)\s*[:,\u2013\u2014-]\s*)/i
  );
