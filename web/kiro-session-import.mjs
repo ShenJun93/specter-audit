@@ -115,34 +115,42 @@ function contradictsClaim(statement) {
 // A later free-text correction of a test count is evidence against a prior
 // affirmative claim, even when it omits the literal word "Correction".
 // Conservatively reject the older PASS without attempting to verify the new count.
+// Explicit later revisions of test results are fail-closed; this is a bounded
+// English-language recognizer, not a natural-language truth engine.
 function isNaturalLanguageTestCorrection(content) {
  if(typeof content!=='string')return false;
  const statement=content.trim().slice(0,500);
- // Anchored self-corrections only; unqualified narrative and unrelated prose
- // must not automatically retract a recorded test observation.
+ const count='(?:\\d{1,5}|zero|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty)';
+ const outcome='(?:pass(?:ed|ing)?|fail(?:ed|ing|ures?)?)';
+ const revisedTestOutcome=new RegExp(
+  '\\b'+count+'\\s+tests?\\s+(?:(?:actually|only|really|still|now|were|are)\\s+){0,3}'+outcome+'\\b'+
+  '|\\b'+count+'\\s+'+outcome+'\\b'+
+  '|\\b(?:test|pass|passing)\\s+(?:count|number|results?)\\b[^.!?]{0,80}\\b'+count+'\\b','i'
+ ).test(statement);
+ if(!revisedTestOutcome)return false;
  const correctionStarts=[
-  /^sorry[,!]?\s+(?:i|we)\s+(?:was|were)\s+(?:wrong|mistaken)\b/i,
+  /^sorry\s*(?:[,!\u2013\u2014:-]\s*|\s+)(?:i|we)\s+(?:was|were)\s+(?:wrong|mistaken)\b/i,
   /^(?:my\s+)?apologies\b/i,
+  /^i\s+apologize\b/i,
   /^(?:actually\s+)?(?:i|we)\s+(?:(?:was|were)\s+(?:wrong|mistaken)|miscounted|mispoke|made\s+a\s+mistake)\b/i,
-  /^(?:i|we)\s+(?:gave|reported|stated|provided)\s+(?:the|a)\s+wrong\s+(?:test|pass|passing)\s+(?:count|number)\b/i,
+  /^(?:i|we)\s+(?:gave|reported|stated|provided|got)\s+(?:(?:the|my|our)\s+)?(?:(?:wrong|incorrect)\s+(?:test|pass|passing)\s+(?:count|number|results?)|(?:test|pass|passing)\s+(?:count|number|results?)\s+(?:wrong|incorrect))\b/i,
+  /^(?:i|we)\s+(?:need|want|have)\s+to\s+correct\s+(?:myself|ourselves)\b/i,
   /^(?:the|my|our)\s+(?:earlier|previous|original)\s+(?:test\s+)?(?:number|count|results?|claim)\s+(?:was|were)\s+(?:wrong|mistaken|incorrect|inaccurate)\b/i,
+  /^the\s+(?:test|passing)\s+results?\s+(?:i|we)\s+(?:gave|reported|stated)\s+(?:was|were)\s+(?:wrong|false|incorrect)\b/i,
   /^(?:recheck|re-check|recount|follow[- ]?up)\b/i,
   /^(?:i|we)\s+(?:need|want|have)\s+to\s+(?:amend|revise|correct|update)\s+(?:(?:my|our|the)\s+)?(?:test\s+)?(?:results?|count|number)\b/i,
   /^(?:the\s+)?(?:correct|actual|revised|real)\s+(?:test\s+)?(?:count|number|results?)\s+(?:is|was|are|were)\b/i,
-  /^(?:make\s+that|only\s+\d{1,5}\s+tests?|after\s+(?:re)?checking\b)/i
+  /^(?:make\s+that|only\s+(?:\d{1,5}|zero|one|two|three|four|five|six|seven|eight|nine|ten)\s+tests?|after\s+(?:re)?checking\b|actually\b|to\s+clarify\b)/i
  ];
- const revisedTestOutcome=(
-  /\b\d{1,5}\s+tests?\s+(?:(?:actually|only|really|still|now|were|are)\s+){0,3}(?:pass(?:ed|ing)?|fail(?:ed|ing)?)\b/i.test(statement) ||
-  /\b\d{1,5}\s+(?:pass(?:ed)?|fail(?:ed|ures?)?)\b/i.test(statement) ||
-  /\b(?:test|pass|passing)\s+(?:count|number|results?)\b[^.!?]{0,80}\b\d{1,5}\b/i.test(statement)
- );
- return revisedTestOutcome&&correctionStarts.some(re=>re.test(statement));
+ return correctionStarts.some(re=>re.test(statement));
 }
 function isExplicitTestCorrection(content) {
  if(typeof content!=='string')return false;
  const statement=content.trim().slice(0,500);
  // Recognize an explicit test-result correction even when punctuation differs
  // or the author introduces it as an update about testing.
+ // A documentation correction containing the word "tests" is not a test-result correction.
+ if(/^(?:(?:actually|correction|update|revision|oops)\s*[:,\u2013\u2014-]\s*)?(?:(?:the|my|our)\s+)?(?:README|docs?|documentation|user\s+guide)\b/i.test(statement) && !/\b(?:\d{1,5}|one|two|three|four|five|six|seven|eight|nine|ten)\s+(?:tests?\s+)?(?:passed|failed)\b/i.test(statement))return false;
  const prefix=statement.match(
   /^(?:(?:correction|update|revision|revised\s+(?:test\s+)?results?|actually|oops)\s*[:,\u2013\u2014-]\s*|(?:correction|update|revision)\s+(?:on|to|about|regarding)\s+(?:(?:my|our|the)\s+)?(?:test\s+)?(?:results?|tests?|passing\s+claim|pass\s+count|fail(?:ure)?\s+count)\s*[:,\u2013\u2014-]\s*|(?:(?:(?:i|we)\s+(?:need|want|have)\s+to|to)\s+)?correct\s+(?:(?:my|our|the)\s+)?(?:(?:earlier|previous)\s+)?(?:test\s+)?(?:results?|tests?|passing\s+claim|pass\s+count|fail\s+count)\s*[:,\u2013\u2014-]\s*)/i
  );
