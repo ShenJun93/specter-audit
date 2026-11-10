@@ -33,6 +33,7 @@ export function isAllowedSourcePath(p) {
   if (/[\u0000-\u001f\u007f]/.test(p)) return false;
   // Unicode control/format (incl. bidi U+202A-202E, U+2066-2069, U+200E/F) and line/paragraph separators.
   if (/[\p{Cc}\p{Cf}\p{Zl}\p{Zp}\u061c\u200e\u200f\u202a-\u202e\u2066-\u2069]/u.test(p)) return false;
+  if (p.includes('\ufffd')) return false; // replacement char: ambiguous decode
   if (p.includes(':') || p.includes('~')) return false; // drive letters, ADS, home
   const n = p.replaceAll('\\', '/'); // accept Windows and POSIX separators
   if (n.startsWith('/')) return false; // absolute and UNC (//host, \\host)
@@ -136,7 +137,11 @@ function main() {
     if (done) return;
     let line = UNKNOWN;
     try {
-      line = decide(Buffer.concat(chunks).toString('utf8'));
+      // Strict UTF-8: invalid bytes (overlong, orphan continuation, 0xFF/0xFE,
+      // truncated sequences) throw instead of becoming U+FFFD. ignoreBOM keeps
+      // a leading BOM in the text so JSON.parse rejects it (fail closed).
+      const text = new TextDecoder('utf-8', { fatal: true, ignoreBOM: true }).decode(Buffer.concat(chunks));
+      line = decide(text);
     } catch {
       line = UNKNOWN;
     }

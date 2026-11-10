@@ -128,6 +128,40 @@ test('privacy: output never leaks input values', () => {
   assert.ok(!bad.out.includes(secret) && !bad.err.includes(secret));
 });
 
+test('invalid UTF-8 raw bytes fail closed to UNKNOWN', () => {
+  const head = Buffer.from('{"hook_event_name":"PostFileSave","file_path":"src/a');
+  const tail = Buffer.from('.js"}');
+  const cases = {
+    '0xFF': [0xff],
+    overlong: [0xc0, 0xaf],
+    'orphan continuation 0x80': [0x80],
+    '0xFE': [0xfe],
+    'truncated multibyte': [0xe2, 0x82],
+  };
+  for (const [name, bytes] of Object.entries(cases)) {
+    const r = run(Buffer.concat([head, Buffer.from(bytes), tail]));
+    assert.equal(r.status, 0, name);
+    assert.equal(r.out, UNKNOWN + '\n', name);
+    assert.equal(r.err, '', name);
+  }
+});
+
+test('valid non-ASCII UTF-8 source paths still WARN', () => {
+  for (const p of ['src/caf\u00e9-v\u1ecf.js', 'src/b\u1ea3n-ghi.js']) {
+    const r = run(Buffer.from(ev(p), 'utf8'));
+    assert.equal(r.status, 0, p);
+    assert.equal(r.out, WARNING + '\n', p);
+    assert.equal(r.err, '', p);
+  }
+});
+
+test('literal U+FFFD in file path is rejected as ambiguous', () => {
+  const r = run(Buffer.from(ev('src/a\ufffd.js'), 'utf8'));
+  assert.equal(r.status, 0);
+  assert.equal(r.out, UNKNOWN + '\n');
+  assert.equal(r.err, '');
+});
+
 test('non-blocking: exit code 0 in every case, repeat is idempotent', () => {
   for (const input of ['', 'garbage', ev('/etc/passwd'), ev('src/a.js')]) {
     assert.equal(run(input).status, 0);
