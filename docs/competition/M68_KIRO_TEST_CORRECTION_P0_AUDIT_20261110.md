@@ -19,13 +19,13 @@ Additional RED examples: `Recheck: 7 tests passed.`, `I gave the wrong test coun
 - Reuse existing fail-closed behavior instead of inventing a new verdict.
 - Preserve existing non-correction behavior; an unrelated README correction must not retract PASS.
 - Regenerate the tracked browser module with `node scripts/build-live-web.mjs`; `npm run check` enforces source/web module hash parity.
-- Add `test/m68-later-result-corrections.test.mjs` covering baseline, fourteen follow-up corrections, same-message correction and unrelated-document corrections.
+- Add `test/m68-later-result-corrections.test.mjs` covering baseline, fourteen follow-up corrections, same-message correction and five unrelated-document correction negative controls.
 
 ## Verification on Node.js 24.20.0 / Windows
 - Regression tests: RED before code change; GREEN after.
 - `npm run check`: PASS, including browser-copy parity.
 - `node --test --test-reporter=tap`: **528/528 PASS**, 0 fail, 0 skipped.
-- Local TAP SHA-256: `6379D17CAD33AE34656167FA6771C7E3F2ECCAE8762171C16FF0E092B30C9784`.
+- Local TAP SHA-256: `DE1C4E295DC0D921AC19CEB3CD350DD582058C68C81DEC70B1AE07C757695181`.
 - `git diff --check`: PASS. Original filmed M19 worktree not modified.
 
 ## Decision

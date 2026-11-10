@@ -131,9 +131,12 @@ function isNaturalLanguageTestCorrection(content) {
   /^(?:the\s+)?(?:correct|actual|revised|real)\s+(?:test\s+)?(?:count|number|results?)\s+(?:is|was|are|were)\b/i,
   /^(?:make\s+that|only\s+\d{1,5}\s+tests?|after\s+(?:re)?checking\b)/i
  ];
- const mentionsTests=/\b(?:tests?|test\s+(?:results?|count)|pass(?:ed|es|ing)?|fail(?:s|ed|ures?)?)\b/i.test(statement);
- const mentionsCount=/\b\d{1,5}\b/.test(statement);
- return mentionsTests&&mentionsCount&&correctionStarts.some(re=>re.test(statement));
+ const revisedTestOutcome=(
+  /\b\d{1,5}\s+tests?\s+(?:(?:actually|only|really|still|now|were|are)\s+){0,3}(?:pass(?:ed|ing)?|fail(?:ed|ing)?)\b/i.test(statement) ||
+  /\b\d{1,5}\s+(?:pass(?:ed)?|fail(?:ed|ures?)?)\b/i.test(statement) ||
+  /\b(?:test|pass|passing)\s+(?:count|number|results?)\b[^.!?]{0,80}\b\d{1,5}\b/i.test(statement)
+ );
+ return revisedTestOutcome&&correctionStarts.some(re=>re.test(statement));
 }
 function isExplicitTestCorrection(content) {
  if(typeof content!=='string')return false;

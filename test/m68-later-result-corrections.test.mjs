@@ -52,7 +52,13 @@ test('M68 P0: same-message explicit natural language correction never remains CU
   assert.equal(parsed.errorCode,'NO_RECORDED_AGENT_TEST_CLAIM');
 });
 test('unrelated correction about documentation does not retract an observed passing result',()=>{
-  for(const correction of ['Correction: renamed the README section.','Sorry, I was wrong about the README title.']){
+  for(const correction of [
+    'Correction: renamed the README section.',
+    'Sorry, I was wrong about the README title.',
+    'Sorry, I was wrong about the README link: the docs mention 7 tests.',
+    'I was wrong about the user guide: the table lists 7 test files.',
+    'Recheck: I updated 7 test file links in the README.'
+  ]){
     const {parsed,verdict}=inspect(correction);
     assert.equal(parsed.errorCode,null,correction);
     assert.equal(verdict,'CURRENT_SELF_RECORDED_TEST',correction);
