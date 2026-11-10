@@ -112,6 +112,29 @@ function contradictsClaim(statement) {
 }
 // Explicit agent corrections about testing invalidate earlier positive assertions.
 // Conservatively recognize anchored corrections without interpreting free prose.
+// A later free-text correction of a test count is evidence against a prior
+// affirmative claim, even when it omits the literal word "Correction".
+// Conservatively reject the older PASS without attempting to verify the new count.
+function isNaturalLanguageTestCorrection(content) {
+ if(typeof content!=='string')return false;
+ const statement=content.trim().slice(0,500);
+ // Anchored self-corrections only; unqualified narrative and unrelated prose
+ // must not automatically retract a recorded test observation.
+ const correctionStarts=[
+  /^sorry[,!]?\s+(?:i|we)\s+(?:was|were)\s+(?:wrong|mistaken)\b/i,
+  /^(?:my\s+)?apologies\b/i,
+  /^(?:actually\s+)?(?:i|we)\s+(?:(?:was|were)\s+(?:wrong|mistaken)|miscounted|mispoke|made\s+a\s+mistake)\b/i,
+  /^(?:i|we)\s+(?:gave|reported|stated|provided)\s+(?:the|a)\s+wrong\s+(?:test|pass|passing)\s+(?:count|number)\b/i,
+  /^(?:the|my|our)\s+(?:earlier|previous|original)\s+(?:test\s+)?(?:number|count|results?|claim)\s+(?:was|were)\s+(?:wrong|mistaken|incorrect|inaccurate)\b/i,
+  /^(?:recheck|re-check|recount|follow[- ]?up)\b/i,
+  /^(?:i|we)\s+(?:need|want|have)\s+to\s+(?:amend|revise|correct|update)\s+(?:(?:my|our|the)\s+)?(?:test\s+)?(?:results?|count|number)\b/i,
+  /^(?:the\s+)?(?:correct|actual|revised|real)\s+(?:test\s+)?(?:count|number|results?)\s+(?:is|was|are|were)\b/i,
+  /^(?:make\s+that|only\s+\d{1,5}\s+tests?|after\s+(?:re)?checking\b)/i
+ ];
+ const mentionsTests=/\b(?:tests?|test\s+(?:results?|count)|pass(?:ed|es|ing)?|fail(?:s|ed|ures?)?)\b/i.test(statement);
+ const mentionsCount=/\b\d{1,5}\b/.test(statement);
+ return mentionsTests&&mentionsCount&&correctionStarts.some(re=>re.test(statement));
+}
 function isExplicitTestCorrection(content) {
  if(typeof content!=='string')return false;
  const statement=content.trim().slice(0,500);
@@ -120,7 +143,7 @@ function isExplicitTestCorrection(content) {
  const prefix=statement.match(
   /^(?:(?:correction|update|revision|revised\s+(?:test\s+)?results?|actually|oops)\s*[:,\u2013\u2014-]\s*|(?:correction|update|revision)\s+(?:on|to|about|regarding)\s+(?:(?:my|our|the)\s+)?(?:test\s+)?(?:results?|tests?|passing\s+claim|pass\s+count|fail(?:ure)?\s+count)\s*[:,\u2013\u2014-]\s*|(?:(?:(?:i|we)\s+(?:need|want|have)\s+to|to)\s+)?correct\s+(?:(?:my|our|the)\s+)?(?:(?:earlier|previous)\s+)?(?:test\s+)?(?:results?|tests?|passing\s+claim|pass\s+count|fail\s+count)\s*[:,\u2013\u2014-]\s*)/i
  );
- return !!prefix && /\b(?:tests?|passes?|passed|passing|fail(?:ed|ures?)?|results?)\b/i.test(statement.slice(prefix[0].length));
+ return (!!prefix && /\b(?:tests?|passes?|passed|passing|fail(?:ed|ures?)?|results?)\b/i.test(statement.slice(prefix[0].length))) || isNaturalLanguageTestCorrection(statement);
 }
 function safeClaim(content) {
   if(typeof content!=='string')return null;
