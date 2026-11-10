@@ -4,11 +4,11 @@
 
 **Live M19 Preview:** https://specter-audit-bc84gljaz-nvhoa1691993-6852s-projects.vercel.app/ (the demo linked from Devpost and filmed in V5D). This is **not** the old stable production at https://specter-audit.vercel.app.
 
-**Current reviewed M19 Preview (M75):** https://specter-audit-2v5dynndc-nvhoa1691993-6852s-projects.vercel.app/ ? exact reviewed commit `0ce4565bf608ff497b913d76d930250861a73de1`, includes M68?M70 parser hardening and passed source-parity and browser acceptance. Use the filmed Preview above to reproduce V5D; use the current Preview to assess post-film fixes.
+**Current reviewed M19 Preview (M75):** https://specter-audit-2v5dynndc-nvhoa1691993-6852s-projects.vercel.app/ - exact reviewed commit `0ce4565bf608ff497b913d76d930250861a73de1`, includes M68-M70 parser hardening and passed source-parity and browser acceptance. Use the filmed Preview above to reproduce V5D; use the current Preview to assess post-film fixes.
 
 **V5D video:** https://youtu.be/kQKkw7Dkp-M
 
-**Exact filmed application SHA:** [`09952ed7e2728cdc030051ee14c66e61d0953d98`](https://github.com/ShenJun93/specter-audit/commit/09952ed7e2728cdc030051ee14c66e61d0953d98). [Public CI for filmed SHA](https://github.com/ShenJun93/specter-audit/actions/runs/42451296583) succeeded. The active [M19 source branch](https://github.com/ShenJun93/specter-audit/tree/feat/m19-judge-first-run) now has reviewed HEAD `0ce4565bf608ff497b913d76d930250861a73de1` and includes **runtime parser corrections**, not only documentation updates. [Draft PR #10](https://github.com/ShenJun93/specter-audit/pull/10) targets `main` and remains HOLD.
+**Exact filmed application SHA:** [`09952ed7e2728cdc030051ee14c66e61d0953d98`](https://github.com/ShenJun93/specter-audit/commit/09952ed7e2728cdc030051ee14c66e61d0953d98). [Public CI for filmed SHA](https://github.com/ShenJun93/specter-audit/actions/runs/42451296583) succeeded. The active [M19 source branch](https://github.com/ShenJun93/specter-audit/tree/feat/m19-judge-first-run) contains reviewed runtime source at `0ce4565bf608ff497b913d76d930250861a73de1` and includes **runtime parser corrections**, not only documentation updates. [Draft PR #10](https://github.com/ShenJun93/specter-audit/pull/10) targets `main` and remains HOLD.
 
 **Devpost:** https://devpost.com/software/specter-audit-trust-the-evidence — publicly visible, **not officially submitted** as of 2026-11-10.
 
