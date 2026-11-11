@@ -1,16 +1,16 @@
 # Specter Audit — Judge Quickstart
 
-## Evaluate filmed M19 — current judge entry (2026-11-10)
+## Evaluate filmed M19 and verified main release (2026-11-11)
 
 **Live M19 Preview:** https://specter-audit-bc84gljaz-nvhoa1691993-6852s-projects.vercel.app/ (the demo linked from Devpost and filmed in V5D). This is **not** the old stable production at https://specter-audit.vercel.app.
 
-**Current reviewed M19 Preview (M75):** https://specter-audit-2v5dynndc-nvhoa1691993-6852s-projects.vercel.app/ - exact reviewed commit `0ce4565bf608ff497b913d76d930250861a73de1`, includes M68-M70 parser hardening and passed source-parity and browser acceptance. Use the filmed Preview above to reproduce V5D; use the current Preview to assess post-film fixes.
+**Corrected M75 Preview:** https://specter-audit-2v5dynndc-nvhoa1691993-6852s-projects.vercel.app/ - built at reviewed source `0ce4565bf608ff497b913d76d930250861a73de1`, with M68-M70 corrections and passing browser acceptance. The final main merge `13192ce2719aaabfda1aa1ca6148d33b741a2cb1` has the identical M19 Git tree and runtime; the Preview was **not** rebuilt at this newer merge SHA. For the historical video, use the filmed Preview above.
 
 **V5D video:** https://youtu.be/kQKkw7Dkp-M
 
-**Exact filmed application SHA:** [`09952ed7e2728cdc030051ee14c66e61d0953d98`](https://github.com/ShenJun93/specter-audit/commit/09952ed7e2728cdc030051ee14c66e61d0953d98). [Public CI for filmed SHA](https://github.com/ShenJun93/specter-audit/actions/runs/42451296583) succeeded. The active [M19 source branch](https://github.com/ShenJun93/specter-audit/tree/feat/m19-judge-first-run) contains reviewed runtime source at `0ce4565bf608ff497b913d76d930250861a73de1` and includes **runtime parser corrections**, not only documentation updates. [Draft PR #10](https://github.com/ShenJun93/specter-audit/pull/10) targets `main` and remains HOLD.
+**Filmed source:** [`09952ed7e2728cdc030051ee14c66e61d0953d98`](https://github.com/ShenJun93/specter-audit/commit/09952ed7e2728cdc030051ee14c66e61d0953d98), [filmed CI](https://github.com/ShenJun93/specter-audit/actions/runs/42451296583) **524/524 PASS**. **Verified GitHub main:** [`13192ce2719aaabfda1aa1ca6148d33b741a2cb1`](https://github.com/ShenJun93/specter-audit/commit/13192ce2719aaabfda1aa1ca6148d33b741a2cb1), [main CI](https://github.com/ShenJun93/specter-audit/actions/runs/42928423759) **533/533 PASS** with signed receipt. [PR #10](https://github.com/ShenJun93/specter-audit/pull/10) was **merged** 2026-11-11; it contains the M68-M70 runtime parser fixes and merged documentation PR #12. Stable Vercel production was not redeployed.
 
-**Devpost:** https://devpost.com/software/specter-audit-trust-the-evidence — publicly visible, **not officially submitted** as of 2026-11-10.
+**Devpost:** https://devpost.com/software/specter-audit-trust-the-evidence - publicly visible but **not formally submitted** as of 2026-11-11; current description still needs owner-approved source-reference corrections.
 
 ### No-login judge path
 
@@ -23,10 +23,10 @@ A stale receipt is **not** proof code is broken. The log could be edited, and te
 
 ### Reproduce the exact filmed source
 
-Requires Node.js 24+ and Git (zero runtime dependencies). Clone the public branch, then **detach at the filmed SHA** to reproduce exactly the source used in the recorded video, regardless of later parser and documentation updates:
+Requires Node.js 24+ and Git (zero runtime dependencies). Clone the public repository, then **detach at the filmed SHA** so the video can be reproduced independently of the changing default branch:
 
 ```sh
-git clone --branch feat/m19-judge-first-run --single-branch https://github.com/ShenJun93/specter-audit.git
+git clone https://github.com/ShenJun93/specter-audit.git
 cd specter-audit
 git checkout --detach 09952ed7e2728cdc030051ee14c66e61d0953d98
 npm run check
@@ -34,7 +34,7 @@ node --test
 npm run demo
 ```
 
-The original filmed SHA passed 524/524 tests and [its CI run](https://github.com/ShenJun93/specter-audit/actions/runs/42451296583) succeeded. Current reviewed source `0ce4565bf608ff497b913d76d930250861a73de1` passed **533/533 tests** from a clean public clone; [M72 exact-HEAD CI](https://github.com/ShenJun93/specter-audit/actions/runs/42774715969) and [M75 Preview](https://specter-audit-2v5dynndc-nvhoa1691993-6852s-projects.vercel.app/) browser verification passed. CI receipt attestation does not certify editable Kiro logs or source correctness. PR #10 remains Draft/HOLD; no production deploy or Devpost Submit is authorized.
+Filmed source `09952ed7e2728cdc030051ee14c66e61d0953d98` passed **524/524** tests ([historical CI](https://github.com/ShenJun93/specter-audit/actions/runs/42451296583)). Reviewed released [`main` `13192ce2719aaabfda1aa1ca6148d33b741a2cb1`](https://github.com/ShenJun93/specter-audit/commit/13192ce2719aaabfda1aa1ca6148d33b741a2cb1) passed **533/533** ([exact-main CI](https://github.com/ShenJun93/specter-audit/actions/runs/42928423759)). The [M75 corrected Preview](https://specter-audit-2v5dynndc-nvhoa1691993-6852s-projects.vercel.app/) is built at `0ce4565bf608ff497b913d76d930250861a73de1`, a previous source commit with byte-equivalent runtime, not this new merge SHA. CI attestation is for the CI receipt artifact, not Kiro log authenticity or correctness. Production deploy and formal Devpost Submit are not authorized.
 
 ## Historical reference — M5L stable production and M16 Preview
 
@@ -65,7 +65,7 @@ These three verdict cases were read back from the live hosted `/api/evaluate` en
 Prerequisites: Node.js 24+, Git, desktop browser. No npm package installation is required.
 
 ```powershell
-git clone --branch feat/m19-judge-first-run --single-branch https://github.com/ShenJun93/specter-audit.git
+git clone https://github.com/ShenJun93/specter-audit.git
 cd specter-audit
 git checkout --detach 09952ed7e2728cdc030051ee14c66e61d0953d98
 npm run demo
@@ -102,4 +102,4 @@ The signed report attests the origin of the **CI receipt artifact**, not any loc
 
 M16 local acceptance: `docs/competition/M16_JUDGE_SELFVERIFY_LOCAL_ACCEPTANCE_20261107.md`. M15's full verification steps: `docs/competition/M15_CI_RECEIPT_ATTESTATION_20261107.md`.
 
-The M19 V5D video is public; the Kiroween Devpost project has **not been formally submitted** as of 2026-11-10. Its final eligibility declarations must be completed by the project owner.
+The V5D video is Public; the Kiroween Devpost project has **not been formally submitted** as last checked 2026-11-11. The owner must complete the official eligibility declarations before submitting.
