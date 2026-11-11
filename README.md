@@ -6,22 +6,22 @@ Specter Audit is a local-first, read-only Git metadata investigator for AI codin
 
 **Kiroween 2026** — proposed category: **Costume Contest**.
 
-## Judge entry — filmed M19 app (state verified 2026-11-10)
+## Judge entry - filmed M19 and verified main release (2026-11-11)
 
 **Start with the [public M19 judge Preview](https://specter-audit-bc84gljaz-nvhoa1691993-6852s-projects.vercel.app/)** (the filmed application, not the older stable production). Follow **JUDGE FAST PATH — Investigate the Midnight Rewrite**, then **Expose the alibi**. A saved, redacted genuine Kiro CLI session records 120 passing tests, an agent success claim and five subsequent successful source edits without a later test observed in that same record. The bounded verdict is `STALE_LOCAL_TEST_EVIDENCE`, not a claim that the code is broken or that no other tests ran.
 
 - **Public [V5D judge video](https://youtu.be/kQKkw7Dkp-M)** — filmed against application source [`09952ed7e2728cdc030051ee14c66e61d0953d98`](https://github.com/ShenJun93/specter-audit/commit/09952ed7e2728cdc030051ee14c66e61d0953d98).
 
-- **[Current M19 Preview (M75)](https://specter-audit-2v5dynndc-nvhoa1691993-6852s-projects.vercel.app/)** - exact reviewed source [`0ce4565bf608ff497b913d76d930250861a73de1`](https://github.com/ShenJun93/specter-audit/commit/0ce4565bf608ff497b913d76d930250861a73de1), including M68-M70 parser fixes. The served parser matched source SHA-256; real browser acceptance passed Case 04, three synthetic verdicts and P1/P2 corrections. The filmed Preview and video remain tied to `09952ed7e2728cdc030051ee14c66e61d0953d98`.
-- **[Devpost project](https://devpost.com/software/specter-audit-trust-the-evidence)** — publicly visible but **not yet submitted** to Kiroween 2026 as of 2026-11-10.
-- **[M19 source branch](https://github.com/ShenJun93/specter-audit/tree/feat/m19-judge-first-run)** - reviewed runtime source at `0ce4565bf608ff497b913d76d930250861a73de1` includes the filmed implementation **and subsequent runtime parser corrections** merged through PR #11. The filmed SHA `09952ed7e2728cdc030051ee14c66e61d0953d98` is an immutable earlier version; later commits are not documentation-only.
+- **[Corrected M75 Preview](https://specter-audit-2v5dynndc-nvhoa1691993-6852s-projects.vercel.app/)** - reviewed, source-matched runtime `0ce4565bf608ff497b913d76d930250861a73de1` with M68-M70 parser fixes and passing browser acceptance. It was not rebuilt from current `main`; the final main merge preserves the complete reviewed M19 Git tree. The filmed Preview and video remain tied to `09952ed7e2728cdc030051ee14c66e61d0953d98`.
+- **[Devpost project](https://devpost.com/software/specter-audit-trust-the-evidence)** - public but **not formally submitted** as last verified 2026-11-11; its writeup still needs an approved correction for the main release.
+- **[Released default main](https://github.com/ShenJun93/specter-audit/commit/13192ce2719aaabfda1aa1ca6148d33b741a2cb1)** - source at `13192ce2719aaabfda1aa1ca6148d33b741a2cb1` contains the filmed app plus reviewed parser fixes and PR #12 documentation. The previous [M19 branch](https://github.com/ShenJun93/specter-audit/tree/feat/m19-judge-first-run) is historical; `09952ed7e2728cdc030051ee14c66e61d0953d98` remains the immutable filmed SHA.
 - **[Exact-SHA GitHub Actions push run](https://github.com/ShenJun93/specter-audit/actions/runs/42451296583)** — Node verification and CI-receipt attestation succeeded for filmed SHA; the signed receipt is evidence of the CI artifact's origin, **not** cryptographic authentication of Kiro logs or semantic code correctness.
-- **[M19 main-release PR #10](https://github.com/ShenJun93/specter-audit/pull/10)** — DRAFT/HOLD; no merge or production deploy authorized. Default `main` and https://specter-audit.vercel.app still present the older M5L release.
+- **[M19 release PR #10](https://github.com/ShenJun93/specter-audit/pull/10)** - **MERGED into `main` on 2026-11-11**. The separately hosted stable production at https://specter-audit.vercel.app is still the older M5L app; there was **no production deployment** during GitHub merge.
 
 Reproduce **exactly the filmed application commit** using Node.js 24+ and Git:
 
 ```sh
-git clone --branch feat/m19-judge-first-run --single-branch https://github.com/ShenJun93/specter-audit.git
+git clone https://github.com/ShenJun93/specter-audit.git
 cd specter-audit
 git checkout --detach 09952ed7e2728cdc030051ee14c66e61d0953d98
 npm run check
@@ -29,7 +29,7 @@ node --test
 npm run demo
 ```
 
-The original filmed SHA `09952ed7e2728cdc030051ee14c66e61d0953d98` passed 524/524 tests in a clean Windows replay. The current reviewed SHA `0ce4565bf608ff497b913d76d930250861a73de1` passed **533/533 tests** from a fresh public clone; [M72 exact-HEAD CI](https://github.com/ShenJun93/specter-audit/actions/runs/42774715969) and [M75 Preview](https://specter-audit-2v5dynndc-nvhoa1691993-6852s-projects.vercel.app/) browser verification also passed. The old filmed Preview is not the same source as the current release candidate. PR #10 and production remain HOLD until separately authorized.
+The exact filmed SHA `09952ed7e2728cdc030051ee14c66e61d0953d98` passed **524/524** tests ([filmed CI](https://github.com/ShenJun93/specter-audit/actions/runs/42451296583)). The reviewed final [`main` merge `13192ce2719aaabfda1aa1ca6148d33b741a2cb1`](https://github.com/ShenJun93/specter-audit/commit/13192ce2719aaabfda1aa1ca6148d33b741a2cb1) passed **533/533** on [exact-HEAD CI](https://github.com/ShenJun93/specter-audit/actions/runs/42928423759) with a verified signed CI receipt. [M75 Preview](https://specter-audit-2v5dynndc-nvhoa1691993-6852s-projects.vercel.app/) is built from earlier corrected source `0ce4565bf608ff497b913d76d930250861a73de1`, but its served runtime matches the main release code; it is not a new deployment from `main`. CI receipts do not prove semantic correctness or authenticate editable Kiro transcripts. Stable production and Devpost Submit remain separate actions.
 
 **Trust and authorship boundaries:** The local Kiro transcript is genuine but editable and self-recorded; it is not independently tied to a particular PR HEAD. No active Kiro `PostFileSave` hook is claimed. Kiro CLI contributed foundational Git inspection, CI adapter work and the session-staleness engine; ChatGPT/WAG also contributed UI, integration, tests and documentation. `SUPPORTED`/CI green do not certify functional correctness. Optional visitor-selected `messages.jsonl` remains browser-local in the tested experience.
 
@@ -45,7 +45,7 @@ The sections below document prior milestones and retain their original verificat
 
 ## Historical M8.8 release candidate (2026-11-06)
 
-The tested M8.8 application source is commit [`8fc24af`](https://github.com/ShenJun93/specter-audit/commit/8fc24affba4cfa00ee91b9ed0a65ad5941cdfe24) in [Draft PR #7](https://github.com/ShenJun93/specter-audit/pull/7). **Use the Preview links above to evaluate M8.8.** `main` and the stable production hostname remain on M5L until the owner's separate release authorization; neither PR #7 nor its historical stacked predecessors have been merged. New documentation-only commits may be newer than the tested application source SHA.
+At the historical M8.8 milestone (2026-11-06), the tested app was [`8fc24af`](https://github.com/ShenJun93/specter-audit/commit/8fc24affba4cfa00ee91b9ed0a65ad5941cdfe24) in [Draft PR #7](https://github.com/ShenJun93/specter-audit/pull/7). At that time, `main` and stable production were on M5L; since then PR #10 merged M19 into `main` (2026-11-11). This older M8.8 candidate is **not** the current judged release.
 
 M8.8 local verification: **335/335 Node tests PASS** and `npm run check` PASS. Exact-application-SHA public Chrome file-picker regression: **80/80 synthetic checks PASS** on desktop and mobile 390 px; 0 observed unexpected analysis uploads. Keyboard navigation was checked on the same Preview. These checks are bounded and **not an independent whole-PR security or accessibility certification**. PR #7 remains Draft and its integrated independent review is still open.
 
@@ -185,8 +185,8 @@ Tests cover Git inspection, evaluator verdict semantics, synthetic mode, API lim
 
 ## Release, security and submission
 
-As of 2026-11-10, stable production M5L still serves merge SHA `b6e1407d1218e4ff4b44cb2dd3cae1388a5f533e`. The current filmed application is the separate M19 Preview at the top of this README. Its promotion to `main` is held by Draft PR #10; production promotion remains separately unauthorized. `docs/M5K_PRODUCTION_RELEASE_20261104.md` describes the earlier production release.
+As of 2026-11-11, GitHub `main` is at merged M19 release `13192ce2719aaabfda1aa1ca6148d33b741a2cb1`, while the stable Vercel production https://specter-audit.vercel.app remains the previously deployed M5L application. The filmed M19 video continues to refer to its original immutable Preview. The corrected M75 Preview has matching reviewed runtime bytes, but not the new merge SHA. [Merged PR #10](https://github.com/ShenJun93/specter-audit/pull/10) and `docs/M5K_PRODUCTION_RELEASE_20261104.md` preserve release history.
 
 The app is not a security certification or an independent semantic code auditor. `SUPPORTED` means **Git path alignment**, not that tests passed or code works.
 
-Judge instructions: [M19 Judge Quickstart](docs/JUDGE_QUICKSTART.md); [public V5D demo video](https://youtu.be/kQKkw7Dkp-M); [Devpost project](https://devpost.com/software/specter-audit-trust-the-evidence). The video is public; formal Kiroween submission is **still pending** as of 2026-11-10.
+Judge instructions: [M19 Judge Quickstart](docs/JUDGE_QUICKSTART.md); [public V5D demo](https://youtu.be/kQKkw7Dkp-M); [Devpost project](https://devpost.com/software/specter-audit-trust-the-evidence). The video is Public; the formal Kiroween submission remains **pending** as last verified 2026-11-11.
