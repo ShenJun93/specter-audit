@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#090e18">
+  <meta name="description" content="Analyze your own Kiro CLI session in the browser without uploading its prompts or source paths.">
+  <title>Your Alibi | Specter Audit</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/alibi.css">
+  <link rel="stylesheet" href="/live.css">
+  <script type="module" src="/live.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#investigate">Skip to local investigation</a>
+  <div class="stars" aria-hidden="true"></div>
+  <div class="app">
+    <header class="topbar">
+      <a class="identity" href="/alibi.html"><span class="logo-mark" aria-hidden="true">◈</span>
+        <span class="identity-text"><b>SPECTER<span>AUDIT</span></b><small>AGENT EVIDENCE / LOCAL INVESTIGATOR</small></span></a>
+      <nav aria-label="Main navigation"><a href="/alibi.html">Recorded cases</a><span class="nav-active" aria-current="page">Your session</span><a href="/pr-proof.html">PR proof chain</a><a href="/">Git inspector</a></nav>
+      <span class="status-pill"><span class="status-dot"></span> BROWSER-ONLY · NO UPLOAD</span>
+    </header>
+    <main id="investigate">
+      <section class="live-hero">
+        <div class="live-eyebrow">PRIVATE ANALYSIS / THE FIFTH DOOR</div>
+        <h1>Bring your agent's <em>alibi</em> into the light.</h1>
+        <p>Drop a Kiro CLI <code>messages.jsonl</code> session into Specter. We trace the actual test tool receipts, agent assertions and subsequent source edits. Your file stays in this browser tab.</p>
+        <div class="live-promise"><span>01. READ LOCAL FILE</span><span>02. RECONSTRUCT TIMELINE</span><span>03. VERIFY EVIDENCE FRESHNESS</span></div>
+      </section>
+      <div class="live-workspace">
+        <section class="live-upload" aria-labelledby="upload-heading">
+          <div class="live-panel-header"><span class="tiny-label">01 / EVIDENCE INTAKE</span><span class="live-count">LOCAL ONLY</span></div>
+          <h2 id="upload-heading">Your case, not a preset.</h2>
+          <p>Select a Kiro CLI session file. We never transmit or save it, and only show bounded facts extracted from the tool log.</p>
+          <form id="live-form">
+            <div class="live-drop" id="drop-target">
+              <span class="live-file-symbol" aria-hidden="true">⌁</span>
+              <label for="session-file" class="live-file-label">Choose your <strong>messages.jsonl</strong> file</label>
+              <input id="session-file" type="file" accept=".jsonl,.txt,text/plain,application/x-ndjson" aria-describedby="file-hint">
+              <small id="file-hint">Up to 8 MiB · local Kiro CLI JSONL · no credentials needed</small>
+            </div>
+            <details class="live-howto">
+              <summary>Where do I find a Kiro messages.jsonl file?</summary>
+              <p>Use your file manager to locate a saved Kiro CLI session's <code>messages.jsonl</code> on this computer. Specter does not scan folders or choose a session for you.</p>
+              <p>Start with the three synthetic cases if you do not have a saved session. Use a private browser environment when inspecting sensitive logs; do not include raw sessions in public recordings.</p>
+            </details>
+            <p id="file-selected" class="live-selected" aria-live="polite">No local file selected</p>
+            <div class="live-actions">
+              <button class="live-primary" id="analyze-file" type="submit" disabled>Investigate my session <span aria-hidden="true">→</span></button>
+              <button class="live-secondary" id="try-sample" type="button">Try stale example</button>
+              <button class="live-secondary" id="try-current" type="button">Try current example</button>
+              <button class="live-secondary" id="try-insufficient" type="button">Try insufficient example</button>
+            </div>
+            <p class="live-demo-guide">Three synthetic cases. Each runs through the same local evidence parser as an imported Kiro session. None is a real test attestation.</p>
+          </form>
+          <p id="live-error" class="live-error" role="alert" hidden></p>
+          <div class="live-privacy" role="note">
+            <strong>Trust boundary.</strong> The analysis uses in-browser JavaScript and does not submit your file to Specter servers. Raw prompts, commands and private paths are never rendered. Logs are editable and unsigned; no result proves code correctness.
+          </div>
+        </section>
+        <section class="live-results" aria-labelledby="results-heading">
+          <div class="live-panel-header"><span class="tiny-label">02 / THE SPECTER'S FINDING</span><span id="result-provenance" class="live-count">AWAITING EVIDENCE</span></div>
+          <h2 id="results-heading" tabindex="-1">The investigation report</h2>
+          <div id="live-empty" class="live-empty"><span aria-hidden="true">◇</span><strong>No evidence inspected yet</strong><p>Your local source file never leaves this page. You can try a synthetic example first.</p></div>
+          <div id="live-unverified" hidden aria-live="polite">
+            <div class="live-verdict unknown"><span>INSUFFICIENT SESSION EVIDENCE</span><h3>No supported test-passed claim was found.</h3><p>This session contains recorded activity, but it does not contain a test-passed assertion that Specter can verify. Tool event counts are not proof that tests passed or failed.</p></div>
+            <div class="live-metrics">
+              <div><span>EVENTS IN FILE</span><strong id="metric-unverified-events">—</strong></div>
+              <div><span>TOOL CALLS</span><strong id="metric-unverified-calls">—</strong></div>
+              <div><span>TOOL RESULTS</span><strong id="metric-unverified-results">—</strong></div>
+              <div><span>RECOGNIZED CLAIMS</span><strong>0</strong></div>
+            </div>
+            <p class="live-caveat">Only bounded event counts are shown. No source paths, prompts or tool commands are displayed. A missing supported claim is not evidence that no tests ran.</p>
+            <p class="live-next-hint">Next step: capture a complete recorded test tool result and a matching explicit claim in a new session. Do not fabricate a claim to force a verdict.</p>
+          </div>
+          <div id="live-report" hidden aria-live="polite">
+            <div class="live-verdict"><span id="live-verdict-label">—</span><h3 id="live-verdict-headline">—</h3><p id="live-verdict-reason">—</p></div>
+            <div class="live-metrics">
+              <div><span>OBSERVED PASSING TESTS</span><strong id="metric-tests">0</strong></div>
+              <div><span>EDITS AFTER LAST PASS</span><strong id="metric-edits">0</strong><small id="metric-total-edits">0 total edits</small></div>
+              <div><span>REDACTED PATHS</span><strong id="metric-redacted">0</strong></div>
+              <div><span>AGENT CLAIMS</span><strong id="metric-claims">0</strong></div>
+            </div>
+            <section class="live-next-step" aria-labelledby="live-next-step-title">
+              <h3 id="live-next-step-title">Next evidence step</h3>
+              <p id="live-next-step-body">Only the selected saved session can be assessed.</p>
+              <button id="copy-next-step" class="live-secondary" type="button">Copy next step</button>
+              <span id="next-copy-status" class="live-copy-status" role="status" aria-live="polite"></span>
+            </section>
+            <div class="live-timeline-head"><h3>Observed chronology</h3><span>NO SOURCE CONTENT</span></div>
+            <ol id="live-timeline" class="live-timeline"></ol>
+            <p class="live-caveat">Only the selected saved session was examined. Other tests or edits may exist elsewhere. The evidence is self-recorded, not an independent attestation.</p>
+            <button id="copy-safe" class="live-secondary" type="button">Copy sanitized result</button>
+            <span id="copy-state" class="live-copy-status" role="status"></span>
+          </div>
+        </section>
+      </div>
+      <section class="live-footer"><div><span class="tiny-label">03 / SOURCE AND METHOD</span><h2>Follow the evidence. Respect its limits.</h2><p>Test receipts are recognized from successful tool-call results, not from an agent's confident narrative. Unmatched or malformed evidence fails closed.</p></div><a class="primary-link" href="/alibi.html">Explore four recorded cases <span aria-hidden="true">↗</span></a></section>
+    </main>
+    <footer class="live-bottom">SPECTER AUDIT · NO FILE UPLOAD · NO SEMANTIC CORRECTNESS GUARANTEE · <a href="https://github.com/ShenJun93/specter-audit" target="_blank" rel="noopener noreferrer">OPEN SOURCE</a></footer>
+  </div>
+</body>
+</html>

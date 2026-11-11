@@ -1,0 +1,670 @@
+{
+  "schema": "SPECTER_ALIBI_EXHIBITS_V1",
+  "capturedAt": "2026-11-04T01:20:12.087Z",
+  "fixedPublicRepo": "ShenJun93/specter-audit",
+  "targetCommit": "b6e1407d1218e4ff4b44cb2dd3cae1388a5f533e",
+  "providerSource": "Operator-captured unauthenticated GitHub Actions REST; provider-reported, not signed",
+  "caseProvenance": "Hypothetical claim text; real linked Git commits and CI run metadata",
+  "cases": [
+    {
+      "id": "stale-artifact",
+      "title": "The Alibi From Another Commit",
+      "label": "REAL PROVIDER RUN / HYPOTHETICAL CLAIM",
+      "explanation": "An older successful workflow was captured for an ancestor SHA, not the current target SHA. This demonstrates why reusing that specific receipt is stale; it does not claim current CI is missing.",
+      "input": {
+        "schema": "SPECTER_ALIBI_CASE_V1",
+        "repo": {
+          "owner": "ShenJun93",
+          "name": "specter-audit",
+          "workflowId": 405703749
+        },
+        "target": {
+          "sha": "b6e1407d1218e4ff4b44cb2dd3cae1388a5f533e",
+          "claim": "Hypothetical agent claims tests passed for current merge; examine the cited run SHA.",
+          "observedAt": "2026-11-04T01:20:12.087Z"
+        },
+        "commits": [
+          {
+            "sha": "b6e1407d1218e4ff4b44cb2dd3cae1388a5f533e",
+            "parents": [
+              "374af1417b714619d9edc1af790f7e7db15a71ca",
+              "ad8c79f27bb5da3e6228696c55d1e3a50cc8bf3b"
+            ],
+            "committedAt": "2026-11-03T23:53:11.000Z"
+          },
+          {
+            "sha": "ad8c79f27bb5da3e6228696c55d1e3a50cc8bf3b",
+            "parents": [
+              "374af1417b714619d9edc1af790f7e7db15a71ca"
+            ],
+            "committedAt": "2026-11-03T23:34:59.000Z"
+          },
+          {
+            "sha": "374af1417b714619d9edc1af790f7e7db15a71ca",
+            "parents": [
+              "f0c0a9115185f00fdcb416f67c96a61dc9ef770b",
+              "99e210da586c2129de9e306c0aae0bb379bd3e53"
+            ],
+            "committedAt": "2026-11-03T23:03:48.000Z"
+          },
+          {
+            "sha": "99e210da586c2129de9e306c0aae0bb379bd3e53",
+            "parents": [
+              "f0c0a9115185f00fdcb416f67c96a61dc9ef770b"
+            ],
+            "committedAt": "2026-11-03T16:34:08.000Z"
+          },
+          {
+            "sha": "f0c0a9115185f00fdcb416f67c96a61dc9ef770b",
+            "parents": [
+              "c5139ffc90fe41bac13aa69d6c976faaf0011546"
+            ],
+            "committedAt": "2026-11-03T13:17:18.000Z"
+          },
+          {
+            "sha": "c5139ffc90fe41bac13aa69d6c976faaf0011546",
+            "parents": [
+              "9896ccd9851d5559983f511187ac71ce85f0db10"
+            ],
+            "committedAt": "2026-11-03T13:11:31.000Z"
+          },
+          {
+            "sha": "9896ccd9851d5559983f511187ac71ce85f0db10",
+            "parents": [],
+            "committedAt": "2026-11-03T12:52:53.000Z"
+          }
+        ],
+        "capturedAt": "2026-11-04T01:20:12.087Z",
+        "checks": [
+          {
+            "runId": 41736082288,
+            "sha": "374af1417b714619d9edc1af790f7e7db15a71ca",
+            "workflowId": 405703749,
+            "runNumber": 6,
+            "runAttempt": 1,
+            "status": "completed",
+            "conclusion": "success",
+            "updatedAt": "2026-11-03T23:04:05Z",
+            "sourceUrl": "https://github.com/ShenJun93/specter-audit/actions/runs/41736082288",
+            "origin": "RECORDED_GITHUB_PROVIDER"
+          }
+        ]
+      },
+      "expectedStatus": "STALE_EVIDENCE",
+      "verdict": {
+        "schema": "SPECTER_ALIBI_VERDICT_V1",
+        "status": "STALE_EVIDENCE",
+        "headline": "The cited successful CI run belongs to an ancestor commit",
+        "reason": "The run reports success for 374af141, but the claim targets b6e1407d. The supplied Git graph proves the revision changed.",
+        "targetSha": "b6e1407d1218e4ff4b44cb2dd3cae1388a5f533e",
+        "claim": "Hypothetical agent claims tests passed for current merge; examine the cited run SHA.",
+        "selectedRun": {
+          "runId": 41736082288,
+          "sha": "374af1417b714619d9edc1af790f7e7db15a71ca",
+          "workflowId": 405703749,
+          "runNumber": 6,
+          "runAttempt": 1,
+          "status": "completed",
+          "conclusion": "success",
+          "updatedAt": "2026-11-03T23:04:05.000Z",
+          "sourceUrl": "https://github.com/ShenJun93/specter-audit/actions/runs/41736082288",
+          "origin": "RECORDED_GITHUB_PROVIDER"
+        },
+        "observations": [
+          "The cited run is for a proven ancestor SHA, not the target SHA.",
+          "1 run(s) were for SHA(s) other than the target commit."
+        ],
+        "events": [
+          {
+            "type": "COMMIT",
+            "timestamp": "2026-11-03T12:52:53.000Z",
+            "sha": "9896ccd9851d5559983f511187ac71ce85f0db10",
+            "parents": [],
+            "label": "Git commit 9896ccd9",
+            "sourceKind": "GIT_GRAPH_INPUT",
+            "sourceUrl": null
+          },
+          {
+            "type": "COMMIT",
+            "timestamp": "2026-11-03T13:11:31.000Z",
+            "sha": "c5139ffc90fe41bac13aa69d6c976faaf0011546",
+            "parents": [
+              "9896ccd9851d5559983f511187ac71ce85f0db10"
+            ],
+            "label": "Git commit c5139ffc",
+            "sourceKind": "GIT_GRAPH_INPUT",
+            "sourceUrl": null
+          },
+          {
+            "type": "COMMIT",
+            "timestamp": "2026-11-03T13:17:18.000Z",
+            "sha": "f0c0a9115185f00fdcb416f67c96a61dc9ef770b",
+            "parents": [
+              "c5139ffc90fe41bac13aa69d6c976faaf0011546"
+            ],
+            "label": "Git commit f0c0a911",
+            "sourceKind": "GIT_GRAPH_INPUT",
+            "sourceUrl": null
+          },
+          {
+            "type": "COMMIT",
+            "timestamp": "2026-11-03T16:34:08.000Z",
+            "sha": "99e210da586c2129de9e306c0aae0bb379bd3e53",
+            "parents": [
+              "f0c0a9115185f00fdcb416f67c96a61dc9ef770b"
+            ],
+            "label": "Git commit 99e210da",
+            "sourceKind": "GIT_GRAPH_INPUT",
+            "sourceUrl": null
+          },
+          {
+            "type": "COMMIT",
+            "timestamp": "2026-11-03T23:03:48.000Z",
+            "sha": "374af1417b714619d9edc1af790f7e7db15a71ca",
+            "parents": [
+              "f0c0a9115185f00fdcb416f67c96a61dc9ef770b",
+              "99e210da586c2129de9e306c0aae0bb379bd3e53"
+            ],
+            "label": "Git commit 374af141",
+            "sourceKind": "GIT_GRAPH_INPUT",
+            "sourceUrl": null
+          },
+          {
+            "type": "CI_RUN",
+            "timestamp": "2026-11-03T23:04:05.000Z",
+            "sha": "374af1417b714619d9edc1af790f7e7db15a71ca",
+            "runId": 41736082288,
+            "label": "Workflow #6 attempt 1: success",
+            "sourceKind": "RECORDED_GITHUB_PROVIDER",
+            "sourceUrl": "https://github.com/ShenJun93/specter-audit/actions/runs/41736082288"
+          },
+          {
+            "type": "COMMIT",
+            "timestamp": "2026-11-03T23:34:59.000Z",
+            "sha": "ad8c79f27bb5da3e6228696c55d1e3a50cc8bf3b",
+            "parents": [
+              "374af1417b714619d9edc1af790f7e7db15a71ca"
+            ],
+            "label": "Git commit ad8c79f2",
+            "sourceKind": "GIT_GRAPH_INPUT",
+            "sourceUrl": null
+          },
+          {
+            "type": "COMMIT",
+            "timestamp": "2026-11-03T23:53:11.000Z",
+            "sha": "b6e1407d1218e4ff4b44cb2dd3cae1388a5f533e",
+            "parents": [
+              "374af1417b714619d9edc1af790f7e7db15a71ca",
+              "ad8c79f27bb5da3e6228696c55d1e3a50cc8bf3b"
+            ],
+            "label": "Git commit b6e1407d",
+            "sourceKind": "GIT_GRAPH_INPUT",
+            "sourceUrl": null
+          },
+          {
+            "type": "CLAIM",
+            "timestamp": "2026-11-04T01:20:12.087Z",
+            "sha": "b6e1407d1218e4ff4b44cb2dd3cae1388a5f533e",
+            "label": "Hypothetical completion claim at b6e1407d",
+            "sourceKind": "CLAIM_INPUT",
+            "sourceUrl": null
+          }
+        ],
+        "gaps": [
+          "Provide an independent exact-target-SHA CI run rather than reuse the ancestor run.",
+          "This verdict concerns the supplied artifact, not an assertion that no newer CI exists elsewhere."
+        ],
+        "limitations": [
+          "GitHub Actions status is provider-reported metadata, not signed independent attestation.",
+          "An exact-SHA CI result does not prove source code correctness or that the agent fixed the claimed issue.",
+          "Input case JSON and provenance labels can be tampered with; open canonical provider links to inspect the source."
+        ],
+        "provenance": {
+          "repo": "ShenJun93/specter-audit",
+          "workflowId": 405703749,
+          "capturedAt": "2026-11-04T01:20:12.087Z",
+          "sources": [
+            "RECORDED_GITHUB_PROVIDER"
+          ],
+          "providerReportedOnly": true,
+          "independentAttestation": false,
+          "semanticCorrectnessVerified": false,
+          "claimObservedIndependently": false
+        }
+      }
+    },
+    {
+      "id": "current-exact-run",
+      "title": "The Current Commit Has Its Own CI",
+      "label": "REAL PROVIDER RUN / HYPOTHETICAL CLAIM",
+      "explanation": "A distinct successful run exists for the exact target SHA. That supersedes an older artifact for workflow status, but does not prove the code is correct.",
+      "input": {
+        "schema": "SPECTER_ALIBI_CASE_V1",
+        "repo": {
+          "owner": "ShenJun93",
+          "name": "specter-audit",
+          "workflowId": 405703749
+        },
+        "target": {
+          "sha": "b6e1407d1218e4ff4b44cb2dd3cae1388a5f533e",
+          "claim": "Hypothetical agent claims tests passed for current merge; examine the cited run SHA.",
+          "observedAt": "2026-11-04T01:20:12.087Z"
+        },
+        "commits": [
+          {
+            "sha": "b6e1407d1218e4ff4b44cb2dd3cae1388a5f533e",
+            "parents": [
+              "374af1417b714619d9edc1af790f7e7db15a71ca",
+              "ad8c79f27bb5da3e6228696c55d1e3a50cc8bf3b"
+            ],
+            "committedAt": "2026-11-03T23:53:11.000Z"
+          },
+          {
+            "sha": "ad8c79f27bb5da3e6228696c55d1e3a50cc8bf3b",
+            "parents": [
+              "374af1417b714619d9edc1af790f7e7db15a71ca"
+            ],
+            "committedAt": "2026-11-03T23:34:59.000Z"
+          },
+          {
+            "sha": "374af1417b714619d9edc1af790f7e7db15a71ca",
+            "parents": [
+              "f0c0a9115185f00fdcb416f67c96a61dc9ef770b",
+              "99e210da586c2129de9e306c0aae0bb379bd3e53"
+            ],
+            "committedAt": "2026-11-03T23:03:48.000Z"
+          },
+          {
+            "sha": "99e210da586c2129de9e306c0aae0bb379bd3e53",
+            "parents": [
+              "f0c0a9115185f00fdcb416f67c96a61dc9ef770b"
+            ],
+            "committedAt": "2026-11-03T16:34:08.000Z"
+          },
+          {
+            "sha": "f0c0a9115185f00fdcb416f67c96a61dc9ef770b",
+            "parents": [
+              "c5139ffc90fe41bac13aa69d6c976faaf0011546"
+            ],
+            "committedAt": "2026-11-03T13:17:18.000Z"
+          },
+          {
+            "sha": "c5139ffc90fe41bac13aa69d6c976faaf0011546",
+            "parents": [
+              "9896ccd9851d5559983f511187ac71ce85f0db10"
+            ],
+            "committedAt": "2026-11-03T13:11:31.000Z"
+          },
+          {
+            "sha": "9896ccd9851d5559983f511187ac71ce85f0db10",
+            "parents": [],
+            "committedAt": "2026-11-03T12:52:53.000Z"
+          }
+        ],
+        "capturedAt": "2026-11-04T01:20:12.087Z",
+        "checks": [
+          {
+            "runId": 41736082288,
+            "sha": "374af1417b714619d9edc1af790f7e7db15a71ca",
+            "workflowId": 405703749,
+            "runNumber": 6,
+            "runAttempt": 1,
+            "status": "completed",
+            "conclusion": "success",
+            "updatedAt": "2026-11-03T23:04:05Z",
+            "sourceUrl": "https://github.com/ShenJun93/specter-audit/actions/runs/41736082288",
+            "origin": "RECORDED_GITHUB_PROVIDER"
+          },
+          {
+            "runId": 41742626694,
+            "sha": "b6e1407d1218e4ff4b44cb2dd3cae1388a5f533e",
+            "workflowId": 405703749,
+            "runNumber": 9,
+            "runAttempt": 1,
+            "status": "completed",
+            "conclusion": "success",
+            "updatedAt": "2026-11-03T23:53:25Z",
+            "sourceUrl": "https://github.com/ShenJun93/specter-audit/actions/runs/41742626694",
+            "origin": "RECORDED_GITHUB_PROVIDER"
+          }
+        ]
+      },
+      "expectedStatus": "PROVIDER_REPORTED_PASS",
+      "verdict": {
+        "schema": "SPECTER_ALIBI_VERDICT_V1",
+        "status": "PROVIDER_REPORTED_PASS",
+        "headline": "GitHub Actions reported success for this exact commit",
+        "reason": "The supplied latest completed run matches the target SHA and workflow. This is status alignment, not proof the code works.",
+        "targetSha": "b6e1407d1218e4ff4b44cb2dd3cae1388a5f533e",
+        "claim": "Hypothetical agent claims tests passed for current merge; examine the cited run SHA.",
+        "selectedRun": {
+          "runId": 41742626694,
+          "sha": "b6e1407d1218e4ff4b44cb2dd3cae1388a5f533e",
+          "workflowId": 405703749,
+          "runNumber": 9,
+          "runAttempt": 1,
+          "status": "completed",
+          "conclusion": "success",
+          "updatedAt": "2026-11-03T23:53:25.000Z",
+          "sourceUrl": "https://github.com/ShenJun93/specter-audit/actions/runs/41742626694",
+          "origin": "RECORDED_GITHUB_PROVIDER"
+        },
+        "observations": [
+          "Newest supplied workflow run for the exact target SHA: #9, attempt 1.",
+          "1 run(s) were for SHA(s) other than the target commit."
+        ],
+        "events": [
+          {
+            "type": "COMMIT",
+            "timestamp": "2026-11-03T12:52:53.000Z",
+            "sha": "9896ccd9851d5559983f511187ac71ce85f0db10",
+            "parents": [],
+            "label": "Git commit 9896ccd9",
+            "sourceKind": "GIT_GRAPH_INPUT",
+            "sourceUrl": null
+          },
+          {
+            "type": "COMMIT",
+            "timestamp": "2026-11-03T13:11:31.000Z",
+            "sha": "c5139ffc90fe41bac13aa69d6c976faaf0011546",
+            "parents": [
+              "9896ccd9851d5559983f511187ac71ce85f0db10"
+            ],
+            "label": "Git commit c5139ffc",
+            "sourceKind": "GIT_GRAPH_INPUT",
+            "sourceUrl": null
+          },
+          {
+            "type": "COMMIT",
+            "timestamp": "2026-11-03T13:17:18.000Z",
+            "sha": "f0c0a9115185f00fdcb416f67c96a61dc9ef770b",
+            "parents": [
+              "c5139ffc90fe41bac13aa69d6c976faaf0011546"
+            ],
+            "label": "Git commit f0c0a911",
+            "sourceKind": "GIT_GRAPH_INPUT",
+            "sourceUrl": null
+          },
+          {
+            "type": "COMMIT",
+            "timestamp": "2026-11-03T16:34:08.000Z",
+            "sha": "99e210da586c2129de9e306c0aae0bb379bd3e53",
+            "parents": [
+              "f0c0a9115185f00fdcb416f67c96a61dc9ef770b"
+            ],
+            "label": "Git commit 99e210da",
+            "sourceKind": "GIT_GRAPH_INPUT",
+            "sourceUrl": null
+          },
+          {
+            "type": "COMMIT",
+            "timestamp": "2026-11-03T23:03:48.000Z",
+            "sha": "374af1417b714619d9edc1af790f7e7db15a71ca",
+            "parents": [
+              "f0c0a9115185f00fdcb416f67c96a61dc9ef770b",
+              "99e210da586c2129de9e306c0aae0bb379bd3e53"
+            ],
+            "label": "Git commit 374af141",
+            "sourceKind": "GIT_GRAPH_INPUT",
+            "sourceUrl": null
+          },
+          {
+            "type": "CI_RUN",
+            "timestamp": "2026-11-03T23:04:05.000Z",
+            "sha": "374af1417b714619d9edc1af790f7e7db15a71ca",
+            "runId": 41736082288,
+            "label": "Workflow #6 attempt 1: success",
+            "sourceKind": "RECORDED_GITHUB_PROVIDER",
+            "sourceUrl": "https://github.com/ShenJun93/specter-audit/actions/runs/41736082288"
+          },
+          {
+            "type": "COMMIT",
+            "timestamp": "2026-11-03T23:34:59.000Z",
+            "sha": "ad8c79f27bb5da3e6228696c55d1e3a50cc8bf3b",
+            "parents": [
+              "374af1417b714619d9edc1af790f7e7db15a71ca"
+            ],
+            "label": "Git commit ad8c79f2",
+            "sourceKind": "GIT_GRAPH_INPUT",
+            "sourceUrl": null
+          },
+          {
+            "type": "COMMIT",
+            "timestamp": "2026-11-03T23:53:11.000Z",
+            "sha": "b6e1407d1218e4ff4b44cb2dd3cae1388a5f533e",
+            "parents": [
+              "374af1417b714619d9edc1af790f7e7db15a71ca",
+              "ad8c79f27bb5da3e6228696c55d1e3a50cc8bf3b"
+            ],
+            "label": "Git commit b6e1407d",
+            "sourceKind": "GIT_GRAPH_INPUT",
+            "sourceUrl": null
+          },
+          {
+            "type": "CI_RUN",
+            "timestamp": "2026-11-03T23:53:25.000Z",
+            "sha": "b6e1407d1218e4ff4b44cb2dd3cae1388a5f533e",
+            "runId": 41742626694,
+            "label": "Workflow #9 attempt 1: success",
+            "sourceKind": "RECORDED_GITHUB_PROVIDER",
+            "sourceUrl": "https://github.com/ShenJun93/specter-audit/actions/runs/41742626694"
+          },
+          {
+            "type": "CLAIM",
+            "timestamp": "2026-11-04T01:20:12.087Z",
+            "sha": "b6e1407d1218e4ff4b44cb2dd3cae1388a5f533e",
+            "label": "Hypothetical completion claim at b6e1407d",
+            "sourceKind": "CLAIM_INPUT",
+            "sourceUrl": null
+          }
+        ],
+        "gaps": [],
+        "limitations": [
+          "GitHub Actions status is provider-reported metadata, not signed independent attestation.",
+          "An exact-SHA CI result does not prove source code correctness or that the agent fixed the claimed issue.",
+          "Input case JSON and provenance labels can be tampered with; open canonical provider links to inspect the source."
+        ],
+        "provenance": {
+          "repo": "ShenJun93/specter-audit",
+          "workflowId": 405703749,
+          "capturedAt": "2026-11-04T01:20:12.087Z",
+          "sources": [
+            "RECORDED_GITHUB_PROVIDER"
+          ],
+          "providerReportedOnly": true,
+          "independentAttestation": false,
+          "semanticCorrectnessVerified": false,
+          "claimObservedIndependently": false
+        }
+      }
+    },
+    {
+      "id": "no-artifact-presented",
+      "title": "A Claim Without a Receipt",
+      "label": "NO EVIDENCE INPUT / SYNTHETIC SCENARIO",
+      "explanation": "No run was supplied to this fictional case. This is a missing-evidence exercise, not a statement that the real repository has no CI run.",
+      "input": {
+        "schema": "SPECTER_ALIBI_CASE_V1",
+        "repo": {
+          "owner": "ShenJun93",
+          "name": "specter-audit",
+          "workflowId": 405703749
+        },
+        "target": {
+          "sha": "b6e1407d1218e4ff4b44cb2dd3cae1388a5f533e",
+          "claim": "Hypothetical agent claims tests passed for current merge; examine the cited run SHA.",
+          "observedAt": "2026-11-04T01:20:12.087Z"
+        },
+        "commits": [
+          {
+            "sha": "b6e1407d1218e4ff4b44cb2dd3cae1388a5f533e",
+            "parents": [
+              "374af1417b714619d9edc1af790f7e7db15a71ca",
+              "ad8c79f27bb5da3e6228696c55d1e3a50cc8bf3b"
+            ],
+            "committedAt": "2026-11-03T23:53:11.000Z"
+          },
+          {
+            "sha": "ad8c79f27bb5da3e6228696c55d1e3a50cc8bf3b",
+            "parents": [
+              "374af1417b714619d9edc1af790f7e7db15a71ca"
+            ],
+            "committedAt": "2026-11-03T23:34:59.000Z"
+          },
+          {
+            "sha": "374af1417b714619d9edc1af790f7e7db15a71ca",
+            "parents": [
+              "f0c0a9115185f00fdcb416f67c96a61dc9ef770b",
+              "99e210da586c2129de9e306c0aae0bb379bd3e53"
+            ],
+            "committedAt": "2026-11-03T23:03:48.000Z"
+          },
+          {
+            "sha": "99e210da586c2129de9e306c0aae0bb379bd3e53",
+            "parents": [
+              "f0c0a9115185f00fdcb416f67c96a61dc9ef770b"
+            ],
+            "committedAt": "2026-11-03T16:34:08.000Z"
+          },
+          {
+            "sha": "f0c0a9115185f00fdcb416f67c96a61dc9ef770b",
+            "parents": [
+              "c5139ffc90fe41bac13aa69d6c976faaf0011546"
+            ],
+            "committedAt": "2026-11-03T13:17:18.000Z"
+          },
+          {
+            "sha": "c5139ffc90fe41bac13aa69d6c976faaf0011546",
+            "parents": [
+              "9896ccd9851d5559983f511187ac71ce85f0db10"
+            ],
+            "committedAt": "2026-11-03T13:11:31.000Z"
+          },
+          {
+            "sha": "9896ccd9851d5559983f511187ac71ce85f0db10",
+            "parents": [],
+            "committedAt": "2026-11-03T12:52:53.000Z"
+          }
+        ],
+        "capturedAt": "2026-11-04T01:20:12.087Z",
+        "checks": []
+      },
+      "expectedStatus": "INSUFFICIENT_EVIDENCE",
+      "verdict": {
+        "schema": "SPECTER_ALIBI_VERDICT_V1",
+        "status": "INSUFFICIENT_EVIDENCE",
+        "headline": "No exact-commit CI result was supplied",
+        "reason": "No workflow check metadata was included in the case.",
+        "targetSha": "b6e1407d1218e4ff4b44cb2dd3cae1388a5f533e",
+        "claim": "Hypothetical agent claims tests passed for current merge; examine the cited run SHA.",
+        "selectedRun": null,
+        "observations": [],
+        "events": [
+          {
+            "type": "COMMIT",
+            "timestamp": "2026-11-03T12:52:53.000Z",
+            "sha": "9896ccd9851d5559983f511187ac71ce85f0db10",
+            "parents": [],
+            "label": "Git commit 9896ccd9",
+            "sourceKind": "GIT_GRAPH_INPUT",
+            "sourceUrl": null
+          },
+          {
+            "type": "COMMIT",
+            "timestamp": "2026-11-03T13:11:31.000Z",
+            "sha": "c5139ffc90fe41bac13aa69d6c976faaf0011546",
+            "parents": [
+              "9896ccd9851d5559983f511187ac71ce85f0db10"
+            ],
+            "label": "Git commit c5139ffc",
+            "sourceKind": "GIT_GRAPH_INPUT",
+            "sourceUrl": null
+          },
+          {
+            "type": "COMMIT",
+            "timestamp": "2026-11-03T13:17:18.000Z",
+            "sha": "f0c0a9115185f00fdcb416f67c96a61dc9ef770b",
+            "parents": [
+              "c5139ffc90fe41bac13aa69d6c976faaf0011546"
+            ],
+            "label": "Git commit f0c0a911",
+            "sourceKind": "GIT_GRAPH_INPUT",
+            "sourceUrl": null
+          },
+          {
+            "type": "COMMIT",
+            "timestamp": "2026-11-03T16:34:08.000Z",
+            "sha": "99e210da586c2129de9e306c0aae0bb379bd3e53",
+            "parents": [
+              "f0c0a9115185f00fdcb416f67c96a61dc9ef770b"
+            ],
+            "label": "Git commit 99e210da",
+            "sourceKind": "GIT_GRAPH_INPUT",
+            "sourceUrl": null
+          },
+          {
+            "type": "COMMIT",
+            "timestamp": "2026-11-03T23:03:48.000Z",
+            "sha": "374af1417b714619d9edc1af790f7e7db15a71ca",
+            "parents": [
+              "f0c0a9115185f00fdcb416f67c96a61dc9ef770b",
+              "99e210da586c2129de9e306c0aae0bb379bd3e53"
+            ],
+            "label": "Git commit 374af141",
+            "sourceKind": "GIT_GRAPH_INPUT",
+            "sourceUrl": null
+          },
+          {
+            "type": "COMMIT",
+            "timestamp": "2026-11-03T23:34:59.000Z",
+            "sha": "ad8c79f27bb5da3e6228696c55d1e3a50cc8bf3b",
+            "parents": [
+              "374af1417b714619d9edc1af790f7e7db15a71ca"
+            ],
+            "label": "Git commit ad8c79f2",
+            "sourceKind": "GIT_GRAPH_INPUT",
+            "sourceUrl": null
+          },
+          {
+            "type": "COMMIT",
+            "timestamp": "2026-11-03T23:53:11.000Z",
+            "sha": "b6e1407d1218e4ff4b44cb2dd3cae1388a5f533e",
+            "parents": [
+              "374af1417b714619d9edc1af790f7e7db15a71ca",
+              "ad8c79f27bb5da3e6228696c55d1e3a50cc8bf3b"
+            ],
+            "label": "Git commit b6e1407d",
+            "sourceKind": "GIT_GRAPH_INPUT",
+            "sourceUrl": null
+          },
+          {
+            "type": "CLAIM",
+            "timestamp": "2026-11-04T01:20:12.087Z",
+            "sha": "b6e1407d1218e4ff4b44cb2dd3cae1388a5f533e",
+            "label": "Hypothetical completion claim at b6e1407d",
+            "sourceKind": "CLAIM_INPUT",
+            "sourceUrl": null
+          }
+        ],
+        "gaps": [
+          "A successful GitHub Actions run for the exact target SHA is missing from the supplied evidence."
+        ],
+        "limitations": [
+          "GitHub Actions status is provider-reported metadata, not signed independent attestation.",
+          "An exact-SHA CI result does not prove source code correctness or that the agent fixed the claimed issue.",
+          "Input case JSON and provenance labels can be tampered with; open canonical provider links to inspect the source."
+        ],
+        "provenance": {
+          "repo": "ShenJun93/specter-audit",
+          "workflowId": 405703749,
+          "capturedAt": "2026-11-04T01:20:12.087Z",
+          "sources": [],
+          "providerReportedOnly": true,
+          "independentAttestation": false,
+          "semanticCorrectnessVerified": false,
+          "claimObservedIndependently": false
+        }
+      }
+    }
+  ]
+}

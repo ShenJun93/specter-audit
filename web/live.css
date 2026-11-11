@@ -1,0 +1,63 @@
+/* M7 — local Kiro CLI session investigator; visually consistent with Alibi Room. */
+.live-hero{padding:65px clamp(20px,5vw,86px) 48px;max-width:1250px}
+.live-eyebrow{font-size:11px;letter-spacing:2px;color:var(--cyan);font-weight:850}
+.live-hero h1{font-size:clamp(42px,5vw,74px);letter-spacing:-2.8px;line-height:1.07;max-width:930px;margin:18px 0}
+.live-hero h1 em{font-style:normal;color:var(--violet);text-shadow:0 0 50px #906de586}
+.live-hero p{font-size:17px;line-height:1.76;color:#bbcadb;max-width:760px}
+.live-hero code,.live-privacy code{color:var(--cyan);background:#1f3241;padding:2px 5px;border-radius:3px}
+.live-promise{display:flex;gap:16px 26px;flex-wrap:wrap;margin-top:28px;font-size:10px;letter-spacing:1.2px;font-weight:850;color:#93c5c3}
+.live-promise span{border-top:1px solid #326961;padding-top:10px}
+.live-workspace{display:grid;grid-template-columns:minmax(300px,.88fr) minmax(0,1.12fr);gap:25px;padding:0 clamp(20px,5vw,86px) 70px;align-items:start}
+.live-upload,.live-results{border:1px solid #384963;border-radius:15px;padding:28px;background:linear-gradient(160deg,#172136ed,#111926ef);min-height:480px;box-shadow:0 18px 55px #060b1855}
+.live-results{background:linear-gradient(160deg,#182338fa,#111724f7)}
+.live-panel-header{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.live-count{color:#91e8d7;background:#17362e;border:1px solid #34695c;border-radius:100px;padding:6px 10px;font-size:10px;white-space:nowrap;font-weight:850;letter-spacing:.5px}
+.live-workspace h2{font-size:27px;letter-spacing:-.5px;margin:14px 0 9px}.live-upload>p{color:#aebed1;font-size:13px;line-height:1.7;max-width:450px}
+.live-drop{border:1px dashed #577087;border-radius:12px;padding:23px 18px;display:grid;gap:8px;justify-items:start;background:#0b1524bd;margin-top:26px;transition:background .18s,border .18s}
+.live-drop:focus-within,.live-drop.drag-over{border-color:var(--cyan);background:#15363595}
+.live-file-symbol{font-size:33px;color:var(--violet);line-height:1}.live-file-label{font-size:16px;color:white;font-weight:700}.live-file-label strong{color:var(--cyan)}
+.live-drop input{font-size:12px;color:#b0bfd2;max-width:100%;width:100%}.live-drop input::file-selector-button{border:1px solid #47746f;background:#1c3838;color:#defbf4;padding:8px 10px;border-radius:7px;margin-right:12px;cursor:pointer}
+.live-drop small{color:#849bb1;font-size:11px;line-height:1.5}.live-selected{min-height:20px;font-size:12px;color:#a8c4d4;margin:13px 0 6px}
+.live-actions{display:flex;gap:11px;flex-wrap:wrap;margin:18px 0}.live-primary{background:linear-gradient(105deg,#bba1fa,#9071ed);border:1px solid #d4c7fa;color:#171228;border-radius:8px;padding:12px 18px;font-weight:850}
+.live-primary:disabled{opacity:.48;cursor:not-allowed}.live-secondary{border:1px solid #53667b;border-radius:8px;color:#e4edfb;background:#25314a;padding:11px 14px;font-size:12px;font-weight:780}.live-secondary:hover{background:#304461}
+.live-error{border:1px solid #965263;background:#481f2d99;color:#ffd3d9;border-radius:8px;padding:11px;font-size:12px}
+.live-privacy{padding:15px;border-radius:9px;background:#15292f91;border:1px solid #2e575b;color:#a8d1ca;font-size:12px;line-height:1.7;margin-top:24px}.live-privacy strong{color:#a0f1e3}
+.live-empty{padding:70px 8px;text-align:center;color:#9faec1;display:flex;flex-direction:column;align-items:center;gap:8px}.live-empty>span{font-size:60px;color:#b89ef2}.live-empty strong{font-size:17px;color:#dae7f8}.live-empty p{max-width:310px;font-size:12px;line-height:1.7}
+.live-verdict{margin:24px 0;border:1px solid #7c5d53;border-left:4px solid var(--amber);border-radius:8px;background:linear-gradient(90deg,#49301d80,#1b2233ee);padding:16px 19px}.live-verdict.positive{border-color:#347e73;border-left-color:var(--cyan);background:linear-gradient(90deg,#153f3895,#1b2233ee)}
+.live-verdict.unknown{border-color:#59627c;border-left-color:#8199b5;background:#1b273a}
+.live-verdict>span{color:var(--amber);font-size:10px;letter-spacing:1.3px;font-weight:850}.live-verdict.positive>span{color:var(--cyan)}
+.live-verdict h3{margin:8px 0;font-size:23px;line-height:1.3;letter-spacing:-.4px}.live-verdict p{font-size:12px;color:#d7dce5;line-height:1.65}
+.live-metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:17px 0 30px}
+.live-metrics>div{padding:13px;background:#0d1726;border:1px solid #34445c;border-radius:7px}.live-metrics span{display:block;font-size:9px;letter-spacing:.8px;color:#9daec7;font-weight:760}.live-metrics strong{font-size:22px;color:#edf7ff;font-variant-numeric:tabular-nums}
+.live-timeline-head{display:flex;justify-content:space-between;gap:10px;align-items:baseline;border-bottom:1px solid #36465b}.live-timeline-head h3{font-size:17px}.live-timeline-head span{font-size:9px;letter-spacing:1.1px;color:#8da5ae}
+.live-timeline{list-style:none;padding:18px 0 8px 25px;margin:0;max-height:420px;overflow:auto}
+.live-timeline li{border-left:1px solid #475879;position:relative;padding:0 0 19px 22px;font-size:12px;line-height:1.6;color:#c3d1e2}
+.live-timeline li:before{content:'';position:absolute;left:-6px;top:3px;width:11px;height:11px;border-radius:50%;background:#a485eb;border:2px solid #1a2438}
+.live-timeline li[data-kind=test]:before{background:#58dec6}.live-timeline li[data-kind=edit]:before{background:#d88b9b}.live-timeline li[data-kind=claim]:before{background:#eec17e}
+.live-timeline strong{display:block;color:white;font-size:11px;letter-spacing:.45px}.live-timeline time{display:block;color:#a0afc2;font-size:10px;margin:4px 0}
+.live-caveat{padding:13px 15px;border-left:3px solid #8eabbb;background:#202c3d;font-size:12px;color:#b6d0d6;line-height:1.7}
+.live-copy-status{font-size:11px;color:#a0e5d8;margin-left:12px}.live-footer{padding:10px clamp(20px,5vw,86px) 78px;display:flex;justify-content:space-between;gap:26px;align-items:center}.live-footer h2{font-size:clamp(24px,3vw,36px);margin:10px 0}.live-footer p{color:#b3c4d5;font-size:13px;line-height:1.7;max-width:590px}
+.live-bottom{padding:26px clamp(20px,5vw,86px);border-top:1px solid #29394a;color:#8397a9;font-size:10px;letter-spacing:1px}
+@media(max-width:850px){.live-workspace{grid-template-columns:1fr}.live-hero{padding-top:48px}.live-upload,.live-results{min-height:0}.live-footer{flex-direction:column;align-items:start}.topbar{flex-wrap:wrap}.live-metrics{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:540px){.live-hero h1{letter-spacing:-1.4px;font-size:43px}.live-workspace{gap:16px}.live-upload,.live-results{padding:19px}.live-actions button{width:100%}.live-promise{font-size:9px}.topbar nav{gap:10px;flex-wrap:wrap}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.live-drop{transition:none}}
+.live-metrics small{display:block;font-size:10px;color:#879eb1;margin-top:2px}
+.live-timeline li[data-phase=after-test] strong{color:#f7cf92}
+.live-flag{display:inline-block;margin-top:5px;padding:2px 6px;border-radius:4px;border:1px solid #997348;color:#eecb91;background:#33291d;font-size:9px;font-weight:900;letter-spacing:.8px}
+
+/* M8 judge journey — accessible, self-contained synthetic examples and next-step guidance. */
+.live-demo-guide{font-size:11px;color:#9fc7d8;line-height:1.65;max-width:450px;margin:0 0 18px}
+.live-next-step{margin:18px 0 26px;padding:16px 18px;border-left:3px solid #85c9d8;border-radius:6px;background:#132a36}
+.live-next-step h3{font-size:15px;margin:0 0 9px;color:#e8f4ff}
+.live-next-step p{font-size:12px;color:#c7d9e5;line-height:1.65;margin:0}
+.live-next-hint{font-size:12px;line-height:1.65;padding:14px 16px;color:#c7d9e5;background:#182b3c;border-left:3px solid #8294b6}
+.live-actions button:focus-visible{outline:3px solid #8bd6df;outline-offset:3px}
+/* A focused mobile verdict must not disappear behind the page header. */
+#results-heading{scroll-margin-block-start:24px}
+#results-heading:focus{outline:2px solid #8bd6df;outline-offset:5px}
+.live-howto{margin:10px 0 16px;padding:12px 14px;border:1px solid #354b61;border-radius:8px;background:#121f2d;color:#b7cedc;font-size:12px;line-height:1.7}
+.live-howto summary{cursor:pointer;color:#d1ecf5;font-weight:700}
+.live-howto p{margin:10px 0 0}
+.live-howto summary:focus-visible{outline:3px solid #8bd6df;outline-offset:3px}
+#copy-next-step{min-height:36px;margin-top:12px}
+#copy-next-step:focus-visible{outline:3px solid #8bd6df;outline-offset:3px}

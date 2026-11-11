@@ -1,0 +1,240 @@
+// M10 experimental Evidence Trial: assemble two separate *observations*.
+// Browser-only session parsing; no network, storage, hashing of private logs,
+// file names, source paths, prompts, tool commands or session IDs in output.
+// Implemented with ChatGPT/WAG, NOT Kiro-authored.
+import {parseKiroSession} from './kiro-session-import.mjs';
+import {auditLocalSession} from './kiro-session-staleness.mjs';
+
+const STATUSES=new Set([
+ 'STALE_LOCAL_TEST_EVIDENCE',
+ 'CURRENT_SELF_RECORDED_TEST',
+ 'INSUFFICIENT_SESSION_EVIDENCE'
+]);
+const SHA=/^[0-9a-f]{40}$/i;
+const MAX_BYTES=8*1024*1024;
+const SMALL=20000;
+const UNSUPPORTED='UNSUPPORTED_LOCAL_SESSION';
+const NO_ATTESTATION=Object.freeze({
+ localSessionLinkedToPr:false,independentlyAttested:false,
+ semanticCorrectnessVerified:false,allRequiredChecksVerified:false,
+ releaseApproved:false
+});
+const number=(x,max=4000)=>Number.isSafeInteger(x)&&x>=0&&x<=max?x:0;
+const formatReason=(s)=>typeof s==='string'&&/^[A-Z_]{3,72}$/.test(s)?s:UNSUPPORTED;
+const RUN_STATES=new Set(['completed','queued','requested','pending','waiting','in_progress']);
+const RUN_CONCLUSIONS=new Set([
+ 'success','failure','cancelled','timed_out','action_required','neutral','skipped','stale','startup_failure'
+]);
+// A DOM event is not an attestation. Verify each normalized GitHub run again
+// at the presentation boundary and derive counts; never trust headline counts.
+function countObservedRuns(provider,headSha){
+ if(provider?.status!=='OBSERVED_EXACT_SHA_RUNS'||!Array.isArray(provider.runs)||
+    provider.runs.length<1||provider.runs.length>30)return null;
+ const counts={success:0,failure:0,inProgress:0,other:0};
+ const seen=new Set();
+ for(const r of provider.runs){
+  if(!r||!Number.isSafeInteger(r.id)||r.id<=0||seen.has(r.id)||
+     typeof r.headSha!=='string'||r.headSha.toLowerCase()!==headSha||
+     !RUN_STATES.has(r.status))return null;
+  seen.add(r.id);
+  if(r.status!=='completed'){
+   if(r.conclusion!==null)return null;
+   counts.inProgress++;continue;
+  }
+  if(!RUN_CONCLUSIONS.has(r.conclusion))return null;
+  if(r.conclusion==='success')counts.success++;
+  else if(['failure','cancelled','timed_out','action_required','startup_failure'].includes(r.conclusion))counts.failure++;
+  else counts.other++;
+ }
+ return counts;
+}
+function cleanSummary(parsed){
+ const a=parsed.summary??{};
+ return {
+  observedPassingTests:number(a.passingTests),
+  observedSourceEdits:number(a.sourceEdits),
+  recognizedAgentClaims:number(a.recognizedClaims),
+  unclassifiedEdits:number(a.unclassifiedEdits),
+  sessionEvents:number(a.sessionEvents)
+ };
+}
+const sessionUnknown=(errorCode='NOT_INSPECTED',source='NONE',summary={})=>({
+ source,verdict:'INSUFFICIENT_SESSION_EVIDENCE',reason:formatReason(errorCode),
+ counts:{
+  observedPassingTests:number(summary.observedPassingTests),
+  observedSourceEdits:number(summary.observedSourceEdits),
+  recognizedAgentClaims:number(summary.recognizedAgentClaims),
+  unclassifiedEdits:number(summary.unclassifiedEdits),
+  sessionEvents:number(summary.sessionEvents)
+ },
+ ...NO_ATTESTATION
+});
+export function summarizeLocalSession(text,{synthetic=false}={}){
+ const source=synthetic?'EXPLICITLY_SYNTHETIC_EXAMPLE':'USER_SELECTED_BROWSER_ONLY';
+ if(typeof text!=='string'||new TextEncoder().encode(text).length>MAX_BYTES)
+  return sessionUnknown('FILE_SIZE_LIMIT',source);
+ let parsed;
+ try{parsed=parseKiroSession(text)}catch{return sessionUnknown(UNSUPPORTED,source)}
+ const counts=cleanSummary(parsed);
+ if(!parsed.input)return sessionUnknown(parsed.errorCode??UNSUPPORTED,source,counts);
+ let audit;
+ try{audit=auditLocalSession(parsed.input)}catch{return sessionUnknown(UNSUPPORTED,source,counts)}
+ if(!audit||!STATUSES.has(audit.status))return sessionUnknown(UNSUPPORTED,source,counts);
+ return {
+  source,verdict:audit.status,
+  reason:audit.status==='INSUFFICIENT_SESSION_EVIDENCE'?'AUDITOR_INSUFFICIENT':'LOCAL_TIMELINE_OBSERVED',
+  counts,...NO_ATTESTATION
+ };
+}
+// A reviewer-facing repair plan derived only from already normalized, bounded
+// observations. No edge here is a release gate or independent attestation.
+function repairPlanFor(session,pr){
+ let localState='NOT_INSPECTED',localAction='Inspect a saved Kiro session or a clearly labeled synthetic example.';
+ if(session){
+  if(session.source==='EXPLICITLY_SYNTHETIC_EXAMPLE'){
+   localState=session.status==='STALE_LOCAL_TEST_EVIDENCE'?'SYNTHETIC_STALE':
+    session.status==='CURRENT_SELF_RECORDED_TEST'?'SYNTHETIC_CURRENT':'SYNTHETIC_UNKNOWN';
+   localAction=localState==='SYNTHETIC_STALE'?
+    'Demo only: retest after the final source edit. Import a genuine Kiro session for actual review.':
+    'Demo only: a synthetic retest cannot establish a genuine Kiro run or any PR commit identity.';
+  }else if(session.status==='STALE_LOCAL_TEST_EVIDENCE'){
+   localState='RETEST_REQUIRED';
+   localAction='Run relevant tests after the last observed source edit, then inspect the genuine receipt.';
+  }else if(session.status==='CURRENT_SELF_RECORDED_TEST'){
+   localState='SELF_RECORDED_CURRENT';
+   localAction='Confirm the observed receipt against independently available test execution and code identity.';
+  }else{
+   localState='UNKNOWN';
+   localAction='Obtain a supported, complete local test receipt; an unknown result is not a passing test.';
+  }
+ }
+ let ciState='NOT_INSPECTED',ciAction='Inspect a public GitHub PR HEAD with explicit consent.';
+ if(pr){
+  const finding=pr.workflowFinding;
+  if(finding==='FAILED_RUNS_OBSERVED'){
+   ciState='FAILED';ciAction='Inspect failed exact-SHA workflow runs, fix the cause and rerun CI.';
+  }else if(finding==='RUNS_IN_PROGRESS'){
+   ciState='IN_PROGRESS';ciAction='Wait for in-progress exact-SHA workflows and re-inspect their results.';
+  }else if(finding==='NON_PASS_RUNS_OBSERVED'){
+   ciState='NON_PASS';ciAction='Review neutral, skipped or stale runs; do not treat them as successful tests.';
+  }else if(finding==='PARTIAL_RUN_SAMPLE'){
+   ciState='TRUNCATED';ciAction='Inspect the unobserved workflow history and required checks before relying on CI.';
+  }else if(finding==='SUCCESSFUL_RUNS_OBSERVED'){
+   ciState='PROVIDER_SUCCESS_OBSERVED';
+   ciAction='GitHub reports success for observed runs; independently inspect required checks and test scope.';
+  }else{
+   ciState='UNKNOWN';ciAction='Provider evidence is insufficient or invalid; obtain a trustworthy exact-SHA CI receipt.';
+  }
+  // Show lifecycle cautions alongside CI without concealing failed workflows.
+  if(pr.reviewState==='CLOSED'){
+   ciAction='PR is closed; merge status not determined. '+ciAction;
+  }else if(pr.reviewState==='OPEN_DRAFT'){
+   ciAction='PR is a draft and is not ready for normal review. '+ciAction;
+  }
+ }
+ return {
+  schema:'SPECTER_EVIDENCE_REPAIR_PLAN_V1',
+  readyForRelease:false,
+  checks:[
+   {id:'KIRO_TEST_FRESHNESS',label:'Kiro test chronology',state:localState,nextAction:localAction},
+   {id:'PR_HEAD_CI',label:'Exact-commit CI evidence',state:ciState,nextAction:ciAction},
+   {id:'SESSION_TO_COMMIT',label:'Independent session-to-commit link',state:'UNBOUND',
+    nextAction:'Obtain independent evidence that the relevant tests ran against the exact PR HEAD. An editable session log or copied SHA alone cannot prove this.'}
+  ]
+ };
+}
+
+export function combineTrial(local=null,provider=null){
+ const validLocal=local&&STATUSES.has(local.verdict)&&
+   ['EXPLICITLY_SYNTHETIC_EXAMPLE','USER_SELECTED_BROWSER_ONLY'].includes(local.source);
+ const session=validLocal?{
+  source:local.source,status:local.verdict,
+  reason:formatReason(local.reason??UNSUPPORTED),
+  counts:{
+   observedPassingTests:number(local.counts?.observedPassingTests),
+   observedSourceEdits:number(local.counts?.observedSourceEdits),
+   recognizedAgentClaims:number(local.counts?.recognizedAgentClaims),
+   unclassifiedEdits:number(local.counts?.unclassifiedEdits),
+   sessionEvents:number(local.counts?.sessionEvents)
+  }
+ }:null;
+ const validPr=provider?.source==='GITHUB_PUBLIC_REST_OPT_IN'&&
+   provider?.headSha&&SHA.test(provider.headSha)&&
+   Number.isSafeInteger(provider.prNumber)&&provider.prNumber>0&&
+   typeof provider.repository==='string'&&/^[A-Za-z0-9-]+\/[A-Za-z0-9._-]{1,100}$/.test(provider.repository);
+ const counts=validPr?countObservedRuns(provider,provider.headSha.toLowerCase()):null;
+ const runStatus=counts?'OBSERVED_EXACT_SHA_RUNS':'UNKNOWN';
+ // An observed workflow is not necessarily a successful one.
+ // A failure or in-progress run takes precedence over green observations.
+ const workflowFinding=counts?
+  counts.failure>0?'FAILED_RUNS_OBSERVED':
+  counts.inProgress>0?'RUNS_IN_PROGRESS':
+  counts.other>0?'NON_PASS_RUNS_OBSERVED':
+  provider.truncated===true?'PARTIAL_RUN_SAMPLE':
+  counts.success>0?'SUCCESSFUL_RUNS_OBSERVED':'NO_SUCCESSFUL_RUN_OBSERVED':
+  'CI_UNVERIFIED';
+ // PR lifecycle is provider-reported, not a CI verdict or release gate.
+ const reviewState=provider?.state==='closed'&&typeof provider.draft==='boolean'?'CLOSED':
+  provider?.state==='open'&&provider.draft===true?'OPEN_DRAFT':
+  provider?.state==='open'&&provider.draft===false?'OPEN_NON_DRAFT':'UNKNOWN';
+ const pr=validPr?{
+  repository:provider.repository,
+  prNumber:provider.prNumber,headSha:provider.headSha.toLowerCase(),
+  status:runStatus,counts,workflowFinding,reviewState,
+  truncated:provider.truncated===true
+ }:null;
+ const sessionStep=session?.status==='STALE_LOCAL_TEST_EVIDENCE'?
+  'STALE_TEST_RECEIPT':session?.status==='CURRENT_SELF_RECORDED_TEST'?
+  'CURRENT_SELF_RECORDED_ONLY':session?'INSUFFICIENT_SESSION_EVIDENCE':'AWAITING_LOCAL_SESSION';
+ const providerStep=pr?.status==='OBSERVED_EXACT_SHA_RUNS'?
+  'MATCHING_GITHUB_WORKFLOWS_OBSERVED':pr?'CI_UNVERIFIED':'AWAITING_PUBLIC_PR';
+ const action=workflowFinding==='FAILED_RUNS_OBSERVED'?
+  'INVESTIGATE_FAILED_PR_WORKFLOWS':workflowFinding==='RUNS_IN_PROGRESS'?
+  'WAIT_FOR_PR_WORKFLOWS':workflowFinding==='NON_PASS_RUNS_OBSERVED'?
+  'REQUIRE_SUCCESSFUL_EXACT_SHA_CI':workflowFinding==='PARTIAL_RUN_SAMPLE'?
+  'REVIEW_UNOBSERVED_CI_RUNS':sessionStep==='STALE_TEST_RECEIPT'?
+  'RETEST_AFTER_FINAL_EDIT':sessionStep==='CURRENT_SELF_RECORDED_ONLY'?
+  'VERIFY_COMMIT_BINDING_AND_REQUIRED_CHECKS':sessionStep==='INSUFFICIENT_SESSION_EVIDENCE'?
+  'OBTAIN_COMPLETE_TEST_RECEIPT':pr?.status==='OBSERVED_EXACT_SHA_RUNS'?
+  'INSPECT_LOCAL_KIRO_TEST_CHRONOLOGY':'GATHER_BOTH_EVIDENCE_SOURCES';
+ return {
+  schema:'SPECTER_UNJOINED_EVIDENCE_TRIAL_V1',
+  session,pr,
+  repairPlan:repairPlanFor(session,pr??(provider!==null?{workflowFinding:'CI_UNVERIFIED'}:null)),
+  localStep:sessionStep,providerStep,
+  bridge:'NO_INDEPENDENT_SESSION_TO_PR_COMMIT_BINDING',
+  finalFinding:'RELEASE_EVIDENCE_INCOMPLETE',
+  suggestedAction:action,
+  ...NO_ATTESTATION,
+  limitations:[
+   'Session chronology is editable local evidence, never independent attestation.',
+   'GitHub Actions metadata is provider-reported and does not establish required checks or correctness.',
+   'No independently verified binding connects this Kiro session to this PR HEAD.',
+   'This dossier cannot approve a release or certify a test result.'
+  ]
+ };
+}
+// Safe, synthetic-only timeline for a judge demonstration. Never called a real log.
+export function syntheticTrial(kind='stale'){
+ if(kind!=='stale'&&kind!=='retested')throw Error('UNSUPPORTED_SYNTHETIC_CASE');
+ const time=n=>'2026-11-04T11:'+String(n).padStart(2,'0')+':00.000Z';
+ const line=(n,payload)=>JSON.stringify({timestamp:time(n),payload});
+ const events=[
+  line(0,{type:'tool_call',toolCallId:'test1',toolName:'execute_pwsh',args:{command:'node --test'}}),
+  line(1,{type:'tool_result',toolCallId:'test1',success:true,content:'pass 8\nfail 0\nExit Code: 0'}),
+  line(2,{type:'assistant',operationType:'Say',content:'All 8 tests pass, 0 fail.'}),
+  line(3,{type:'tool_call',toolCallId:'edit1',toolName:'str_replace',filePath:'src/synthetic-proof.mjs'}),
+  line(4,{type:'tool_result',toolCallId:'edit1',success:true,content:'Done'})
+ ];
+ if(kind==='retested'){
+  // New test after edit: the old claim remains historically true,
+  // but a later observed PASS is not a retroactive attestation of the PR HEAD.
+  events.push(
+   line(5,{type:'tool_call',toolCallId:'test2',toolName:'execute_pwsh',args:{command:'node --test'}}),
+   line(6,{type:'tool_result',toolCallId:'test2',success:true,content:'pass 8\nfail 0\nExit Code: 0'}),
+   line(7,{type:'assistant',operationType:'Say',content:'All 8 tests pass, 0 fail.'})
+  );
+ }
+ events.push(line(8,{type:'turn_end'}));
+ return events.join('\n');
+}
