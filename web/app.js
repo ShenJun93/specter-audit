@@ -245,3 +245,29 @@ els.refresh.addEventListener('click',refreshEvidence);
 els.providerButton.addEventListener('click',checkPublicCi);
 els.form.addEventListener('submit',analyze);
 refreshEvidence();
+
+/* Keep workspace links reachable at tablet/mobile widths without changing the investigation flow. */
+function setupRailNavigation() {
+  const rail = document.querySelector('.rail');
+  const toggle = document.getElementById('rail-menu-toggle');
+  if (!rail || !toggle) return;
+  function setOpen(open) {
+    rail.classList.toggle('menu-open', open);
+    toggle.setAttribute('aria-expanded', String(open));
+    toggle.setAttribute('aria-label', (open ? 'Close' : 'Open') + ' workspace navigation');
+  }
+  toggle.addEventListener('click', () => setOpen(!rail.classList.contains('menu-open')));
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && rail.classList.contains('menu-open')) {
+      setOpen(false);
+      toggle.focus();
+    }
+  });
+  document.addEventListener('pointerdown', event => {
+    if (rail.classList.contains('menu-open') && !rail.contains(event.target)) setOpen(false);
+  });
+  window.matchMedia('(max-width: 960px)').addEventListener('change', event => {
+    if (!event.matches) setOpen(false);
+  });
+}
+setupRailNavigation();
