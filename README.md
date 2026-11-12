@@ -36,6 +36,14 @@ The exact filmed SHA `09952ed7e2728cdc030051ee14c66e61d0953d98` passed **524/524
 
 **Kiro implementation evidence:** [M1](https://github.com/ShenJun93/specter-audit/commit/9896ccd9851d5559983f511187ac71ce85f0db10) (Git inspector), [M5A](https://github.com/ShenJun93/specter-audit/commit/99e210da586c2129de9e306c0aae0bb379bd3e53) (GitHub CI adapter), [M6E](https://github.com/ShenJun93/specter-audit/commit/950acf93e92417820d9564c7cd3da7fba6030e99) (Kiro-session auditor), and [historical M6E real-session evidence](https://github.com/ShenJun93/specter-audit/blob/1230272391c958597d7c858510f195da00ccfcbc/docs/competition/M6E_KIRO_REAL_SESSION_EVIDENCE_20261104.md). The M6E report's 2026-11-04 "NOT shipped" status is historical; the module has since merged into `main`. Editable local Kiro logs remain bounded provenance evidence, not signed authorship proof.
 
+## M118 development candidate — Specter Arena + Gate (NOT the submitted judge release)
+
+A separate feature branch extends the existing read-only PR evidence work into a single versioned case: provider-reported exact-head CI, an externally stored reviewer-controlled behavior test executed inside constrained Docker containers against exact base and head revisions, and an interactive Arena hearing that consumes the same JSON report as a PR-review Markdown draft. The result is bounded to one behavior; a green CI badge is not correctness and an owner-controlled fixture is not external adoption.
+
+- [Owner-controlled demonstration PR #1](https://github.com/ShenJun93/specter-arena-evidence-fixture/pull/1): ordinary CI passed on both revisions, while the reviewer-controlled half-cent rounding test failed base and passed head.
+- [M118 reproducible receipt](docs/competition/M118_ARENA_GATE_RECEIPT_20261112.md) and [Kiro-native authorship boundary](docs/competition/M118_NATIVE_KIRO_RECEIPT_20261112.md). Open /arena.html on an M118 checkout or its separate Preview after CI review.
+- Run npm run check and node --test to validate source-level contracts. Local behavioral execution requires Docker and an explicit owner-inspected manifest; no arbitrary PR source executes in the browser.
+- **Guardrails:** no native Kiro hook is claimed working, no GitHub comment is posted automatically, and no proof of broad correctness, security, user adoption, or cryptographic Kiro-to-PR binding is claimed. This development candidate does not replace the published V5D video or M75 demo on Devpost.
 ## Historical milestones (not the current judge application)
 
 **M16 Preview:** https://specter-audit-750p0my50-nvhoa1691993-6852s-projects.vercel.app/ (commit `2e6cfe2d4852defa16ccad3d1311cb710b9ffab1`).

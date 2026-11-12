@@ -25,3 +25,4 @@
 /* M7 local-session CTA: distinguish analysis of a visitor's data from recorded exhibits. */
 .hero-cta .live-cta{background:#143a37;color:#a1f8e7;border-color:#378b80;box-shadow:none}
 .hero-cta .live-cta:hover{background:#1b4b43;color:#e7fffa}
+@media(min-width:631px) and (max-width:1100px){.topbar{flex-wrap:wrap;gap:12px;padding:16px clamp(18px,4.5vw,76px)}.topbar nav{width:100%;justify-content:flex-start;flex-wrap:wrap;column-gap:20px;row-gap:10px}}
