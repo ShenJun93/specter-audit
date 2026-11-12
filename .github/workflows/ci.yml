@@ -26,7 +26,7 @@ jobs:
       - name: Run deterministic unit/integration tests and capture TAP
         run: |
           mkdir -p out/ci
-          if ! node --test --test-reporter=tap > out/ci/test.tap; then
+          if ! node --test --test-reporter=tap "test/*.test.mjs" > out/ci/test.tap; then
             echo "Test suite failed; showing bounded TAP failure diagnostics."
             grep -n -A 50 '^not ok ' out/ci/test.tap | head -n 180 || true
             tail -n 12 out/ci/test.tap
