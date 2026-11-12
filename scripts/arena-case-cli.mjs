@@ -5,6 +5,7 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {inspectPublicPr,parsePublicPrUrl} from '../web/public-pr-evidence.mjs';
 import {buildArenaCaseReport} from '../src/arena-case-report.mjs';
+import {classifyBehavior} from './arena-challenge-runner.mjs';
 
 const SHA=/^[0-9a-f]{40}$/i;
 const MAX_BYTES=256*1024;
@@ -40,6 +41,45 @@ function convertSide(side,sha,image){
   observedAt:side.observedAt
  };
 }
+/**
+ * Defense in depth only: this checks internal consistency of a self-reported
+ * local Docker result. A JSON file is not cryptographic proof of execution.
+ */
+export function validLocalChallengeReport(challenge){
+ if(!challenge||typeof challenge!=='object'||Array.isArray(challenge)||
+  challenge.schema!=='SPECTER_BEHAVIOR_CHALLENGE_V1'||
+  challenge.authority!=='LOCAL_REVIEWER_INVOCATION_NOT_ATTESTED'||
+  challenge.reviewerTest?.approval!=='EXPLICIT_LOCAL_CLI_FLAG_NOT_AUTHENTICATED'||
+  !/^[0-9a-f]{64}$/.test(challenge.reviewerTest?.sha256??'')||
+  typeof challenge.reviewerTest?.expectedBehavior!=='string'||
+  challenge.reviewerTest.expectedBehavior.trim().length<5||
+  challenge.image?.reference!=='node:24-alpine'||
+  !/^sha256:[0-9a-f]{64}$/.test(challenge.image?.imageId??'')||
+  challenge.isolation?.network!=='none'||
+  challenge.isolation?.root!=='readonly'||
+  challenge.isolation?.user!=='65534:65534'||
+  challenge.isolation?.memoryMb!==384||
+  challenge.isolation?.cpus!==1||
+  challenge.isolation?.pids!==64) return false;
+ const o=challenge.observations;
+ if(!o||typeof o!=='object'||Array.isArray(o))return false;
+ for(const side of ['base','head']){
+  const r=o[side];
+  if(!r||r.status!=='OBSERVED_TEST'||(r.exitCode!==0&&r.exitCode!==1)||
+   !SHA.test(r.revision??'')||
+   !/^[0-9a-f]{64}$/.test(r.stdoutSha256??'')||
+   !r.tap||typeof r.tap!=='object'||Array.isArray(r.tap))return false;
+  const t=r.tap;
+  for(const k of ['tests','passed','failed','skipped','cancelled']){
+   if(!Number.isSafeInteger(t[k])||t[k]<0)return false;
+  }
+  if(t.tests<1||t.passed+t.failed+t.skipped+t.cancelled!==t.tests||
+   t.skipped!==0||t.cancelled!==0||
+   (r.exitCode===0?t.failed!==0||t.passed!==t.tests:t.failed<1)) return false;
+ }
+ const computed=classifyBehavior(o.base,o.head);
+ return computed!=='UNKNOWN'&&challenge.result===computed;
+}
 export function buildCaseFromSources(pr,first,last,provider,challenge,{now=new Date()}={}){
  if(!pr||!first||!last||!provider||!challenge||
     !matchRepo(first.repository,pr.owner+'/'+pr.repo)||
@@ -48,8 +88,10 @@ export function buildCaseFromSources(pr,first,last,provider,challenge,{now=new D
     provider.status!=='OBSERVED_EXACT_SHA_RUNS'||!matchRepo(provider.repository,pr.owner+'/'+pr.repo)||
     provider.prNumber!==pr.number||provider.prUrl!==pr.url||!validSha(provider.headSha)||
     provider.headSha.toLowerCase()!==first.headSha||
-    !Array.isArray(provider.runs)||provider.runs.length<1||provider.runs.length>30||provider.truncated===true||
-    challenge.schema!=='SPECTER_BEHAVIOR_CHALLENGE_V1'||
+    !Array.isArray(provider.runs)||provider.runs.length<1||provider.runs.length>30||
+    !provider.runs.every(r=>r!==null&&typeof r==='object'&&!Array.isArray(r))||
+    provider.truncated===true||
+    !validLocalChallengeReport(challenge)||
     challenge.baseSha!==first.baseSha||challenge.headSha!==first.headSha||
     !challenge.reviewerTest||!challenge.observations)
   return buildArenaCaseReport({});

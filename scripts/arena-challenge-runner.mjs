@@ -14,7 +14,7 @@ const IMAGE='node:24-alpine';
 const MAX_TEST_BYTES=32768;
 const MAX_SOURCE_BYTES=256*1024;
 const LIMITED_OUTPUT=50000;
-const STDOUT_LIMIT=1800;
+
 const REPO=/^[a-z0-9-]{1,39}\/[a-z0-9][a-z0-9._-]{0,99}$/i;
 const SOURCE=/^(?:src|lib)\/[a-z0-9._/-]+\.mjs$/i;
 const sha256=(value)=>createHash('sha256').update(value).digest('hex');
@@ -24,7 +24,7 @@ function safePath(p) {
 export function validateManifest(m){
  if(!m||typeof m!=='object'||Array.isArray(m)||m.schema!=='SPECTER_REVIEWER_CHALLENGE_V1'||
     !REPO.test(m.repository)||typeof m.repoPath!=='string'||m.repoPath.length>1024||
-    !SHA.test(m.baseSha)||!SHA.test(m.headSha)||m.baseSha===m.headSha||
+    !SHA.test(m.baseSha)||!SHA.test(m.headSha)||m.baseSha.toLowerCase()===m.headSha.toLowerCase()||
     !safePath(m.sourcePath)||typeof m.testPath!=='string'||m.testPath.length>1024||
     !DIGEST.test(m.testSha256)||typeof m.expectedBehavior!=='string'||
     m.expectedBehavior.trim().length<5||m.expectedBehavior.length>500)
@@ -71,7 +71,7 @@ function successful(r,code='HOST_COMMAND_FAILED'){
  if(r.error)throw Error(code);
  return r.stdout.trim();
 }
-function sanitiseOutput(s){return s.replace(/\x1b\[[0-9;]*m/g,'').slice(0,STDOUT_LIMIT)}
+
 async function dockerTest(dir,testPath,imageId,revision){
  const name='specter-arena-'+randomUUID().slice(0,12);
  const mounts=['type=bind,source='+dir+',target=/workspace,readonly',
@@ -93,7 +93,8 @@ async function dockerTest(dir,testPath,imageId,revision){
   result.exitCode<=1&&tap?'OBSERVED_TEST':'UNKNOWN';
  return {revision,observedAt:new Date().toISOString(),status,exitCode:status==='OBSERVED_TEST'?result.exitCode:null,
   tap:status==='OBSERVED_TEST'?tap:null,
-  stdoutSha256:sha256(result.stdout),outputSample:sanitiseOutput(result.stdout),
+  stdoutSha256:sha256(result.stdout),stderrSha256:sha256(result.stderr),
+  stdoutBytes:Buffer.byteLength(result.stdout),stderrBytes:Buffer.byteLength(result.stderr),
   failureReason:status==='OBSERVED_TEST'?null:
    result.timedOut?'TIMEOUT':result.truncated?'OUTPUT_TOO_LARGE':'TEST_EXECUTION_UNVERIFIED'};
 }
@@ -119,16 +120,23 @@ export async function runApprovedChallenge(manifest,{approval=false}={}){
  if(!/^sha256:[0-9a-f]{64}$/.test(image))throw Error('UNVERIFIED_DOCKER_IMAGE');
  const stage=await mkdtemp(path.join(tmpdir(),'specter-arena-'));
  try{
+  // Stage the exact reviewer-approved bytes, never the original mutable path.
+  // Avoid TOCTOU between SHA verification and Docker bind-mount execution.
+  const approvedTestSnapshot=path.join(stage,'approved-reviewer.test.mjs');
+  await writeFile(approvedTestSnapshot,test,{flag:'wx',mode:0o444});
+  if(sha256(await readFile(approvedTestSnapshot))!==m.testSha256)
+   throw Error('REVIEWER_TEST_SNAPSHOT_MISMATCH');
   const runs={};
   for(const [kind,revision] of [['base',m.baseSha],['head',m.headSha]]){
    const code=await run('git',['-C',repoRoot,'show',revision+':'+m.sourcePath],
     {timeout:8000,maxBuffer:MAX_SOURCE_BYTES+100});
-   if(code.error||!code.stdout||Buffer.byteLength(code.stdout,'utf8')>MAX_SOURCE_BYTES)
+   if(code.error||!code.stdout||code.stdout.includes('\uFFFD')||code.stdout.includes('\0')||
+      Buffer.byteLength(code.stdout,'utf8')>MAX_SOURCE_BYTES)
     throw Error('SOURCE_BLOB_UNAVAILABLE');
    const folder=path.join(stage,kind);
    await mkdir(folder);
    await writeFile(path.join(folder,'candidate.mjs'),code.stdout,{encoding:'utf8',flag:'wx'});
-   runs[kind]=await dockerTest(folder,testFile,image,revision);
+   runs[kind]=await dockerTest(folder,approvedTestSnapshot,image,revision);
   }
   const result=classifyBehavior(runs.base,runs.head);
   return {
