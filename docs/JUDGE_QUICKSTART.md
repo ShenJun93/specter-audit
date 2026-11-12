@@ -1,25 +1,27 @@
 # Specter Audit — Judge Quickstart
 
-## Evaluate filmed M19 and verified main release (2026-11-11)
+## Judge entry — submitted M75 demo, filmed V5D source and verified main (2026-11-12)
 
-**Live M19 Preview:** https://specter-audit-bc84gljaz-nvhoa1691993-6852s-projects.vercel.app/ (the demo linked from Devpost and filmed in V5D). This is **not** the old stable production at https://specter-audit.vercel.app.
+**Current Kiroween working demo — corrected M75 Preview:** https://specter-audit-2v5dynndc-nvhoa1691993-6852s-projects.vercel.app/ (no signup). This is the main demo submitted to Devpost; it is **not** the old stable production at https://specter-audit.vercel.app.
 
-**Corrected M75 Preview:** https://specter-audit-2v5dynndc-nvhoa1691993-6852s-projects.vercel.app/ - built at reviewed source `0ce4565bf608ff497b913d76d930250861a73de1`, with M68-M70 corrections and passing browser acceptance. The final main merge `13192ce2719aaabfda1aa1ca6148d33b741a2cb1` has the identical M19 Git tree and runtime; the Preview was **not** rebuilt at this newer merge SHA. For the historical video, use the filmed Preview above.
+**Historical filmed V5D Preview:** https://specter-audit-bc84gljaz-nvhoa1691993-6852s-projects.vercel.app/ — filmed at `09952ed7e2728cdc030051ee14c66e61d0953d98`. **Stable mirror of the same filmed deployment:** https://specter-audit-kiroween-v5d-2026.vercel.app/. The submitted M75 Preview was built at corrected source `0ce4565bf608ff497b913d76d930250861a73de1`, not at the later main merge SHA.
 
 **V5D video:** https://youtu.be/kQKkw7Dkp-M
 
-**Filmed source:** [`09952ed7e2728cdc030051ee14c66e61d0953d98`](https://github.com/ShenJun93/specter-audit/commit/09952ed7e2728cdc030051ee14c66e61d0953d98), [filmed CI](https://github.com/ShenJun93/specter-audit/actions/runs/42451296583) **524/524 PASS**. **Verified GitHub main:** [`13192ce2719aaabfda1aa1ca6148d33b741a2cb1`](https://github.com/ShenJun93/specter-audit/commit/13192ce2719aaabfda1aa1ca6148d33b741a2cb1), [main CI](https://github.com/ShenJun93/specter-audit/actions/runs/42928423759) **533/533 PASS** with signed receipt. [PR #10](https://github.com/ShenJun93/specter-audit/pull/10) was **merged** 2026-11-11; it contains the M68-M70 runtime parser fixes and merged documentation PR #12. Stable Vercel production was not redeployed.
+**Filmed source:** [`09952ed7e2728cdc030051ee14c66e61d0953d98`](https://github.com/ShenJun93/specter-audit/commit/09952ed7e2728cdc030051ee14c66e61d0953d98), [filmed CI](https://github.com/ShenJun93/specter-audit/actions/runs/42451296583) **524/524 PASS**. **Verified GitHub main baseline (2026-11-12):** [`1230272391c958597d7c858510f195da00ccfcbc`](https://github.com/ShenJun93/specter-audit/commit/1230272391c958597d7c858510f195da00ccfcbc), [exact-main CI](https://github.com/ShenJun93/specter-audit/actions/runs/42947264036) **533/533 PASS** with signed CI artifact receipt. PR #10 and PR #15 are merged. The stable production deployment was not changed.
 
-**Devpost:** https://devpost.com/software/specter-audit-trust-the-evidence - publicly visible but **not formally submitted** as of 2026-11-11; current description still needs owner-approved source-reference corrections.
+**Devpost:** https://devpost.com/software/specter-audit-trust-the-evidence — officially submitted 2026-11-12 at 01:01 ICT (Devpost submitted_at), with corrected M75 as the working demo and V5D video as the historical recorded walkthrough.
 
 ### No-login judge path
 
-1. Open the **M19 Preview**. Activate **JUDGE FAST PATH — Investigate the Midnight Rewrite** to open `/alibi.html#case-room`.
+1. Open the **submitted corrected M75 Preview**. Activate **JUDGE FAST PATH — Investigate the Midnight Rewrite** to open `/alibi.html#case-room`.
 2. The **recorded Kiro case 04 (The Midnight Rewrite)** is selected by default. Select **Expose the alibi**. The saved, redacted genuine Kiro CLI session records 120 passing tests, a completion claim, then five successful source edits without a later passing retest **observed in that saved session**. The bounded verdict is `STALE_LOCAL_TEST_EVIDENCE`.
 3. Open **PR proof chain**, then explicitly select **Inspect this PR** to request public GitHub provider metadata. A provider PASS for a matching commit does **not** certify code correctness or required-check compliance; the Kiro log is not signed to that PR.
 4. Optionally open **Your session** to select a local Kiro CLI `messages.jsonl`. The tested importer processes the selected file in the browser rather than uploading its contents to the app server. Do not upload or publish private raw session logs.
 
 A stale receipt is **not** proof code is broken. The log could be edited, and testing outside the observed session remains unknown. This is not a cryptographic attestation of Kiro execution, and no active Kiro `PostFileSave` hook is claimed.
+
+**Kiro provenance (bounded, public source history):** [M1 inspector](https://github.com/ShenJun93/specter-audit/commit/9896ccd9851d5559983f511187ac71ce85f0db10), [M5A CI adapter](https://github.com/ShenJun93/specter-audit/commit/99e210da586c2129de9e306c0aae0bb379bd3e53), [M6E session-staleness engine](https://github.com/ShenJun93/specter-audit/commit/950acf93e92417820d9564c7cd3da7fba6030e99), [historical M6E session report](https://github.com/ShenJun93/specter-audit/blob/1230272391c958597d7c858510f195da00ccfcbc/docs/competition/M6E_KIRO_REAL_SESSION_EVIDENCE_20261104.md). The report's original "NOT shipped" note reflects its historical date; the engine was subsequently merged. Commit history does not cryptographically verify editable Kiro-session authorship.
 
 ### Reproduce the exact filmed source
 
@@ -34,7 +36,7 @@ node --test
 npm run demo
 ```
 
-Filmed source `09952ed7e2728cdc030051ee14c66e61d0953d98` passed **524/524** tests ([historical CI](https://github.com/ShenJun93/specter-audit/actions/runs/42451296583)). Reviewed released [`main` `13192ce2719aaabfda1aa1ca6148d33b741a2cb1`](https://github.com/ShenJun93/specter-audit/commit/13192ce2719aaabfda1aa1ca6148d33b741a2cb1) passed **533/533** ([exact-main CI](https://github.com/ShenJun93/specter-audit/actions/runs/42928423759)). The [M75 corrected Preview](https://specter-audit-2v5dynndc-nvhoa1691993-6852s-projects.vercel.app/) is built at `0ce4565bf608ff497b913d76d930250861a73de1`, a previous source commit with byte-equivalent runtime, not this new merge SHA. CI attestation is for the CI receipt artifact, not Kiro log authenticity or correctness. Production deploy and formal Devpost Submit are not authorized.
+Filmed source `09952ed7e2728cdc030051ee14c66e61d0953d98` passed **524/524** tests ([historical CI](https://github.com/ShenJun93/specter-audit/actions/runs/42451296583)). Verified [M19 main baseline `1230272391c958597d7c858510f195da00ccfcbc`](https://github.com/ShenJun93/specter-audit/commit/1230272391c958597d7c858510f195da00ccfcbc) passed **533/533** ([exact-main CI](https://github.com/ShenJun93/specter-audit/actions/runs/42947264036)). The [M75 corrected Preview](https://specter-audit-2v5dynndc-nvhoa1691993-6852s-projects.vercel.app/) is deployed from earlier parser-fix source `0ce4565bf608ff497b913d76d930250861a73de1`, not from the later main merge SHA. CI attestation covers the receipt artifact, not Kiro transcripts or code correctness. Devpost has been submitted; stable production remains older.
 
 ## Historical reference — M5L stable production and M16 Preview
 
@@ -102,4 +104,4 @@ The signed report attests the origin of the **CI receipt artifact**, not any loc
 
 M16 local acceptance: `docs/competition/M16_JUDGE_SELFVERIFY_LOCAL_ACCEPTANCE_20261107.md`. M15's full verification steps: `docs/competition/M15_CI_RECEIPT_ATTESTATION_20261107.md`.
 
-The V5D video is Public; the Kiroween Devpost project has **not been formally submitted** as last checked 2026-11-11. The owner must complete the official eligibility declarations before submitting.
+The V5D video is Public; Devpost reports the Kiroween project was formally submitted on 2026-11-12 at 01:01 ICT. This page is a documentation snapshot, not a guarantee about future submission revisions. All eligibility declarations and custom answers belong to the submitter.
