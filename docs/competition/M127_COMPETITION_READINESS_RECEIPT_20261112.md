@@ -1,7 +1,7 @@
 # M127 — Competition Readiness & Security Remediation Receipt
 
-Date: 2026-11-12 (ICT)  
-Status: Development candidate on branch `fix/m127-remediation-20261112`, based on canonical `main` commit `4a818097b2a2f5d9ba2589323c5cf5187e0f1080`.  
+Date: 2026-11-12 (ICT)
+Status: Development candidate on branch `fix/m127-remediation-20261112`, based on canonical `main` commit `4a818097b2a2f5d9ba2589323c5cf5187e0f1080`.
 Objective: Resolve verified independent audit findings (M126), verify PR #21 merge readiness, establish judge-release alignment, and provide an accurate multi-track evidence-flow specification without breaking frozen Kiroween submission assets.
 
 ---
