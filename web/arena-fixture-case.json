@@ -1,0 +1,79 @@
+{
+  "schema": "SPECTER_ARENA_CASE_V1",
+  "classification": "DEMONSTRATED_FIX",
+  "reason": "DEMONSTRATED_FIX",
+  "subject": {
+    "repository": "ShenJun93/specter-arena-evidence-fixture",
+    "prNumber": 1,
+    "baseSha": "4014554a6577e0a9369b9fb53e6b06da96772289",
+    "headSha": "df89b5d477693a0e4bacc27cd46179ad1a334019"
+  },
+  "challenge": {
+    "testSha256": "00bad83ddc1823b8df795c75136e1cdaf881919b4b2015e089345199b96ab239",
+    "base": {
+      "exitCode": 1,
+      "outputSha256": "436c0a9c3a4a4180d7d08dbbd740f8d3d749e71b026f8e3672bcedae43dc23d2",
+      "imageDigest": "sha256:116b800c3754b440ee0aa3ed2f20f5bf3d99a554bfd9adeea09ea8017f6e85f5"
+    },
+    "head": {
+      "exitCode": 0,
+      "outputSha256": "6d5790fc96699309ca254b9f74bbb2ab96f3681bab967f9516a2fa794500a2a1",
+      "imageDigest": "sha256:116b800c3754b440ee0aa3ed2f20f5bf3d99a554bfd9adeea09ea8017f6e85f5"
+    }
+  },
+  "statements": [
+    {
+      "id": "PR_SHAS",
+      "text": "Public PR observation recorded exact base and head SHAs.",
+      "source": "PUBLIC_PR_OBSERVATION",
+      "trust": "PROVIDER_REPORTED_UNATTESTED",
+      "observedAt": "2026-11-12T04:09:38.252Z"
+    },
+    {
+      "id": "PROVIDER_RUNS",
+      "text": "Provider reported 2 run(s) for the exact head SHA: 2 success, 0 failure, 0 in progress, 0 other. This is not a test attestation.",
+      "source": "PUBLIC_PR_OBSERVATION",
+      "trust": "PROVIDER_REPORTED_UNATTESTED",
+      "observedAt": "2026-11-12T04:09:38.252Z"
+    },
+    {
+      "id": "CHALLENGE_BASE",
+      "text": "Reviewer-controlled result reports exit code 1 on the base commit for the approved test hash.",
+      "source": "REVIEWER_CHALLENGE_RESULT",
+      "trust": "REVIEWER_CONTROLLED_SELF_REPORTED",
+      "observedAt": "2026-11-12T03:34:41.160Z"
+    },
+    {
+      "id": "CHALLENGE_HEAD",
+      "text": "Reviewer-controlled result reports exit code 0 on the head commit for the approved test hash.",
+      "source": "REVIEWER_CHALLENGE_RESULT",
+      "trust": "REVIEWER_CONTROLLED_SELF_REPORTED",
+      "observedAt": "2026-11-12T03:34:42.107Z"
+    },
+    {
+      "id": "CLASSIFICATION",
+      "text": "Classification DEMONSTRATED_FIX compares the two reported exit codes for this one test only.",
+      "source": "DERIVED",
+      "trust": "DERIVED_FROM_LISTED_INPUTS",
+      "observedAt": "2026-11-12T04:09:38.252Z"
+    }
+  ],
+  "nextAction": {
+    "code": "DEMONSTRATED_FIX",
+    "text": "Reviewer: confirm the chosen behavior is the intended one; it failed on base and passed on head."
+  },
+  "attestation": {
+    "independentlyAttested": false,
+    "executionVerifiedBySpecter": false,
+    "semanticCorrectnessVerified": false,
+    "allRequiredChecksVerified": false,
+    "releaseApproved": false,
+    "localSessionLinkedToPr": false
+  },
+  "limitations": [
+    "A classification covers only the single reviewer-approved test on these two commits, never general correctness.",
+    "Challenge results are reviewer-controlled self-reported data; this module cannot verify that they were executed.",
+    "Provider-reported workflow runs do not establish that all required checks ran or passed.",
+    "No release approval, independent attestation or Kiro-session link is established."
+  ]
+}

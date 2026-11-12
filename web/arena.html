@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+ <meta charset="utf-8">
+ <meta name="viewport" content="width=device-width,initial-scale=1">
+ <meta name="description" content="Investigate a public pull request with an independently approved base-versus-head behavior challenge, without overstating provenance.">
+ <meta name="theme-color" content="#0a0d18">
+ <title>Specter Arena | Evidence Investigation</title>
+ <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+ <link rel="stylesheet" href="/arena.css">
+ <script src="/arena.js" defer></script>
+</head>
+<body>
+ <a class="skip" href="#case-title">Skip to the case file</a>
+ <header class="topbar">
+  <a class="identity" href="/"><span aria-hidden="true" class="mark">◈</span><span><strong>SPECTER <em>ARENA</em></strong><small>EVIDENCE OVER CONFIDENCE</small></span></a>
+  <nav aria-label="Main navigation">
+   <a href="/alibi.html">Recorded Kiro case</a>
+   <a href="/pr-proof.html">PR proof chain</a>
+   <a href="/live.html">Your session</a>
+   <a href="/">Git inspector</a>
+  </nav>
+ </header>
+ <main>
+  <section class="hero" aria-labelledby="hero-title">
+   <div class="eyebrow">COSTUME CONTEST / CASE FILE 001 / PUBLIC OWNER-CONTROLLED FIXTURE</div>
+   <h1 id="hero-title">Your agent's claim is <em>not a verdict.</em></h1>
+   <p>Watch the same reviewer-approved test confront two exact Git revisions. Read the evidence, find the missing links, and decide what still needs verification.</p>
+   <div class="controls">
+    <button type="button" id="load-case">Open public case file</button>
+    <label class="import" for="case-file">Import a local case report (JSON)
+     <input id="case-file" type="file" accept=".json,application/json">
+    </label>
+   </div>
+   <p class="boundary">Built-in case is an <strong>owner-controlled synthetic fixture</strong> with real, isolated test execution and real GitHub CI observations. Not external customer adoption or a cryptographic attestation. Imported reports stay in this browser; no upload.</p>
+   <p id="case-status" role="status" aria-live="polite">Loading the public case report…</p>
+  </section>
+  <section id="case-file-view" class="case-file" aria-labelledby="case-title" hidden>
+   <section class="reviewer-choice" aria-labelledby="choice-heading">
+    <p class="eyebrow">INTERACTIVE HEARING / TWO EVIDENCE LEADS</p>
+    <h2 id="choice-heading">The agent says "all green." What would you check?</h2>
+    <p>Select a piece of evidence and read its actual scope before opening the full case ledger. Neither clue approves the PR.</p>
+    <div class="choice-actions" role="group" aria-label="Inspect evidence leads">
+     <button id="lead-ci" type="button">Inspect exact-commit CI</button>
+     <button id="lead-challenge" type="button">Reveal the behavior challenge</button>
+    </div>
+    <p id="lead-result" class="lead-result" role="status" aria-live="polite">Choose an evidence lead to see its limitations.</p>
+   </section>
+   <div class="section-heading"><div><p class="eyebrow">01 / THE ALIBI</p><h2 id="case-title" tabindex="-1">A green CI badge. A behavior nobody tested.</h2></div><span id="finding" class="finding">UNKNOWN</span></div>
+   <p id="case-scene" class="case-scene"></p>
+   <div class="identity-grid">
+    <article><span>PUBLIC REPOSITORY</span><a id="pr-link" target="_blank" rel="noopener noreferrer">Source PR</a></article>
+    <article><span>BEFORE / BASE SHA</span><code id="base-sha"></code></article>
+    <article><span>AFTER / HEAD SHA</span><code id="head-sha"></code></article>
+   </div>
+   <section class="challenge" aria-labelledby="challenge-title">
+    <div class="section-heading"><div><p class="eyebrow">02 / THE CHALLENGE</p><h2 id="challenge-title">Same test. Two commits. Two outcomes.</h2></div></div>
+    <div class="two-revisions">
+     <article class="revision" id="before-revision"><span>01 — BEFORE</span><h3>Base</h3><strong id="base-status">UNKNOWN</strong><p id="base-message">No verified observation.</p></article>
+     <article class="revision" id="after-revision"><span>02 — AFTER</span><h3>Head</h3><strong id="head-status">UNKNOWN</strong><p id="head-message">No verified observation.</p></article>
+    </div>
+    <p id="challenge-limits" class="boundary"></p>
+   </section>
+   <section class="dossier" aria-labelledby="dossier-title">
+    <div class="section-heading"><div><p class="eyebrow">03 / EVIDENCE LEDGER</p><h2 id="dossier-title">Every finding has an origin.</h2></div></div>
+    <ol id="statements" class="ledger"></ol>
+   </section>
+   <section class="decision" aria-labelledby="decision-title">
+    <div class="section-heading"><div><p class="eyebrow">04 / NEXT ACTION</p><h2 id="decision-title">What would a reviewer do now?</h2></div></div>
+    <p id="next-action"></p>
+    <h3>Boundaries that still matter</h3><ul id="limits"></ul>
+   </section>
+  </section>
+ </main>
+ <footer>Proof of one tested behavior is not proof of complete correctness. Local cases are self-controlled unless independently attested.</footer>
+</body>
+</html>
