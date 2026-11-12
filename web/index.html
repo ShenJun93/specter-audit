@@ -20,14 +20,16 @@
         </div>
         <div><strong>SPECTER<span>AUDIT</span></strong><small>EVIDENCE INTELLIGENCE / v0.2</small></div>
       </div>
-      <div class="rail-section">
+      <button id="rail-menu-toggle" class="rail-menu-toggle" type="button" aria-expanded="false" aria-controls="rail-workspace-nav" aria-label="Open workspace navigation"><span aria-hidden="true">☰</span></button>
+      <nav id="rail-workspace-nav" class="rail-section rail-workspace-nav" aria-label="Workspace navigation">
         <p class="rail-label">WORKSPACE</p>
         <a class="nav-item selected" href="/" aria-current="page"><span class="nav-icon">◈</span> Git inspector <span class="nav-arrow">↗</span></a>
-        <a class="nav-item" href="/live.html"><span class="nav-icon">◎</span> Your Kiro session <span class="nav-arrow">↗</span></a>
         <a class="nav-item" href="/alibi.html"><span class="nav-icon">⌘</span> Recorded cases <span class="nav-arrow">↗</span></a>
+        <a class="nav-item" href="/arena.html"><span class="nav-icon" aria-hidden="true">◇</span> Arena challenge <span class="nav-arrow" aria-hidden="true">↗</span></a>
         <a class="nav-item" href="/pr-proof.html"><span class="nav-icon">◉</span> PR proof chain <span class="nav-arrow">↗</span></a>
-      </div>
-      <div class="rail-section">
+        <a class="nav-item" href="/live.html"><span class="nav-icon">◎</span> Your Kiro session <span class="nav-arrow">↗</span></a>
+      </nav>
+      <div class="rail-section rail-protocol">
         <p class="rail-label">PROTOCOL</p>
         <div class="protocol-step"><span class="step-number">01</span><div><strong>Observe</strong><small>Read working-tree metadata</small></div></div>
         <div class="protocol-step"><span class="step-number">02</span><div><strong>Correlate</strong><small>Align changed paths to claim</small></div></div>

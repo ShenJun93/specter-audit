@@ -17,12 +17,17 @@ const provider=()=>({source:'GITHUB_PUBLIC_REST_OPT_IN',status:'OBSERVED_EXACT_S
  id:43148508938,headSha:B,status:'completed',conclusion:'success'
 }]});
 const side=(revision,exitCode)=>({
- revision,status:'OBSERVED_TEST',exitCode,stdoutSha256:OUT,observedAt:when
+ revision,status:'OBSERVED_TEST',exitCode,stdoutSha256:OUT,observedAt:when,
+ tap:{tests:2,passed:exitCode===0?2:0,failed:exitCode===0?0:2,skipped:0,cancelled:0}
 });
 const challenge=()=>({
  schema:'SPECTER_BEHAVIOR_CHALLENGE_V1',
  repository:'test-owner/other-repo',baseSha:A,headSha:B,
- reviewerTest:{sha256:HASH},image:{imageId:IMAGE},
+ authority:'LOCAL_REVIEWER_INVOCATION_NOT_ATTESTED',
+ reviewerTest:{sha256:HASH,approval:'EXPLICIT_LOCAL_CLI_FLAG_NOT_AUTHENTICATED',expectedBehavior:'An approved behavior test'},
+ image:{imageId:IMAGE,reference:'node:24-alpine'},
+ isolation:{network:'none',root:'readonly',user:'65534:65534',memoryMb:384,cpus:1,pids:64},
+ result:'DEMONSTRATED_FIX',
  observations:{base:side(A,1),head:side(B,0)}
 });
 const build=(first=snap(),last=snap(),obs=provider(),ch=challenge())=>
@@ -106,4 +111,22 @@ test('public reviewer-owned challenge test and manifest are immutable fixtures o
  assert.equal(manifest.sourcePath,'src/pricing.mjs');
  assert.match(manifest.testPath,/absolute path/);
  assert.match(bytes.toString('utf8'),/discountedCents\(101,50\),51/);
+});
+test('M121 adversarial: forged challenge evidence must fail closed, never claim a demonstrated fix',()=>{
+ const baseline=challenge();
+ const modified=[
+  {...baseline,result:'BOTH_PASS'},
+  {...baseline,result:'UNKNOWN'},
+  {...baseline,authority:'FORGED_PROVIDER'},
+  {...baseline,reviewerTest:{...baseline.reviewerTest,approval:'NEVER_APPROVED'}},
+  {...baseline,observations:{base:{...side(A,1),tap:null},head:side(B,0)}},
+  {...baseline,observations:{base:{...side(A,1),tap:{tests:2,passed:2,failed:0,skipped:0,cancelled:0}},head:side(B,0)}},
+  {...baseline,observations:{base:side(A,1),head:{...side(B,0),tap:{tests:2,passed:1,failed:0,skipped:1,cancelled:0}}}},
+  {...baseline,image:{reference:'node:24-alpine',imageId:'bogus'}},
+  {...baseline,isolation:{network:'host',root:'readonly',user:'65534:65534'}}
+ ];
+ for(const [index,caseData] of modified.entries()){
+  const report=build(snap(),snap(),provider(),caseData);
+  assert.equal(report.classification,'UNKNOWN','forged challenge '+index+' must be UNKNOWN');
+ }
 });

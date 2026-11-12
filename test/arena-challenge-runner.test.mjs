@@ -18,7 +18,7 @@ test('manifest is explicit, fully pinned, and refuses traversal/unapproved paths
  assert.equal(validateManifest(manifest()).sourcePath,'src/candidate.mjs');
  assert.equal(validateManifest(manifest()).testSha256,DIGEST);
  for(const changes of [
-  {schema:'other'},{baseSha:SHA2},{sourcePath:'../secrets.mjs'},
+  {schema:'other'},{baseSha:SHA2},{baseSha:SHA2.toUpperCase(),headSha:SHA2},{sourcePath:'../secrets.mjs'},
   {sourcePath:'src/../../evil.mjs'},{sourcePath:'src/foo\\bar.mjs'},
   {sourcePath:'https://evil.invalid/code.mjs'},{repository:'owner/../repo'},
   {testSha256:'bad'},{expectedBehavior:'ok'}
@@ -55,4 +55,12 @@ test('Docker/setup failures, no TAP tests, invalid exit codes and skipped tests 
 });
 test('cannot run Docker without explicit reviewer approval',async()=>{
  await assert.rejects(runApprovedChallenge(manifest()),/REVIEWER_APPROVAL_REQUIRED/);
+});
+test('M121 runner does not persist raw Docker stdout/stderr or secret-bearing output samples',async()=>{
+ const {readFile}=await import('node:fs/promises');
+ const source=await readFile(new URL('../scripts/arena-challenge-runner.mjs',import.meta.url),'utf8');
+ assert.doesNotMatch(source,/outputSample|sanitiseOutput|STDOUT_LIMIT/);
+ assert.match(source,/stdoutSha256:sha256\(result.stdout\)/);
+ assert.match(source,/stderrSha256:sha256\(result.stderr\)/);
+ assert.match(source,/stdoutBytes:Buffer.byteLength\(result.stdout\)/);
 });
