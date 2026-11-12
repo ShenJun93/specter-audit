@@ -115,7 +115,11 @@ test('M129 quick judge finding action is opt-in, bounded, and fail-closed',async
  assert.match(js,/quickReveal\.setAttribute\('aria-expanded', 'false'\)/);
  assert.match(js,/quickReveal\.setAttribute\('aria-expanded', 'true'\)/);
  assert.match(js,/quickReveal\.addEventListener\('click', \(\) => \{/);
- assert.match(js,/revealVerdict\(\);\s*\$\('verdict-title'\)\.focus\(\{preventScroll:true\}\)/);
+ assert.match(js,/revealVerdict\(\{autoScroll:false\}\);\s*const heading = \$\('verdict-title'\);\s*heading\.focus\(\{preventScroll:true\}\);\s*heading\.scrollIntoView\(\{block:'center',behavior:'instant'\}\)/);
+ assert.match(js,/function revealVerdict\(\{autoScroll = true\} = \{\}\)/);
+ assert.match(js,/if \(autoScroll && !matchMedia/);
+
+ assert.doesNotMatch(js,/\bverdict-title\.scrollIntoView\(/);
  assert.match(css,/\.quick-reveal:focus-visible\{outline:/);
  assert.match(css,/@media\(max-width:630px\)\{\.quick-action-row/);
 });

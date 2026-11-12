@@ -347,7 +347,7 @@
     renderEvents(item.verdict.events);
     resetReveal();
   }
-  function revealVerdict() {
+  function revealVerdict({autoScroll = true} = {}) {
     if (!selected) return;
     const v = selected.verdict;
     const kind = v.status === 'PROVIDER_REPORTED_PASS' ? 'pass' :
@@ -373,16 +373,17 @@
     quickReveal.setAttribute('aria-expanded', 'true');
     quickReveal.firstChild.textContent = 'Finding revealed ';
     reveal.textContent = '✧ Alibi exposed';
-    if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    if (autoScroll && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
       verdictEl.scrollIntoView({behavior:'smooth',block:'nearest'});
     }
   }
-  reveal.addEventListener('click', revealVerdict);
+  reveal.addEventListener('click', () => revealVerdict());
   quickReveal.addEventListener('click', () => {
     if (!selected) return;
-    revealVerdict();
-    $('verdict-title').focus({preventScroll:true});
-    verdictEl.scrollIntoView({block:'center',behavior:'instant'});
+    revealVerdict({autoScroll:false});
+    const heading = $('verdict-title');
+    heading.focus({preventScroll:true});
+    heading.scrollIntoView({block:'center',behavior:'instant'});
   });
   controls.forEach(button => button.addEventListener('click', () => renderCase(button.dataset.case)));
   async function boot() {

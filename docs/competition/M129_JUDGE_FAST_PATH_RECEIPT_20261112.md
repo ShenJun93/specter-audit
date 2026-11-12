@@ -58,3 +58,26 @@ This change improves the discoverability of an already recorded, self-reported v
 The official Devpost URL remains the separate M75 historical judge demo. Video V5D, stable aliases and production are intentionally unchanged. Deploy only a SHA-matched isolated Preview for testing; coordinate explicit owner approval before changing the judged submission or video.
 
 Next gates: CI at exact PR SHA, public Preview first-viewport QA at the same breakpoints, accessibility smoke check, independent reviewer study and an explicit release decision.
+
+## M130 — Independent Codex Review P2, reproduced and remediated
+
+An independent `codex exec review --base origin/main --ephemeral` read-only review of the original PR head `d50c947b5a3de26e2881a5a1cd420bed5696a42a` returned **one P2 finding**: keyboard focus is sent to the verdict title but centering the **whole** verdict may scroll the heading above the viewport when the verdict is taller than the viewport. Codex's attempt to execute Node integration tests in its read-only sandbox failed with `EPERM mkdtemp`; this is a **Codex sandbox limitation**, not evidence of an application test failure.
+
+The finding was reproduced with Playwright Edge using test-only 200%/300% browser-document zoom (this simulates enlargement, not a formal OS/browser zoom accessibility certification):
+- 320×480 at 200% zoom: focused heading at **y=-60 to 68px** before fix.
+- 768×480 at 200% zoom: heading at **y=-58 to 70px** before fix.
+- 390×500 at 300% zoom: heading at **y=-76 to 116px** before fix.
+
+### Minimal correction
+- The lower legacy **Expose the alibi** action retains its original auto-scroll.
+- The new quick action reuses the same verdict renderer with `autoScroll:false`, preventing a pending smooth-scroll operation from competing with its own navigation.
+- The quick action focuses and scrolls **the actual verdict heading** into view with instant scrolling. No verdict computation, provenance checking, case data, or network behavior changed.
+- Updated the existing M129 source-regression test to assert the scroll-mode separation and focused heading.
+
+### Independent browser re-verification on revised worktree
+- **200% zoom**, 320×480: heading y=151–279px and fully visible; 320×640: y=265–393; 390×480: y=178–306; 390×600: y=236–364; 768×480: y=178–306.
+- **300% zoom**, 390×500: heading y=254–446px, fully visible.
+- Standard viewports 390×844 and 1440×900: heading remains visible, correctly focused, with unchanged `STALE LOCAL TEST EVIDENCE`.
+- The 320×640 device remains a disclosed **first-fold layout limitation**: the early quick button itself starts around y=690px after the homepage anchor jump, so an additional scroll is still needed. This is a small-screen discoverability limitation, not a wrong verdict or failed keyboard operation.
+
+This Codex review is independent of the original implementation session but remains **AI-assisted code review, not an external human security audit**. The remaining public Preview, CI, full-suite and post-merge gates must be verified at the revised SHA.
