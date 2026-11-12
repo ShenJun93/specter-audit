@@ -130,3 +130,9 @@ test('M121 adversarial: forged challenge evidence must fail closed, never claim 
   assert.equal(report.classification,'UNKNOWN','forged challenge '+index+' must be UNKNOWN');
  }
 });
+test('M122 malformed provider run records fail closed without throwing',()=>{
+ for(const runs of [[null],[false],[0],[undefined],['injected'],[{id:1},null]]){
+  const report=build(snap(),snap(),{...provider(),runs});
+  assert.equal(report.classification,'UNKNOWN');
+ }
+});

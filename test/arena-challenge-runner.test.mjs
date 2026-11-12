@@ -64,3 +64,12 @@ test('M121 runner does not persist raw Docker stdout/stderr or secret-bearing ou
  assert.match(source,/stderrSha256:sha256\(result.stderr\)/);
  assert.match(source,/stdoutBytes:Buffer.byteLength\(result.stdout\)/);
 });
+test('M122 approved test execution mounts a verified snapshot rather than mutable testPath',async()=>{
+ const {readFile}=await import('node:fs/promises');
+ const source=await readFile(new URL('../scripts/arena-challenge-runner.mjs',import.meta.url),'utf8');
+ assert.match(source,/approvedTestSnapshot=path\.join\(stage,'approved-reviewer\.test\.mjs'\)/);
+ assert.match(source,/writeFile\(approvedTestSnapshot,test,\{flag:'wx',mode:0o444\}\)/);
+ assert.match(source,/sha256\(await readFile\(approvedTestSnapshot\)\)!==m\.testSha256/);
+ assert.match(source,/dockerTest\(folder,approvedTestSnapshot,image,revision\)/);
+ assert.doesNotMatch(source,/dockerTest\(folder,testFile,image,revision\)/);
+});
