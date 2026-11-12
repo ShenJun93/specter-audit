@@ -9,15 +9,15 @@
     "headSha": "df89b5d477693a0e4bacc27cd46179ad1a334019"
   },
   "challenge": {
-    "testSha256": "00bad83ddc1823b8df795c75136e1cdaf881919b4b2015e089345199b96ab239",
+    "testSha256": "09c6d12c487264d7e2a18ca2025df20b3f470d9a2b257a547240af3e30641ce2",
     "base": {
       "exitCode": 1,
-      "outputSha256": "436c0a9c3a4a4180d7d08dbbd740f8d3d749e71b026f8e3672bcedae43dc23d2",
+      "outputSha256": "fd3ffee9e8cc486b6f778f1de36f5d6d62494002217b0033d69a466844f38a34",
       "imageDigest": "sha256:116b800c3754b440ee0aa3ed2f20f5bf3d99a554bfd9adeea09ea8017f6e85f5"
     },
     "head": {
       "exitCode": 0,
-      "outputSha256": "6d5790fc96699309ca254b9f74bbb2ab96f3681bab967f9516a2fa794500a2a1",
+      "outputSha256": "5f1ce6203949645d3308d345fc4e02263db4bb2d6157fd196bd6dd5c26c0aa59",
       "imageDigest": "sha256:116b800c3754b440ee0aa3ed2f20f5bf3d99a554bfd9adeea09ea8017f6e85f5"
     }
   },
@@ -27,35 +27,35 @@
       "text": "Public PR observation recorded exact base and head SHAs.",
       "source": "PUBLIC_PR_OBSERVATION",
       "trust": "PROVIDER_REPORTED_UNATTESTED",
-      "observedAt": "2026-11-12T04:09:38.252Z"
+      "observedAt": "2026-11-12T04:41:34.490Z"
     },
     {
       "id": "PROVIDER_RUNS",
       "text": "Provider reported 2 run(s) for the exact head SHA: 2 success, 0 failure, 0 in progress, 0 other. This is not a test attestation.",
       "source": "PUBLIC_PR_OBSERVATION",
       "trust": "PROVIDER_REPORTED_UNATTESTED",
-      "observedAt": "2026-11-12T04:09:38.252Z"
+      "observedAt": "2026-11-12T04:41:34.490Z"
     },
     {
       "id": "CHALLENGE_BASE",
       "text": "Reviewer-controlled result reports exit code 1 on the base commit for the approved test hash.",
       "source": "REVIEWER_CHALLENGE_RESULT",
       "trust": "REVIEWER_CONTROLLED_SELF_REPORTED",
-      "observedAt": "2026-11-12T03:34:41.160Z"
+      "observedAt": "2026-11-12T04:41:33.262Z"
     },
     {
       "id": "CHALLENGE_HEAD",
       "text": "Reviewer-controlled result reports exit code 0 on the head commit for the approved test hash.",
       "source": "REVIEWER_CHALLENGE_RESULT",
       "trust": "REVIEWER_CONTROLLED_SELF_REPORTED",
-      "observedAt": "2026-11-12T03:34:42.107Z"
+      "observedAt": "2026-11-12T04:41:34.328Z"
     },
     {
       "id": "CLASSIFICATION",
       "text": "Classification DEMONSTRATED_FIX compares the two reported exit codes for this one test only.",
       "source": "DERIVED",
       "trust": "DERIVED_FROM_LISTED_INPUTS",
-      "observedAt": "2026-11-12T04:09:38.252Z"
+      "observedAt": "2026-11-12T04:41:34.490Z"
     }
   ],
   "nextAction": {

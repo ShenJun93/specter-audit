@@ -6,6 +6,6 @@
   "headSha": "df89b5d477693a0e4bacc27cd46179ad1a334019",
   "sourcePath": "src/pricing.mjs",
   "testPath": "<absolute path to Specter/reviewer/challenges/half-cent-rounding.challenge.mjs>",
-  "testSha256": "00bad83ddc1823b8df795c75136e1cdaf881919b4b2015e089345199b96ab239",
+  "testSha256": "09c6d12c487264d7e2a18ca2025df20b3f470d9a2b257a547240af3e30641ce2",
   "expectedBehavior": "Integer half-up rounding for discounted cents at a half-cent tie"
 }

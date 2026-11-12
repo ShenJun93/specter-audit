@@ -97,7 +97,7 @@ test('hosted Arena renders only bounded case content, no upload, token or raw Gi
 test('public reviewer-owned challenge test and manifest are immutable fixtures outside target PR',async()=>{
  const bytes=await readFile(new URL('../reviewer/challenges/half-cent-rounding.challenge.mjs',import.meta.url));
  const hash=createHash('sha256').update(bytes).digest('hex');
- assert.equal(hash,'00bad83ddc1823b8df795c75136e1cdaf881919b4b2015e089345199b96ab239');
+ assert.equal(hash,'09c6d12c487264d7e2a18ca2025df20b3f470d9a2b257a547240af3e30641ce2');
  const manifest=JSON.parse(await readFile(new URL('../reviewer/challenges/half-cent-rounding.manifest.example.json',import.meta.url),'utf8'));
  assert.equal(manifest.schema,'SPECTER_REVIEWER_CHALLENGE_V1');
  assert.equal(manifest.testSha256,hash);
