@@ -95,7 +95,7 @@ test('receipt cannot echo tool paths, secrets or raw TAP content',()=>{
 });
 test('CI workflow runs read-only tests then uploads receipts and attests only on trusted push',async()=>{
  const yml=await readFile(new URL('../.github/workflows/ci.yml',import.meta.url),'utf8');
- assert.match(yml,/node --test --test-reporter=tap > out\/ci\/test\.tap/);
+ assert.match(yml,/node --test --test-reporter=tap "test\/\*\.test\.mjs" > out\/ci\/test\.tap/);
  assert.match(yml,/node scripts\/build-ci-receipt\.mjs/);
  assert.match(yml,/if: github\.event_name == 'push'/);
  assert.match(yml,/uses: actions\/attest@[a-f0-9]{40}/);
