@@ -8,7 +8,7 @@
 
 **V5D video:** https://youtu.be/kQKkw7Dkp-M
 
-**Filmed source:** [`09952ed7e2728cdc030051ee14c66e61d0953d98`](https://github.com/ShenJun93/specter-audit/commit/09952ed7e2728cdc030051ee14c66e61d0953d98), [filmed CI](https://github.com/ShenJun93/specter-audit/actions/runs/42451296583) **524/524 PASS**. **Current verified GitHub main:** [`1230272391c958597d7c858510f195da00ccfcbc`](https://github.com/ShenJun93/specter-audit/commit/1230272391c958597d7c858510f195da00ccfcbc), [exact-main CI](https://github.com/ShenJun93/specter-audit/actions/runs/42947264036) **533/533 PASS** with signed CI artifact receipt. PR #10 and PR #15 are merged. The stable production deployment was not changed.
+**Filmed source:** [`09952ed7e2728cdc030051ee14c66e61d0953d98`](https://github.com/ShenJun93/specter-audit/commit/09952ed7e2728cdc030051ee14c66e61d0953d98), [filmed CI](https://github.com/ShenJun93/specter-audit/actions/runs/42451296583) **524/524 PASS**. **Verified GitHub main baseline (2026-11-12):** [`1230272391c958597d7c858510f195da00ccfcbc`](https://github.com/ShenJun93/specter-audit/commit/1230272391c958597d7c858510f195da00ccfcbc), [exact-main CI](https://github.com/ShenJun93/specter-audit/actions/runs/42947264036) **533/533 PASS** with signed CI artifact receipt. PR #10 and PR #15 are merged. The stable production deployment was not changed.
 
 **Devpost:** https://devpost.com/software/specter-audit-trust-the-evidence — officially submitted 2026-11-12 at 01:01 ICT (Devpost submitted_at), with corrected M75 as the working demo and V5D video as the historical recorded walkthrough.
 
@@ -36,7 +36,7 @@ node --test
 npm run demo
 ```
 
-Filmed source `09952ed7e2728cdc030051ee14c66e61d0953d98` passed **524/524** tests ([historical CI](https://github.com/ShenJun93/specter-audit/actions/runs/42451296583)). Reviewed [main `1230272391c958597d7c858510f195da00ccfcbc`](https://github.com/ShenJun93/specter-audit/commit/1230272391c958597d7c858510f195da00ccfcbc) passed **533/533** ([exact-main CI](https://github.com/ShenJun93/specter-audit/actions/runs/42947264036)). The [M75 corrected Preview](https://specter-audit-2v5dynndc-nvhoa1691993-6852s-projects.vercel.app/) is deployed from earlier parser-fix source `0ce4565bf608ff497b913d76d930250861a73de1`, not from the later main merge SHA. CI attestation covers the receipt artifact, not Kiro transcripts or code correctness. Devpost has been submitted; stable production remains older.
+Filmed source `09952ed7e2728cdc030051ee14c66e61d0953d98` passed **524/524** tests ([historical CI](https://github.com/ShenJun93/specter-audit/actions/runs/42451296583)). Verified [M19 main baseline `1230272391c958597d7c858510f195da00ccfcbc`](https://github.com/ShenJun93/specter-audit/commit/1230272391c958597d7c858510f195da00ccfcbc) passed **533/533** ([exact-main CI](https://github.com/ShenJun93/specter-audit/actions/runs/42947264036)). The [M75 corrected Preview](https://specter-audit-2v5dynndc-nvhoa1691993-6852s-projects.vercel.app/) is deployed from earlier parser-fix source `0ce4565bf608ff497b913d76d930250861a73de1`, not from the later main merge SHA. CI attestation covers the receipt artifact, not Kiro transcripts or code correctness. Devpost has been submitted; stable production remains older.
 
 ## Historical reference — M5L stable production and M16 Preview
 
