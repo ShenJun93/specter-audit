@@ -64,6 +64,10 @@
           <article class="case-panel" aria-labelledby="case-title">
             <div class="case-head"><span class="chapter"><span class="lamp" aria-hidden="true"></span> CASE <span id="case-number">01</span> / RECONSTRUCTION</span><span id="origin-label" class="origin-label">RECORDED RUN · HYPOTHETICAL CLAIM</span></div>
             <h3 id="case-title">Loading evidence…</h3>
+            <div class="quick-action-row">
+              <button type="button" id="quick-reveal" class="quick-reveal" aria-controls="verdict" aria-expanded="false" disabled>Reveal finding now <span aria-hidden="true">↓</span></button>
+              <span class="quick-action-scope">Recorded evidence only · not proof of correctness</span>
+            </div>
             <p id="case-desc" class="case-desc">Reading the recorded public case pack.</p>
             <div class="case-proof">
               <div><span id="target-label" class="mini-label">THE CLAIMED REVISION</span><strong id="target-sha" class="mono">—</strong><span id="target-sub" class="proof-sub">Target commit SHA</span></div>
@@ -78,7 +82,7 @@
               <div class="reveal-actions"><div><span class="mini-label">02 / INTERROGATE</span><strong>Does the evidence match the claim?</strong></div><button type="button" id="reveal" class="reveal-button" disabled><span aria-hidden="true">✧</span> Expose the alibi</button></div>
               <div id="verdict" class="verdict" hidden aria-live="polite">
                 <div class="verdict-head"><span class="mini-label">THE SPECTER'S FINDING</span><span id="verdict-type" class="finding-code"></span></div>
-                <h4 id="verdict-title"></h4>
+                <h4 id="verdict-title" tabindex="-1"></h4>
                 <p id="verdict-reason"></p>
                 <ul id="verdict-gaps" class="gap-list"></ul>
                 <div class="verdict-footer"><a id="source-link" target="_blank" rel="noopener noreferrer" hidden>Examine the original GitHub run <span aria-hidden="true">↗</span></a><span id="scope-caveat" class="scope-caveat">Provider-reported status ≠ proof of correctness</span></div>

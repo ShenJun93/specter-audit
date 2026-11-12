@@ -103,3 +103,23 @@ test('M125 accessible case archive avoids nested complementary landmark and make
  assert.match(html,/<ol id="timeline" class="timeline" aria-label="Chronological case evidence" tabindex="0">/);
  assert.match(html,/<button class="case-button selected"[^>]*aria-pressed="true"/);
 });
+test('M129 quick judge finding action is opt-in, bounded, and fail-closed',async()=>{
+ const html=await (await fetch(server.url+'/alibi.html')).text();
+ const js=await readFile(new URL('../web/alibi.js',import.meta.url),'utf8');
+ const css=await readFile(new URL('../web/alibi.css',import.meta.url),'utf8');
+ assert.match(html,/<button type="button" id="quick-reveal"[^>]*aria-controls="verdict"[^>]*aria-expanded="false" disabled>/);
+ assert.match(html,/Recorded evidence only[^<]*not proof of correctness/);
+ assert.match(html,/<h4 id="verdict-title" tabindex="-1"><\/h4>/);
+ assert.match(js,/quickReveal\.disabled = false/);
+ assert.match(js,/quickReveal\.disabled = true/);
+ assert.match(js,/quickReveal\.setAttribute\('aria-expanded', 'false'\)/);
+ assert.match(js,/quickReveal\.setAttribute\('aria-expanded', 'true'\)/);
+ assert.match(js,/quickReveal\.addEventListener\('click', \(\) => \{/);
+ assert.match(js,/revealVerdict\(\{autoScroll:false\}\);\s*const heading = \$\('verdict-title'\);\s*heading\.focus\(\{preventScroll:true\}\);\s*heading\.scrollIntoView\(\{block:'center',behavior:'instant'\}\)/);
+ assert.match(js,/function revealVerdict\(\{autoScroll = true\} = \{\}\)/);
+ assert.match(js,/if \(autoScroll && !matchMedia/);
+
+ assert.doesNotMatch(js,/\bverdict-title\.scrollIntoView\(/);
+ assert.match(css,/\.quick-reveal:focus-visible\{outline:/);
+ assert.match(css,/@media\(max-width:630px\)\{\.quick-action-row/);
+});
