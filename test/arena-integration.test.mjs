@@ -95,7 +95,7 @@ test('hosted Arena renders only bounded case content, no upload, token or raw Gi
 });
 
 test('public reviewer-owned challenge test and manifest are immutable fixtures outside target PR',async()=>{
- const bytes=await readFile(new URL('../reviewer/challenges/half-cent-rounding.test.mjs',import.meta.url));
+ const bytes=await readFile(new URL('../reviewer/challenges/half-cent-rounding.challenge.mjs',import.meta.url));
  const hash=createHash('sha256').update(bytes).digest('hex');
  assert.equal(hash,'00bad83ddc1823b8df795c75136e1cdaf881919b4b2015e089345199b96ab239');
  const manifest=JSON.parse(await readFile(new URL('../reviewer/challenges/half-cent-rounding.manifest.example.json',import.meta.url),'utf8'));
