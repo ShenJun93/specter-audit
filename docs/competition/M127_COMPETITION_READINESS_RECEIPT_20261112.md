@@ -30,7 +30,7 @@ Objective: Resolve verified independent audit findings (M126), verify PR #21 mer
    - *Disposition:* Formally documented in Task 5. Deferred to a dedicated follow-up task to avoid breaking environments where Docker daemon lacks internet access for digest resolution with `--pull=never`.
 3. **SEC-03 (P2 — Release URL Divergence):**
    - *Verified:* Devpost demo link points to M75, while canonical `main` contains M118–M122 Arena Gate.
-   - *Disposition:* Resolved in `docs/JUDGE_QUICKSTART.md` by explicitly documenting the distinction between the frozen submitted M75 demo and the post-deadline M125 Preview candidate.
+   - *Disposition:* Resolved in `docs/JUDGE_QUICKSTART.md` by explicitly documenting the distinction between the frozen submitted M75 demo and the post-submission M125 Preview candidate.
 4. **SEC-04 (P3 — TAP Parsing Fragility on Subtests):**
    - *Verified:* If test output injects `# pass N` lines, `parseTap` finds multiple matches and returns `null`.
    - *Disposition:* Fails closed safely to `UNKNOWN`. No positive verdict can be falsified.
@@ -76,7 +76,7 @@ To protect the integrity of the Kiroween 2026 submission while ensuring technica
 3. **Frozen Stable Production (M5L Release):**
    - URL: `https://specter-audit.vercel.app`
    - Role: Preserved as the early production milestone.
-4. **Verified Post-Deadline Development Candidate (M125 Preview):**
+4. **Verified Post-Submission Development Candidate (M125 Preview):**
    - URL: `https://specter-audit-2ollj2jiw-nvhoa1691993-6852s-projects.vercel.app/`
    - Role: Documented in `docs/JUDGE_QUICKSTART.md` as the post-submission development candidate containing both the Arena Gate (`/arena.html`) and the verified M125 accessibility remediation.
 
