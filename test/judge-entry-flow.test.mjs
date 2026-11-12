@@ -51,3 +51,49 @@ test('mobile verdict scrolls and moves accessible focus after real or synthetic 
  assert.equal(js.split('exposeMobileFinding();').length-1,2,'Focus is required for both supported and no-claim states');
  assert.match(css,/#results-heading\{scroll-margin-block-start:24px\}/);
 });
+
+test('Git inspector navigation remains reachable below 960px, with semantic toggle and keyboard escape',async()=>{
+ const html=await read('web/index.html');
+ const css=await read('web/styles.css');
+ assert.match(html,/<button id="rail-menu-toggle"[^>]+aria-expanded="false"[^>]+aria-controls="rail-workspace-nav"/);
+ assert.match(html,/<nav id="rail-workspace-nav"[^>]+aria-label="Workspace navigation"/);
+ for(const href of ['/','/alibi.html','/live.html','/pr-proof.html']){
+  assert.match(html,new RegExp('class="nav-item[^"]*" href="'+href.replaceAll('.','\\.')+'"'));
+ }
+ assert.match(css,/\.rail-menu-toggle\{display:none/);
+ assert.match(css,/@media\(max-width:960px\)/);
+ assert.match(css,/\.rail\.menu-open \.rail-workspace-nav\{display:grid\}/);
+ assert.match(css,/\.rail-workspace-nav \.nav-item\{display:flex;min-height:48px/);
+ assert.match(css,/@media\(max-width:650px\)/);
+ assert.match(css,/\.rail-workspace-nav\{top:100%;left:0;width:100%/);
+ assert.doesNotMatch(css,/\.rail-label,\.nav-item,\.protocol-step,\.rail-bottom\{display:none\}/);
+});
+test('responsive menu toggles ARIA, closes on outside pointer, Escape and desktop resize',async()=>{
+ const code=await read('web/app.js');
+ const begin=code.indexOf('function setupRailNavigation() {');
+ const end=code.indexOf('\nsetupRailNavigation();',begin);
+ assert.ok(begin>=0 && end>begin,'navigation initializer found');
+ const isolated=code.slice(begin,end+'\nsetupRailNavigation();'.length);
+ const {runInNewContext}=await import('node:vm');
+ const cls=new Set(), attributes={}, events={}, toggleEvents={};
+ let resize,focusCount=0;
+ const rail={classList:{contains:name=>cls.has(name),toggle:(name,force)=>force?cls.add(name):cls.delete(name)},contains:target=>target==='inside'};
+ const toggle={setAttribute:(name,value)=>{attributes[name]=value},addEventListener:(name,fn)=>{toggleEvents[name]=fn},focus:()=>focusCount++};
+ const document={querySelector:()=>rail,getElementById:()=>toggle,addEventListener:(name,fn)=>{events[name]=fn}};
+ const window={matchMedia:()=>({addEventListener:(name,fn)=>{if(name==='change')resize=fn}})};
+ runInNewContext(isolated,{document,window});
+ toggleEvents.click();
+ assert.equal(attributes['aria-expanded'],'true');
+ assert.equal(attributes['aria-label'],'Close workspace navigation');
+ events.pointerdown({target:'inside'});
+ assert.equal(attributes['aria-expanded'],'true');
+ events.keydown({key:'Escape'});
+ assert.equal(attributes['aria-expanded'],'false');
+ assert.equal(focusCount,1);
+ toggleEvents.click();
+ events.pointerdown({target:'outside'});
+ assert.equal(attributes['aria-expanded'],'false');
+ toggleEvents.click();
+ resize({matches:false});
+ assert.equal(attributes['aria-expanded'],'false');
+});
