@@ -88,7 +88,9 @@ export function buildCaseFromSources(pr,first,last,provider,challenge,{now=new D
     provider.status!=='OBSERVED_EXACT_SHA_RUNS'||!matchRepo(provider.repository,pr.owner+'/'+pr.repo)||
     provider.prNumber!==pr.number||provider.prUrl!==pr.url||!validSha(provider.headSha)||
     provider.headSha.toLowerCase()!==first.headSha||
-    !Array.isArray(provider.runs)||provider.runs.length<1||provider.runs.length>30||provider.truncated===true||
+    !Array.isArray(provider.runs)||provider.runs.length<1||provider.runs.length>30||
+    !provider.runs.every(r=>r!==null&&typeof r==='object'&&!Array.isArray(r))||
+    provider.truncated===true||
     !validLocalChallengeReport(challenge)||
     challenge.baseSha!==first.baseSha||challenge.headSha!==first.headSha||
     !challenge.reviewerTest||!challenge.observations)

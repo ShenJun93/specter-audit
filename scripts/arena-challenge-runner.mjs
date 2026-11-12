@@ -120,6 +120,12 @@ export async function runApprovedChallenge(manifest,{approval=false}={}){
  if(!/^sha256:[0-9a-f]{64}$/.test(image))throw Error('UNVERIFIED_DOCKER_IMAGE');
  const stage=await mkdtemp(path.join(tmpdir(),'specter-arena-'));
  try{
+  // Stage the exact reviewer-approved bytes, never the original mutable path.
+  // Avoid TOCTOU between SHA verification and Docker bind-mount execution.
+  const approvedTestSnapshot=path.join(stage,'approved-reviewer.test.mjs');
+  await writeFile(approvedTestSnapshot,test,{flag:'wx',mode:0o444});
+  if(sha256(await readFile(approvedTestSnapshot))!==m.testSha256)
+   throw Error('REVIEWER_TEST_SNAPSHOT_MISMATCH');
   const runs={};
   for(const [kind,revision] of [['base',m.baseSha],['head',m.headSha]]){
    const code=await run('git',['-C',repoRoot,'show',revision+':'+m.sourcePath],
@@ -130,7 +136,7 @@ export async function runApprovedChallenge(manifest,{approval=false}={}){
    const folder=path.join(stage,kind);
    await mkdir(folder);
    await writeFile(path.join(folder,'candidate.mjs'),code.stdout,{encoding:'utf8',flag:'wx'});
-   runs[kind]=await dockerTest(folder,testFile,image,revision);
+   runs[kind]=await dockerTest(folder,approvedTestSnapshot,image,revision);
   }
   const result=classifyBehavior(runs.base,runs.head);
   return {
