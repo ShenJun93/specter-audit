@@ -243,6 +243,7 @@
   const controls = [...document.querySelectorAll('[data-case]')];
   const status = $('loaded-status');
   const reveal = $('reveal');
+  const quickReveal = $('quick-reveal');
   const verdictEl = $('verdict');
   let pack = null;
   let localSession = null;
@@ -314,6 +315,9 @@
     $('source-link').removeAttribute('href');
     $('source-link').hidden = true;
     reveal.disabled = false;
+    quickReveal.disabled = false;
+    quickReveal.setAttribute('aria-expanded', 'false');
+    quickReveal.firstChild.textContent = 'Reveal finding now ';
     reveal.textContent = '✧ Expose the alibi';
   }
 
@@ -366,12 +370,20 @@
       link.hidden = true;
     }
     verdictEl.hidden = false;
+    quickReveal.setAttribute('aria-expanded', 'true');
+    quickReveal.firstChild.textContent = 'Finding revealed ';
     reveal.textContent = '✧ Alibi exposed';
     if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
       verdictEl.scrollIntoView({behavior:'smooth',block:'nearest'});
     }
   }
   reveal.addEventListener('click', revealVerdict);
+  quickReveal.addEventListener('click', () => {
+    if (!selected) return;
+    revealVerdict();
+    $('verdict-title').focus({preventScroll:true});
+    verdictEl.scrollIntoView({block:'center',behavior:'instant'});
+  });
   controls.forEach(button => button.addEventListener('click', () => renderCase(button.dataset.case)));
   async function boot() {
     try {
@@ -415,6 +427,7 @@
     } catch (err) {
       pack = null;
       reveal.disabled = true;
+      quickReveal.disabled = true;
       set(status, 'Evidence not available — investigation disabled');
       set($('case-title'), 'Unable to verify the recorded exhibits');
       set($('case-desc'), 'The recorded case pack is missing or did not pass provenance checks. No verdict is shown.');

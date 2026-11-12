@@ -26,3 +26,12 @@
 .hero-cta .live-cta{background:#143a37;color:#a1f8e7;border-color:#378b80;box-shadow:none}
 .hero-cta .live-cta:hover{background:#1b4b43;color:#e7fffa}
 @media(min-width:631px) and (max-width:1100px){.topbar{flex-wrap:wrap;gap:12px;padding:16px clamp(18px,4.5vw,76px)}.topbar nav{width:100%;justify-content:flex-start;flex-wrap:wrap;column-gap:20px;row-gap:10px}}
+/* M129: opt-in judge finding shortcut while retaining the full evidence timeline. */
+.quick-action-row{display:flex;flex-wrap:wrap;align-items:center;gap:11px;margin:-8px 0 22px}
+.quick-reveal{min-height:44px;padding:10px 17px;border:1px solid #9e8ae3;border-radius:9px;background:#342954;color:#f2eaff;font-size:13px;font-weight:750}
+.quick-reveal:not(:disabled):hover{background:#443568;border-color:#d4bdff}
+.quick-reveal:focus-visible{outline:3px solid var(--cyan);outline-offset:3px}
+.quick-reveal:disabled{opacity:.52;cursor:wait}
+.quick-action-scope{max-width:340px;color:#a6b7cc;font-size:11px;line-height:1.45}
+#verdict-title:focus{outline:2px solid var(--cyan);outline-offset:4px}
+@media(max-width:630px){.quick-action-row{align-items:flex-start;flex-direction:column;gap:7px}.quick-reveal{width:100%;text-align:center}}
