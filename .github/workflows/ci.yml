@@ -26,7 +26,11 @@ jobs:
       - name: Run deterministic unit/integration tests and capture TAP
         run: |
           mkdir -p out/ci
-          node --test --test-reporter=tap > out/ci/test.tap
+          if ! node --test --test-reporter=tap > out/ci/test.tap; then
+            echo "Test suite failed; showing bounded TAP failure diagnostics."
+            tail -n 160 out/ci/test.tap
+            exit 1
+          fi
       - name: Create bounded self-reported CI receipt
         run: node scripts/build-ci-receipt.mjs
       - name: Upload immutable-by-run receipt for review
