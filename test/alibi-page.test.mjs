@@ -96,3 +96,10 @@ test('fourth recorded Kiro case is distinctly labeled, initially disabled and bo
   assert.equal(data.afterFinalEdit.outsideSessionEvidenceUnknown,true);
   assert.doesNotMatch(raw,/[A-Z]:\\|AppData|PACMAP|sess_[a-f0-9]{8}|sk-proj-/i);
 });
+test('M125 accessible case archive avoids nested complementary landmark and makes evidence timeline keyboard-scrollable',async()=>{
+ const html=await (await fetch(server.url+'/alibi.html')).text();
+ assert.match(html,/<div class="case-selector" role="group" aria-label="Cases">/);
+ assert.doesNotMatch(html,/<aside class="case-selector"/);
+ assert.match(html,/<ol id="timeline" class="timeline" aria-label="Chronological case evidence" tabindex="0">/);
+ assert.match(html,/<button class="case-button selected"[^>]*aria-pressed="true"/);
+});
