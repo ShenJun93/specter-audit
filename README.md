@@ -6,14 +6,21 @@ Specter Audit is a local-first, read-only Git metadata investigator for AI codin
 
 **Kiroween 2026** — submitted in the **Costume Contest** category. See the live Devpost submission for authoritative status.
 
-## Judge entry — submitted corrected M75 demo and historical filmed V5D (2026-11-12)
+## CURRENT JUDGE RELEASE — M130 DEMO / V6H VIDEO (verified 2026-11-14)
+
+- **Start here:** [Current M130/V6H Judge Guide](docs/JUDGE_CURRENT.md) — one-minute no-login path, source SHA, Kiro evidence and explicit limits.
+- **[Live judge demo M130](https://specter-audit-pi5tpg7i7-nvhoa1691993-6852s-projects.vercel.app/)** · **[V6H judge video (2:23)](https://youtu.be/yabjJ5JpsS0)** · **[Submitted Devpost entry](https://devpost.com/software/specter-audit-trust-the-evidence)**.
+- **Filmed source:** [`d8f8e7a9551db4046f144924a3bfbc8735a09e8b`](https://github.com/ShenJun93/specter-audit/commit/d8f8e7a9551db4046f144924a3bfbc8735a09e8b). **Integrated `main` at verification:** [`19dff09130178995e1cdbe63be7da6704a3770e3`](https://github.com/ShenJun93/specter-audit/commit/19dff09130178995e1cdbe63be7da6704a3770e3). Distinct commits; same source tree as recorded in M182.
+- **Do not use M75/V5D as the current judge release.** The following older milestone notes are preserved for historical reproducibility, not as current submission instructions.
+
+## Historical judge entry snapshot — M75/V5D (2026-11-12; superseded)
 
 **Start with the [corrected M75 Preview](https://specter-audit-2v5dynndc-nvhoa1691993-6852s-projects.vercel.app/)** (the actual working-demo URL saved for Kiroween). Follow **JUDGE FAST PATH — Investigate the Midnight Rewrite**, then **Expose the alibi**. A saved, redacted genuine Kiro CLI session records 120 passing tests, an agent success claim and five subsequent successful source edits without a later passing retest observed in that same record. The bounded verdict is `STALE_LOCAL_TEST_EVIDENCE`, not proof that the code broke or that no test ran elsewhere. The historical filmed Preview is separately linked below.
 
 - **Public [V5D judge video](https://youtu.be/kQKkw7Dkp-M)** — filmed against application source [`09952ed7e2728cdc030051ee14c66e61d0953d98`](https://github.com/ShenJun93/specter-audit/commit/09952ed7e2728cdc030051ee14c66e61d0953d98).
 
 - **[Corrected M75 Preview](https://specter-audit-2v5dynndc-nvhoa1691993-6852s-projects.vercel.app/)** — deployed from reviewed parser-fix source `0ce4565bf608ff497b913d76d930250861a73de1`. The verified M19 main baseline at [`1230272391c958597d7c858510f195da00ccfcbc`](https://github.com/ShenJun93/specter-audit/commit/1230272391c958597d7c858510f195da00ccfcbc) contains the corrected runtime, but this Preview was **not** rebuilt from that later merge SHA. The [exact V5D filmed Preview](https://specter-audit-bc84gljaz-nvhoa1691993-6852s-projects.vercel.app/) matches the public video.
-- **[Kiroween Devpost project](https://devpost.com/software/specter-audit-trust-the-evidence)** — officially submitted 2026-11-12 at 01:01 ICT (per Devpost submission record). The submitted working-demo URL is M75; the historical filmed V5D demo and source remain distinct.
+- **[Kiroween Devpost project](https://devpost.com/software/specter-audit-trust-the-evidence)** — officially submitted 2026-11-12 at 01:01 ICT (per Devpost submission record). At this historical 2026-11-12 snapshot, M75 was saved as the working demo; this entry has since been updated to M130/V6H.
 - **[Verified M19 main baseline (2026-11-12)](https://github.com/ShenJun93/specter-audit/commit/1230272391c958597d7c858510f195da00ccfcbc)** — `1230272391c958597d7c858510f195da00ccfcbc` includes the M19 release, the M68–M70 parser fixes and merged PR #15 judge-document corrections. Previous M19 branches and merges are historical; filmed V5D source remains immutable `09952ed7e2728cdc030051ee14c66e61d0953d98`.
 - **[Exact-SHA GitHub Actions push run](https://github.com/ShenJun93/specter-audit/actions/runs/42451296583)** — Node verification and CI-receipt attestation succeeded for filmed SHA; the signed receipt is evidence of the CI artifact's origin, **not** cryptographic authentication of Kiro logs or semantic code correctness.
 - **[M19 release PR #10](https://github.com/ShenJun93/specter-audit/pull/10)** — merged into `main` 2026-11-11; **PR #15** was also merged. The stable production https://specter-audit.vercel.app remains the older M5L application and is **not** the submitted judge demo.
@@ -36,7 +43,7 @@ The exact filmed SHA `09952ed7e2728cdc030051ee14c66e61d0953d98` passed **524/524
 
 **Kiro implementation evidence:** [M1](https://github.com/ShenJun93/specter-audit/commit/9896ccd9851d5559983f511187ac71ce85f0db10) (Git inspector), [M5A](https://github.com/ShenJun93/specter-audit/commit/99e210da586c2129de9e306c0aae0bb379bd3e53) (GitHub CI adapter), [M6E](https://github.com/ShenJun93/specter-audit/commit/950acf93e92417820d9564c7cd3da7fba6030e99) (Kiro-session auditor), and [historical M6E real-session evidence](https://github.com/ShenJun93/specter-audit/blob/1230272391c958597d7c858510f195da00ccfcbc/docs/competition/M6E_KIRO_REAL_SESSION_EVIDENCE_20261104.md). The M6E report's 2026-11-04 "NOT shipped" status is historical; the module has since merged into `main`. Editable local Kiro logs remain bounded provenance evidence, not signed authorship proof.
 
-## M118 development candidate — Specter Arena + Gate (NOT the submitted judge release)
+## Historical M118 development candidate — subsequently incorporated into M130
 
 A separate feature branch extends the existing read-only PR evidence work into a single versioned case: provider-reported exact-head CI, an externally stored reviewer-controlled behavior test executed inside constrained Docker containers against exact base and head revisions, and an interactive Arena hearing that consumes the same JSON report as a PR-review Markdown draft. The result is bounded to one behavior; a green CI badge is not correctness and an owner-controlled fixture is not external adoption.
 
@@ -200,4 +207,4 @@ As checked 2026-11-12, GitHub `main` is `1230272391c958597d7c858510f195da00ccfcb
 
 The app is not a security certification or an independent semantic code auditor. `SUPPORTED` means **Git path alignment**, not that tests passed or code works.
 
-Judge instructions: [M19 Judge Quickstart](docs/JUDGE_QUICKSTART.md); [public V5D demo](https://youtu.be/kQKkw7Dkp-M); [Devpost project](https://devpost.com/software/specter-audit-trust-the-evidence). The video is Public; the formal Kiroween submission remains **pending** as last verified 2026-11-11.
+Current judge instructions: [M130/V6H Judge Guide](docs/JUDGE_CURRENT.md). Historical materials: [M19 Quickstart](docs/JUDGE_QUICKSTART.md) and [V5D video](https://youtu.be/kQKkw7Dkp-M). [Devpost entry](https://devpost.com/software/specter-audit-trust-the-evidence). At the 2026-11-11 snapshot, formal submission was pending. It has since been submitted and updated; consult the current M130/V6H Judge Guide.
