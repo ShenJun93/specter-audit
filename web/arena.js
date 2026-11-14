@@ -98,7 +98,7 @@ function renderReport(report,{source='USER_IMPORTED_UNVERIFIED'}={}){
  for(const s of report.limitations){const li=document.createElement('li');li.textContent=s;limits.append(li)}
  text('case-status',(source==='BUNDLED_OWNER_CONTROLLED'?'Owner-controlled public fixture':'USER-IMPORTED UNVERIFIED JSON')+'. Classification: '+report.classification+'. This browser has not independently verified the report.');
 }
-async function loadPublic(){
+async function loadPublic({focusOnCase=false}={}){
  try{
   text('case-status','Opening bundled public case file…');
   const response=await fetch('/arena-fixture-case.json',{cache:'no-store'});
@@ -106,6 +106,11 @@ async function loadPublic(){
   const content=await response.text();
   if(content.length>100000)throw Error('Report exceeds size limit');
   renderReport(JSON.parse(content),{source:'BUNDLED_OWNER_CONTROLLED'});
+  if(focusOnCase&&currentReport){
+   const heading=$('choice-heading');
+   heading.focus({preventScroll:true});
+   heading.scrollIntoView({block:'start',behavior:'auto'});
+  }
  }catch{caseError('Public case could not be loaded. No verdict has been inferred.')}
 }
 async function loadPrivateFile(file){
@@ -115,6 +120,6 @@ async function loadPrivateFile(file){
 }
 $('lead-ci').addEventListener('click',()=>showLead('ci'));
 $('lead-challenge').addEventListener('click',()=>showLead('challenge'));
-$('load-case').addEventListener('click',loadPublic);
+$('load-case').addEventListener('click',()=>loadPublic({focusOnCase:true}));
 $('case-file').addEventListener('change',event=>loadPrivateFile(event.target.files?.[0]));
 loadPublic();
