@@ -1,10 +1,12 @@
 # Specter Audit — Judge Quickstart
 
-## Judge entry — submitted M75 demo, filmed V5D source and verified main (2026-11-12)
+> **CURRENT SUBMISSION (2026-11-14):** The official Kiroween entry now uses **[M130 working demo](https://specter-audit-pi5tpg7i7-nvhoa1691993-6852s-projects.vercel.app/)** and **[V6H video](https://youtu.be/yabjJ5JpsS0)**. For current judge instructions, Kiro evidence, exact filmed source and limitations, read **[Current M130/V6H Judge Guide](JUDGE_CURRENT.md)**. The M75/V5D content below is an archived 2026-11-12 snapshot, preserved for reproducibility.
 
-**Current Kiroween working demo — corrected M75 Preview:** https://specter-audit-2v5dynndc-nvhoa1691993-6852s-projects.vercel.app/ (no signup). This is the main demo submitted to Devpost; it is **not** the old stable production at https://specter-audit.vercel.app.
+## Historical judge entry snapshot — M75/V5D (2026-11-12; superseded)
 
-**Historical filmed V5D Preview:** https://specter-audit-bc84gljaz-nvhoa1691993-6852s-projects.vercel.app/ — filmed at `09952ed7e2728cdc030051ee14c66e61d0953d98`. **Stable mirror of the same filmed deployment:** https://specter-audit-kiroween-v5d-2026.vercel.app/. The submitted M75 Preview was built at corrected source `0ce4565bf608ff497b913d76d930250861a73de1`, not at the later main merge SHA.
+**Historical Kiroween demo (M75, at 2026-11-12):** https://specter-audit-2v5dynndc-nvhoa1691993-6852s-projects.vercel.app/ (no signup). This was the main demo submitted to Devpost at that time; it is **not** the old stable production at https://specter-audit.vercel.app.
+
+**Historical filmed V5D Preview:** https://specter-audit-bc84gljaz-nvhoa1691993-6852s-projects.vercel.app/ — filmed at `09952ed7e2728cdc030051ee14c66e61d0953d98`. **Stable mirror of the same filmed deployment:** https://specter-audit-kiroween-v5d-2026.vercel.app/. The historical M75 Preview was built at corrected source `0ce4565bf608ff497b913d76d930250861a73de1`, not at the later main merge SHA.
 
 **Post-submission verified candidate (M125 Preview — development candidate):** https://specter-audit-2ollj2jiw-nvhoa1691993-6852s-projects.vercel.app/ — built from `audit/m125-gate-security-20261112` (commit `b8a27073` based on `4a818097`). Incorporates the M118–M122 Arena Gate (`/arena.html`), M122 adversarial hardening, and M125 keyboard accessibility fixes. This candidate is not submitted to Devpost and does not modify the frozen M75 submission or V5D video.
 
@@ -12,9 +14,9 @@
 
 **Filmed source:** [`09952ed7e2728cdc030051ee14c66e61d0953d98`](https://github.com/ShenJun93/specter-audit/commit/09952ed7e2728cdc030051ee14c66e61d0953d98), [filmed CI](https://github.com/ShenJun93/specter-audit/actions/runs/42451296583) **524/524 PASS**. **Historical GitHub main milestone (prior to M118-M122 merge):** [`1230272391c958597d7c858510f195da00ccfcbc`](https://github.com/ShenJun93/specter-audit/commit/1230272391c958597d7c858510f195da00ccfcbc), [exact-main CI](https://github.com/ShenJun93/specter-audit/actions/runs/42947264036) **533/533 PASS** with signed CI artifact receipt. PR #10 and PR #15 are merged. The stable production deployment was not changed.
 
-**Devpost:** https://devpost.com/software/specter-audit-trust-the-evidence — officially submitted 2026-11-12 at 01:01 ICT (Devpost submitted_at), with corrected M75 as the working demo and V5D video as the historical recorded walkthrough.
+**Devpost:** https://devpost.com/software/specter-audit-trust-the-evidence — officially submitted 2026-11-12 at 01:01 ICT (Devpost submitted_at), with M75 as the working demo at that historical snapshot; updated to M130/V6H on 2026-11-14.
 
-### No-login judge path
+### Historical M75 no-login judge path (superseded; use JUDGE_CURRENT.md)
 
 1. Open the **submitted corrected M75 Preview**. Activate **JUDGE FAST PATH — Investigate the Midnight Rewrite** to open `/alibi.html#case-room`.
 2. The **recorded Kiro case 04 (The Midnight Rewrite)** is selected by default. Select **Expose the alibi**. The saved, redacted genuine Kiro CLI session records 120 passing tests, a completion claim, then five successful source edits without a later passing retest **observed in that saved session**. The bounded verdict is `STALE_LOCAL_TEST_EVIDENCE`.
