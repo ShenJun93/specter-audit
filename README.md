@@ -11,6 +11,7 @@ Specter Audit is a local-first, read-only Git metadata investigator for AI codin
 - **Start here:** [Current M130/V6H Judge Guide](docs/JUDGE_CURRENT.md) — one-minute no-login path, source SHA, Kiro evidence and explicit limits.
 - **[Live judge demo M130](https://specter-audit-pi5tpg7i7-nvhoa1691993-6852s-projects.vercel.app/)** · **[V6H judge video (2:23)](https://youtu.be/yabjJ5JpsS0)** · **[Submitted Devpost entry](https://devpost.com/software/specter-audit-trust-the-evidence)**.
 - **Filmed source:** [`d8f8e7a9551db4046f144924a3bfbc8735a09e8b`](https://github.com/ShenJun93/specter-audit/commit/d8f8e7a9551db4046f144924a3bfbc8735a09e8b). **Integrated `main` at verification:** [`19dff09130178995e1cdbe63be7da6704a3770e3`](https://github.com/ShenJun93/specter-audit/commit/19dff09130178995e1cdbe63be7da6704a3770e3). Distinct commits; same source tree as recorded in M182.
+- **Voluntary independent first-use feedback (about 5 minutes):** [unprimed reviewer tasks](docs/competition/M203_REVIEWER_PROMPT_20261115.md) · [public feedback issue #28](https://github.com/ShenJun93/specter-audit/issues/28). Demo needs no login; GitHub comments are public and require a GitHub account. **No completed independent human reviews are claimed** (0 as of 2026-11-15).
 - **Do not use M75/V5D as the current judge release.** The following older milestone notes are preserved for historical reproducibility, not as current submission instructions.
 
 ## Historical judge entry snapshot — M75/V5D (2026-11-12; superseded)
