@@ -248,6 +248,8 @@
   let pack = null;
   let localSession = null;
   let selected = null;
+  // A slow authentic Kiro exhibit must not overwrite a reviewer-chosen case.
+  let userSelectedCase = false;
   function set(el, value) { el.textContent = String(value); }
   function node(tag, className, textValue) {
     const el = document.createElement(tag);
@@ -385,7 +387,10 @@
     heading.focus({preventScroll:true});
     heading.scrollIntoView({block:'center',behavior:'instant'});
   });
-  controls.forEach(button => button.addEventListener('click', () => renderCase(button.dataset.case)));
+  controls.forEach(button => button.addEventListener('click', () => {
+    userSelectedCase = true;
+    renderCase(button.dataset.case);
+  }));
   async function boot() {
     try {
       const res = await fetch('/alibi-cases.json', {
@@ -400,6 +405,10 @@
       set($('captured-at'), utc(pack.capturedAt));
       set(status, '3 GitHub exhibits loaded · checking Kiro session…');
       renderCase('stale-artifact');
+      // Hold the default finding until the judge's authentic exhibit is checked.
+      // Explicitly choosing a provider case during this interval re-enables Reveal.
+      quickReveal.disabled = true;
+      reveal.disabled = true;
       // Fail-closed independently: a missing or tampered local session cannot
       // disable the already validated public GitHub provider exhibits.
       try {
@@ -416,12 +425,13 @@
         if (sessionButton) sessionButton.disabled = false;
         // Lead the judge demo with authentic local evidence; retain all three
         // GitHub exhibits as independent selectable cases.
-        renderCase(LOCAL_SESSION_ID);
+        if (!userSelectedCase) renderCase(LOCAL_SESSION_ID);
         set(status, '4 recorded exhibits · 3 GitHub · 1 real Kiro session');
       } catch (localError) {
         localSession = null;
         const sessionButton = controls.find(button => button.dataset.case === LOCAL_SESSION_ID);
         if (sessionButton) sessionButton.disabled = true;
+        if (!userSelectedCase) renderCase('stale-artifact');
         set(status, '3 GitHub exhibits verified · Kiro session unavailable');
         console.warn('Alibi Room rejected local Kiro session:', localError.message);
       }
