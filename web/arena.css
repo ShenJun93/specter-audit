@@ -6,3 +6,8 @@
 .choice-actions button:hover{border-color:var(--teal);background:#26354b}
 .lead-result{border-left:3px solid var(--teal);background:#101e2b;padding:13px 16px;border-radius:0 8px 8px 0;min-height:66px;overflow-wrap:anywhere}
 [hidden]{display:none!important}@media(max-width:750px){.identity-grid{grid-template-columns:1fr}.topbar{gap:10px}.hero{padding-top:30px}.two-revisions{grid-template-columns:1fr}.revision{min-height:130px}.challenge,.dossier,.decision{padding:16px}}@media(max-width:390px){.choice-actions button{width:100%}.topbar nav{gap:10px}.topbar nav a{font-size:12px}.hero h1{font-size:34px}.controls>*{width:100%}.import{display:block}}@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;scroll-behavior:auto!important;transition:none!important}}
+.review-export{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin:16px 0 20px}
+.review-export button{background:#1c293b;border-color:#69759d}
+.review-export button:hover:not(:disabled){background:#26354b;border-color:var(--teal)}
+.review-export button:disabled{cursor:not-allowed;opacity:.55}
+#copy-review-status{margin:0;font-size:13px;color:var(--muted);overflow-wrap:anywhere}
