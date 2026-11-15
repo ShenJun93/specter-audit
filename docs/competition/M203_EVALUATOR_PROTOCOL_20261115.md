@@ -18,6 +18,10 @@ The question to test: **Can an unfamiliar developer turn an AI coding-agent comp
 - **M196 separate QA Preview:** https://specter-audit-6w9iolc2n-nvhoa1691993-6852s-projects.vercel.app/ — **not the submitted study entry**.
 - **Historical protocol:** [M122 study](M122_EXTERNAL_REVIEWER_STUDY_20261112.md) referenced an earlier M121 Preview. Do not silently treat those two earlier URLs as the present submitted demo.
 
+## Known UI priming — do not score recall as independent reasoning
+
+Verified against the exact submitted M130 Preview on 2026-11-15 using an actual pointer-driven browser journey: the **homepage's Judge Fast Path CTA already states that 120 tests passed and five later edits occurred**, and Case Room describes that same chronology **before** the Reveal interaction. A fresh reviewer can therefore repeat these facts without having inferred anything from the evidence timeline. **This is a first-use usability/comprehension exercise, not a blind inference or controlled experiment.** Score the *explanation of the evidence gap*, its limits and a specific follow-up action; do not award points for merely repeating the pre-disclosed 120/5 numbers. Report this priming limitation in any study outcome, including a positive one.
+
 ## Execution and ethical boundaries
 
 Recruit **3–5 adults with relevant software review, testing or AI coding-agent experience**, outside the project's author/contributor/tester circle. Avoid automated outreach or unsolicited mass messages; share the study link voluntarily in appropriate channels whose rules allow it. **No one has been recruited or counted merely by opening issue #28.** Do not request personal identities, private repository links, company details, screenshots or unpublished agent transcripts.
@@ -32,7 +36,7 @@ Score each completed response 0–4, one point per category, and preserve verbat
 
 | Criterion | 1 point if participant independently demonstrates |
 | --- | --- |
-| A — chronology | The available saved Kiro session reports 120 passing tests followed by five successful source edits, so the earlier observation does not establish a test on the final edited state |
+| A — reasoning | The reviewer explains **in their own words why** an earlier passing test record cannot establish that the later edited source was tested. Simply reciting “120 passed, five later edits” from the UI does not earn a point |
 | A — limits | They do **not** infer code is broken or no other testing happened; external tests and exact repository binding remain unknown |
 | A — next action | A specific action to close the gap, e.g. rerun relevant tests on the exact final source/commit and inspect the resulting evidence |
 | B — trust boundary | Arena's Base FAIL / Head PASS is one owner-controlled, self-reported behavior test; provider CI is provider metadata; neither alone certifies merge safety or customer adoption |
@@ -41,7 +45,7 @@ A "yes, would use" response is a **stated preference, not evidence of actual ado
 
 ## Blank scorecard — DO NOT pre-populate observations
 
-| Reviewer code | Consented? | A chronology | A limits | A next action | B boundary | Time to first useful answer (opt-in) | Adoption answer | Major friction |
+| Reviewer code | Consented? | A reasoning | A limits | A next action | B boundary | Time to first useful answer (opt-in) | Adoption answer | Major friction |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | E01 | NOT CONDUCTED | — | — | — | — | — | — | — |
 | E02 | NOT CONDUCTED | — | — | — | — | — | — | — |
