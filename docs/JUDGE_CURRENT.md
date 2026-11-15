@@ -14,12 +14,14 @@ Updated: 2026-11-15 (UTC+7). This records the **submitted M130/V6H release**, no
 ## One-minute judge path
 
 1. Open M130. Activate **JUDGE FAST PATH → INVESTIGATE THE MIDNIGHT REWRITE**.
-2. Select **Case 04: The Midnight Rewrite** if not already selected; click **EXPOSE THE ALIBI**.
+2. **Wait for the status “4 recorded exhibits” and for the case heading “The midnight rewrite”**. If Case 04 is not selected, select **Case 04** only after its button becomes enabled. **Then** click **EXPOSE THE ALIBI**. On this submitted M130 build, revealing before the Kiro exhibit finishes loading can show the Case 01 finding instead. Do not interpret “The borrowed alibi” or `STALE EVIDENCE` as Case 04.
 3. Observe **STALE LOCAL TEST EVIDENCE**: a redacted saved Kiro CLI session records 120 passing tests, followed by five successful source edits, without a later passing retest observed **in that session**. This does **not** prove the code broke or rule out testing elsewhere.
 4. Open **Specter Arena**. The owner-controlled synthetic PR fixture shows **Base FAIL → Head PASS** for one reviewer-selected behavior test, classified **DEMONSTRATED_FIX**. The browser displays a saved self-reported runner receipt; it does not execute Docker or attest to a real customer's PR.
 5. Optional: **PR Proof Chain** inspects public GitHub provider metadata after explicit click. **Your Kiro Session** handles a visitor-selected messages.jsonl in-browser; no private file is needed to try the judge path.
 
 The M130 home → Case 04 → EXPOSE THE ALIBI flow and Arena page were exercised in headless browser QA on 2026-11-14. This is a bounded smoke check, not comprehensive cross-browser/security certification.
+
+**M212 reproducible loading caveat (2026-11-15):** The existing M196 delayed-Kiro-response regression checks, run without changing application source, passed **1/4 on exact submitted M130** (three expected failures for pre-load Reveal/late case selection) versus **4/4 on the separate M204 Preview**. This is a deterministic *simulated slow response*, not a measured frequency of real-user incidents. The correct M130 workaround is to wait for the actual Case 04 title and loaded state before revealing. If the Kiro exhibit cannot load, do not claim its verdict was observed. [Cutover gate #30](https://github.com/ShenJun93/specter-audit/issues/30) remains open; the fixed M196/M204 runtime is **not** the submitted source.
 
 ## Why Kiro matters
 
