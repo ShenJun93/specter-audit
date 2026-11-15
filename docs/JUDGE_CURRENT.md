@@ -1,5 +1,5 @@
 # Specter Audit — Current Kiroween Judge Guide
-Updated: 2026-11-14 (UTC+7). This is the current submission reference; older M75/V5D references elsewhere in this repository are historical snapshots.
+Updated: 2026-11-15 (UTC+7). This records the **submitted M130/V6H release**, not the latest source on `main`. Older M75/V5D references are historical snapshots.
 
 ## Start here (no account or credentials)
 
@@ -8,7 +8,8 @@ Updated: 2026-11-14 (UTC+7). This is the current submission reference; older M75
 - **Public judge video V6H (2:23):** https://youtu.be/yabjJ5JpsS0
 - **Public source:** https://github.com/ShenJun93/specter-audit
 - **Video's exact filmed source:** [d8f8e7a9551db4046f144924a3bfbc8735a09e8b](https://github.com/ShenJun93/specter-audit/commit/d8f8e7a9551db4046f144924a3bfbc8735a09e8b).
-- **Integrated main at 2026-11-14 verification:** [19dff09130178995e1cdbe63be7da6704a3770e3](https://github.com/ShenJun93/specter-audit/commit/19dff09130178995e1cdbe63be7da6704a3770e3). Distinct Git commits, equivalent source tree as documented in the M182 release receipt. New main commits may appear later.
+- **Historical release-era main checkpoint, 2026-11-14:** [`19dff09`](https://github.com/ShenJun93/specter-audit/commit/19dff09130178995e1cdbe63be7da6704a3770e3), source-tree equivalent to the filmed M130 commit at that time (M182 receipt).
+- **Later M204 development checkpoint, 2026-11-15:** [merged `main` `8079e6f`](https://github.com/ShenJun93/specter-audit/commit/8079e6fcf6e2a9bd24890977443c5d1e27a0d0c1). [Separate QA Preview](https://specter-audit-io6tf1aor-nvhoa1691993-6852s-projects.vercel.app/) was built from [`e68b39d`](https://github.com/ShenJun93/specter-audit/commit/e68b39d7619dc69ab28fd945f7a326961be1f220), sharing the same Git tree at merge. Includes M196 delayed Case 04 loading/focus fixes and M204's user-triggered Arena review-note copy. **Not filed as the submitted demo and not filmed in V6H.** [Unresolved Devpost update gate #30](https://github.com/ShenJun93/specter-audit/issues/30).
 
 ## One-minute judge path
 
@@ -29,7 +30,7 @@ Kiro CLI was used for actual source/test implementation, distinct from later Cha
 - **M118:** Kiro CLI wrote the first version of `src/arena-case-report.mjs` and corresponding test file; tool permission prevented its noninteractive test run. ChatGPT/WAG performed test corrections and Docker integration. [Bounded Kiro receipt](competition/M118_NATIVE_KIRO_RECEIPT_20261112.md).
 - Root `.kiro/specs/` and `.kiro/steering/` provide project requirements, trust boundaries and task records.
 
-Local Kiro transcripts are editable self-records, not signed independent proof of authorship. No functioning deployed Kiro hook, Crew, agent, MCP, power or PBT is claimed here.
+Local Kiro transcripts are editable self-records, not signed independent proof of authorship. No functioning deployed Kiro hook, Crew, agent, MCP, power or PBT is claimed here. The later **M204 review-note feature was implemented by ChatGPT/WAG**, not Kiro; its attempted Kiro CLI invocation was blocked before generation.
 
 ## Reproduce the filmed source
 
