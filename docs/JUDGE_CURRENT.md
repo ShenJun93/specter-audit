@@ -52,7 +52,7 @@ The same source can be explored as a local Git metadata investigator with `node 
 - `PROVIDER_REPORTED_UNATTESTED` means provider metadata, **not** full test coverage or correctness.
 - `STALE LOCAL TEST EVIDENCE` means the observed test was earlier than later edits in one saved session; other runs are unknown.
 - `DEMONSTRATED_FIX` is **one owner-controlled behavior test** passing on head and failing on base; no independent attestation, merge approval, or broad security guarantee.
-- No real external adoption or 3–5-person independent reviewer study is claimed. [Prepared, not conducted study](competition/M122_EXTERNAL_REVIEWER_STUDY_20261112.md).
+- No real external adoption or 3–5-person independent reviewer study is claimed. **Current M130 first-use invitation:** [neutral reviewer tasks](competition/M203_REVIEWER_PROMPT_20261115.md) · [Issue #28](https://github.com/ShenJun93/specter-audit/issues/28); 0 completed independent human evaluations as of 2026-11-15. [Current operator protocol](competition/M203_EVALUATOR_PROTOCOL_20261115.md) keeps scoring separate from the first-use task. The [older M122 study](competition/M122_EXTERNAL_REVIEWER_STUDY_20261112.md) is a historical, not-conducted snapshot and points to an earlier M121 Preview.
 - Historical **M75 demo** and **V5D video** are preserved for version comparison, not the current submission.
 
 For longer historical technical notes, see [the previous Judge Quickstart](JUDGE_QUICKSTART.md). The live Devpost entry is the authority for current submission links and status.
