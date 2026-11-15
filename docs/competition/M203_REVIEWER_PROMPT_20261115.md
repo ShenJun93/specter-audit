@@ -4,7 +4,7 @@
 
 **Start here:** [Submitted Kiroween M130 demo](https://specter-audit-pi5tpg7i7-nvhoa1691993-6852s-projects.vercel.app/) — no account, install, upload, or access token required. The [public feedback issue #28](https://github.com/ShenJun93/specter-audit/issues/28) is optional; posting a reply there requires a GitHub account, and the reply is public.
 
-If possible, **try the tasks before reading the project README or judge guide**, so that the first impression is not shaped by an answer key. You can stop or skip any part.
+If possible, **try the tasks before reading the project README or judge guide**. The demo itself previews the 120-test/five-edit chronology before the finding is revealed, so this is **not a blind test**. We want to understand your interpretation of the evidence's limits and your next review action, not whether you can repeat those numbers. You can stop or skip any part.
 
 ## Task A — would you trust the agent's completion claim?
 
