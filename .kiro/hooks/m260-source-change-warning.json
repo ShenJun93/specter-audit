@@ -4,7 +4,7 @@
     {
       "name": "specter-source-change-warning",
       "description": "Advisory, not attestation",
-      "trigger": "FileSave",
+      "trigger": "PostFileSave",
       "matcher": "^src/.*\\.(js|mjs|ts|tsx)$",
       "action": {
         "type": "command",

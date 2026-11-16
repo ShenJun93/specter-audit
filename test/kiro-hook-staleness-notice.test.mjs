@@ -94,13 +94,13 @@ test('path validator rejects non-strings and traversal',()=>{
   assert.equal(isSourcePath('src/a.ts'),true);
 });
 
-test('hook config is v1, FileSave, command, timeout<=5 and disabled by default',async()=>{
+test('hook config uses official PostFileSave, command, timeout<=5 and disabled by default',async()=>{
   const cfg=JSON.parse(await readFile(hookConfig,'utf8'));
   assert.equal(cfg.version,'v1');
   assert.equal(cfg.hooks.length,1);
   const h=cfg.hooks[0];
   assert.equal(h.name,'specter-source-change-warning');
-  assert.equal(h.trigger,'FileSave');
+  assert.equal(h.trigger,'PostFileSave');
   assert.equal(h.enabled,false);
   assert.equal(h.action.type,'command');
   assert.equal(h.action.command,'node scripts/kiro-hook-staleness-notice.mjs');
