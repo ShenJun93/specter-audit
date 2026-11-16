@@ -1,27 +1,28 @@
 # Specter Audit — Current Kiroween Judge Guide
-Updated: 2026-11-15 (UTC+7). This records the **submitted M130/V6H release**, not the latest source on `main`. Older M75/V5D references are historical snapshots.
+Updated: 2026-11-16 (UTC+7). **Current submitted demo: M204**. The existing public **V6H video was filmed on older M130**; these represent different source commits. M75/V5D and M130 source links are historical reproducibility anchors, not the new judge entry.
 
 ## Start here (no account or credentials)
 
-- **Official entry:** https://devpost.com/software/specter-audit-trust-the-evidence — existing Kiroween submission ID 1281241, originally submitted 2026-11-11 at 13:01:15 -05:00.
-- **Working demo M130:** https://specter-audit-pi5tpg7i7-nvhoa1691993-6852s-projects.vercel.app/
-- **Public judge video V6H (2:23):** https://youtu.be/yabjJ5JpsS0
+- **Official entry:** https://devpost.com/software/specter-audit-trust-the-evidence — Kiroween submission ID 1281241, originally submitted 2026-11-11 13:01:15 -05:00.
+- **Current working demo M204:** https://specter-audit-io6tf1aor-nvhoa1691993-6852s-projects.vercel.app/
+- **Public V6H judge video (2:23):** https://youtu.be/yabjJ5JpsS0 — **filmed on M130**, not M204.
 - **Public source:** https://github.com/ShenJun93/specter-audit
-- **Video's exact filmed source:** [d8f8e7a9551db4046f144924a3bfbc8735a09e8b](https://github.com/ShenJun93/specter-audit/commit/d8f8e7a9551db4046f144924a3bfbc8735a09e8b).
-- **Historical release-era main checkpoint, 2026-11-14:** [`19dff09`](https://github.com/ShenJun93/specter-audit/commit/19dff09130178995e1cdbe63be7da6704a3770e3), source-tree equivalent to the filmed M130 commit at that time (M182 receipt).
-- **Later M204 development checkpoint, 2026-11-15:** [merged `main` `8079e6f`](https://github.com/ShenJun93/specter-audit/commit/8079e6fcf6e2a9bd24890977443c5d1e27a0d0c1). [Separate QA Preview](https://specter-audit-io6tf1aor-nvhoa1691993-6852s-projects.vercel.app/) was built from [`e68b39d`](https://github.com/ShenJun93/specter-audit/commit/e68b39d7619dc69ab28fd945f7a326961be1f220), sharing the same Git tree at merge. Includes M196 delayed Case 04 loading/focus fixes and M204's user-triggered Arena review-note copy. **Not filed as the submitted demo and not filmed in V6H.** [Unresolved Devpost update gate #30](https://github.com/ShenJun93/specter-audit/issues/30).
+- **M204 demo source:** [e68b39d7619dc69ab28fd945f7a326961be1f220](https://github.com/ShenJun93/specter-audit/commit/e68b39d7619dc69ab28fd945f7a326961be1f220). [Merged main checkpoint 8079e6f](https://github.com/ShenJun93/specter-audit/commit/8079e6fcf6e2a9bd24890977443c5d1e27a0d0c1) shared its exact Git source tree.
+- **V6H filmed source M130:** [d8f8e7a9551db4046f144924a3bfbc8735a09e8b](https://github.com/ShenJun93/specter-audit/commit/d8f8e7a9551db4046f144924a3bfbc8735a09e8b); separate historical preview: https://specter-audit-pi5tpg7i7-nvhoa1691993-6852s-projects.vercel.app/
+- **Submission receipt:** On 2026-11-16, owner-approved M204 demo, Testing Instructions and Kiro Technology answers were saved and read back from the existing authenticated Additional info form. Devpost project description/links were updated to M204; project remained `published` and the original submit timestamp was unchanged. [Release-gate issue #30 completed](https://github.com/ShenJun93/specter-audit/issues/30). No Submit/Resubmit used.
 
-## One-minute judge path
+## One-minute judge path — live M204
 
-1. Open M130. Activate **JUDGE FAST PATH → INVESTIGATE THE MIDNIGHT REWRITE**.
-2. **Wait for the status “4 recorded exhibits” and for the case heading “The midnight rewrite”**. If Case 04 is not selected, select **Case 04** only after its button becomes enabled. **Then** click **EXPOSE THE ALIBI**. On this submitted M130 build, revealing before the Kiro exhibit finishes loading can show the Case 01 finding instead. Do not interpret “The borrowed alibi” or `STALE EVIDENCE` as Case 04.
-3. Observe **STALE LOCAL TEST EVIDENCE**: a redacted saved Kiro CLI session records 120 passing tests, followed by five successful source edits, without a later passing retest observed **in that session**. This does **not** prove the code broke or rule out testing elsewhere.
-4. Open **Specter Arena**. The owner-controlled synthetic PR fixture shows **Base FAIL → Head PASS** for one reviewer-selected behavior test, classified **DEMONSTRATED_FIX**. The browser displays a saved self-reported runner receipt; it does not execute Docker or attest to a real customer's PR.
-5. Optional: **PR Proof Chain** inspects public GitHub provider metadata after explicit click. **Your Kiro Session** handles a visitor-selected messages.jsonl in-browser; no private file is needed to try the judge path.
+1. Open **M204** from the link above. Activate **JUDGE FAST PATH → INVESTIGATE THE MIDNIGHT REWRITE**.
+2. Wait for **4 recorded exhibits** and the heading **The midnight rewrite** (Case 04). Click **Reveal finding now**. This version fixes the prior delayed Case 04 load/reveal race.
+3. Observe **STALE LOCAL TEST EVIDENCE**: a redacted saved Kiro CLI session reports 120 passing tests followed by five successful edits, with no later passing retest observed **in that session**. This does **not** prove the code broke or rule out other test runs.
+4. Choose Case 03 (**The empty dossier**) to see **INSUFFICIENT EVIDENCE**; absence of a receipt is not proof of failing tests.
+5. Open **Specter Arena**. Its owner-controlled synthetic PR fixture reports **Base FAIL → Head PASS** for one behavior test and classifies `DEMONSTRATED FIX`. The browser displays self-reported evidence and does not independently run Docker, attest external execution or authorize a merge. Optionally try **Copy scoped review note**, introduced after the V6H filming.
+6. Optional: **PR Proof Chain** fetches public provider CI after explicit user action. **Your Kiro Session** can analyze visitor-selected `messages.jsonl` in-browser; private logs are not needed for the judge demo.
 
-The M130 home → Case 04 → EXPOSE THE ALIBI flow and Arena page were exercised in headless browser QA on 2026-11-14. This is a bounded smoke check, not comprehensive cross-browser/security certification.
+**Observed 2026-11-16 M245–M246 scope:** unauthenticated browser path homepage → Case 04 → STALE verdict, Case 03 → INSUFFICIENT verdict, Arena DEMONSTRATED FIX, and review-note copy feedback; zero console errors, failed requests or uncaught exceptions in the scoped run. This is **not** a full cross-browser, independent security, or correctness certification.
 
-**M212 reproducible loading caveat (2026-11-15):** The existing M196 delayed-Kiro-response regression checks, run without changing application source, passed **1/4 on exact submitted M130** (three expected failures for pre-load Reveal/late case selection) versus **4/4 on the separate M204 Preview**. This is a deterministic *simulated slow response*, not a measured frequency of real-user incidents. The correct M130 workaround is to wait for the actual Case 04 title and loaded state before revealing. If the Kiro exhibit cannot load, do not claim its verdict was observed. [Cutover gate #30](https://github.com/ShenJun93/specter-audit/issues/30) remains open; the fixed M196/M204 runtime is **not** the submitted source.
+**Historical M130 caveat (not applicable to the updated submitted demo):** deterministic simulated slow responses yielded 1/4 passing checks on M130 versus 4/4 on the M204 fix, because pre-load Reveal and late case-selection could race. Use old M130 only to reproduce the V6H filmed behavior; M204 is the active judge path.
 
 ## Why Kiro matters
 
@@ -55,7 +56,7 @@ The same source can be explored as a local Git metadata investigator with `node 
 - `PROVIDER_REPORTED_UNATTESTED` means provider metadata, **not** full test coverage or correctness.
 - `STALE LOCAL TEST EVIDENCE` means the observed test was earlier than later edits in one saved session; other runs are unknown.
 - `DEMONSTRATED_FIX` is **one owner-controlled behavior test** passing on head and failing on base; no independent attestation, merge approval, or broad security guarantee.
-- No real external adoption or 3–5-person independent reviewer study is claimed. **Current M130 first-use invitation:** [neutral reviewer tasks](competition/M203_REVIEWER_PROMPT_20261115.md) · [Issue #28](https://github.com/ShenJun93/specter-audit/issues/28); 0 completed independent human evaluations as of 2026-11-15. [Current operator protocol](competition/M203_EVALUATOR_PROTOCOL_20261115.md) keeps scoring separate from the first-use task. The [older M122 study](competition/M122_EXTERNAL_REVIEWER_STUDY_20261112.md) is a historical, not-conducted snapshot and points to an earlier M121 Preview.
+- No real external adoption or 3–5-person independent reviewer study is claimed. **Current M204 first-use invitation:** [current M204 five-minute task and public feedback Issue #28](https://github.com/ShenJun93/specter-audit/issues/28); 0 completed independent human evaluations as of 2026-11-16. The [M203 task sheet](competition/M203_REVIEWER_PROMPT_20261115.md) is historical M130. [Current operator protocol](competition/M203_EVALUATOR_PROTOCOL_20261115.md) keeps scoring separate from the first-use task. The [older M122 study](competition/M122_EXTERNAL_REVIEWER_STUDY_20261112.md) is a historical, not-conducted snapshot and points to an earlier M121 Preview.
 - Historical **M75 demo** and **V5D video** are preserved for version comparison, not the current submission.
 
 For longer historical technical notes, see [the previous Judge Quickstart](JUDGE_QUICKSTART.md). The live Devpost entry is the authority for current submission links and status.
