@@ -26,6 +26,8 @@ Updated: 2026-11-16 (UTC+7). **Current submitted demo: M204**. The existing publ
 
 ## Why Kiro matters
 
+For a one-page, cross-linked provenance ledger, see the [Kiro Technology evidence index](competition/KIRO_TECHNOLOGY_EVIDENCE_INDEX_20261116.md); the summary below distinguishes Kiro CLI edits from later ChatGPT/WAG QA.
+
 Kiro CLI was used for actual source/test implementation, distinct from later ChatGPT/WAG development:
 - **M1:** Git inspector / claim-evaluator source and tests. [Commit](https://github.com/ShenJun93/specter-audit/commit/9896ccd9851d5559983f511187ac71ce85f0db10).
 - **M5A:** GitHub Actions evidence adapter / tests, authentic recorded 120 PASS followed by five source edits. [Commit](https://github.com/ShenJun93/specter-audit/commit/99e210da586c2129de9e306c0aae0bb379bd3e53).
