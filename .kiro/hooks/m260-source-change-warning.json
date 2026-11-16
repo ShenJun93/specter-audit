@@ -1,0 +1,17 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "specter-source-change-warning",
+      "description": "Advisory, not attestation",
+      "trigger": "FileSave",
+      "matcher": "^src/.*\\.(js|mjs|ts|tsx)$",
+      "action": {
+        "type": "command",
+        "command": "node scripts/kiro-hook-staleness-notice.mjs"
+      },
+      "enabled": false,
+      "timeout": 5
+    }
+  ]
+}
