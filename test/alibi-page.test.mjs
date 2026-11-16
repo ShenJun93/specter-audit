@@ -123,3 +123,13 @@ test('M129 quick judge finding action is opt-in, bounded, and fail-closed',async
  assert.match(css,/\.quick-reveal:focus-visible\{outline:/);
  assert.match(css,/@media\(max-width:630px\)\{\.quick-action-row/);
 });
+
+test('M256 Alibi brand home link gets its accessible name from visible content',async()=>{
+ const html=await (await fetch(server.url+'/alibi.html')).text();
+ const identity=html.match(/<a class="identity"[^>]*>[\s\S]*?<\/a>/)?.[0];
+ assert.ok(identity,'identity link must exist');
+ assert.match(identity,/<a class="identity" href="\/">/);
+ assert.doesNotMatch(identity,/\baria-label=/,'redundant name override can fail WCAG label-in-name');
+ assert.match(identity,/SPECTER<span>AUDIT<\/span>/,'visible brand text must remain');
+ assert.match(identity,/class="logo-mark" aria-hidden="true"/,'decorative icon must remain hidden');
+});
