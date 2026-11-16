@@ -14,13 +14,28 @@
  * @returns {number|null} Unix timestamp in ms or null if invalid
  */
 function parseTimestamp(ts) {
-  if (typeof ts !== 'string' || ts.trim() === '') return null;
-  // Reject timestamps without explicit timezone (Z or numeric offset)
-  // ISO8601 without timezone is ambiguous and must be rejected
-  if (!ts.endsWith('Z') && !/[+-]\d{2}:\d{2}$/.test(ts)) return null;
-  const date = new Date(ts);
-  if (isNaN(date.getTime())) return null;
-  return date.getTime();
+  if (typeof ts !== 'string') return null;
+  // Require an explicit, complete ISO timestamp; Date.parse alone silently
+  // normalizes impossible days (e.g. February 30) to a different month.
+  const match = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.\d+)?(Z|[+-]\d{2}:\d{2})$/.exec(ts);
+  if (!match) return null;
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+  const hour = Number(match[4]);
+  const minute = Number(match[5]);
+  const second = Number(match[6]);
+  if (month < 1 || month > 12 || hour > 23 || minute > 59 || second > 59) return null;
+  const leap = year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
+  const monthDays = [31, leap ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+  if (day < 1 || day > monthDays[month - 1]) return null;
+  if (match[7] !== 'Z') {
+    const offsetHour = Number(match[7].slice(1, 3));
+    const offsetMinute = Number(match[7].slice(4, 6));
+    if (offsetHour > 23 || offsetMinute > 59) return null;
+  }
+  const ms = Date.parse(ts);
+  return Number.isFinite(ms) ? ms : null;
 }
 
 /**
@@ -179,6 +194,15 @@ export function auditLocalSession(input) {
 
   // Process and validate tests
   for (const test of input.tests) {
+    if (!test || typeof test !== 'object' || Array.isArray(test)) {
+      return {
+        status: 'INSUFFICIENT_SESSION_EVIDENCE',
+        reason: 'Invalid test event shape',
+        timeline: [],
+        independentAttestation: false,
+        semanticCorrectnessVerified: false
+      };
+    }
     const testAtMs = parseTimestamp(test.at);
     if (testAtMs === null) {
       return {
@@ -273,6 +297,15 @@ export function auditLocalSession(input) {
 
   // Process and validate edits
   for (const edit of input.edits) {
+    if (!edit || typeof edit !== 'object' || Array.isArray(edit)) {
+      return {
+        status: 'INSUFFICIENT_SESSION_EVIDENCE',
+        reason: 'Invalid edit event shape',
+        timeline: [],
+        independentAttestation: false,
+        semanticCorrectnessVerified: false
+      };
+    }
     const editAtMs = parseTimestamp(edit.at);
     if (editAtMs === null) {
       return {
