@@ -5,6 +5,13 @@ description: Security and evidence boundaries that every Specter Audit change mu
 
 # Specter Audit — product standards
 
+## Current authority (2026-11-16; supersedes historical release notes below)
+
+- The active Kiroween submission #1281241 points to the M204 source e68b39d on Vercel; V6H was filmed on older M130. The live Devpost entry https://devpost.com/software/specter-audit-trust-the-evidence and docs/JUDGE_CURRENT.md govern current release links.
+- The remote main branch can include source/documentation fixes newer than the immutable submitted M204 deployment. Never infer that a Git merge has been deployed; inspect remote main, source/tree and live deployment before a change.
+- The security and evidence boundaries in this file remain mandatory. The M6F block below is a historical milestone snapshot, not a description of the current deployed release.
+- Kiro usage, attribution and proof limitations: docs/competition/KIRO_TECHNOLOGY_EVIDENCE_INDEX_20261116.md. Do not attribute later ChatGPT/WAG work to Kiro or claim native hooks/Crew/PBT/MCP without directly verifying them.
+
 These boundaries apply to all work on Specter Audit. They are derived from the
 Kiroween 2026 requirements and are non-negotiable for the competition (Costume
 Contest category: spooky UI **with** functional engineering).
@@ -71,7 +78,7 @@ Contest category: spooky UI **with** functional engineering).
   reversible. Do not commit, push, or touch other repositories unless the user
   explicitly asks.
 
-## Current release and unreleased M6F status (2026-11-04)
+## Historical M6F release snapshot (2026-11-04; superseded as current state)
 
 - M5L remains live on Vercel production (merged SHA
   `b6e1407d1218e4ff4b44cb2dd3cae1388a5f533e`), with separately
