@@ -14,10 +14,10 @@
  * @returns {number|null} Unix timestamp in ms or null if invalid
  */
 function parseTimestamp(ts) {
-  if (typeof ts !== 'string') return null;
+  if (typeof ts !== 'string' || ts.length > 38) return null;
   // Require an explicit, complete ISO timestamp; Date.parse alone silently
   // normalizes impossible days (e.g. February 30) to a different month.
-  const match = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.\d+)?(Z|[+-]\d{2}:\d{2})$/.exec(ts);
+  const match = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.\d{1,3})?(Z|[+-]\d{2}:\d{2})$/.exec(ts);
   if (!match) return null;
   const year = Number(match[1]);
   const month = Number(match[2]);
@@ -39,17 +39,6 @@ function parseTimestamp(ts) {
 }
 
 /**
- * Normalizes a timestamp string to epoch milliseconds for comparison
- * @param {string} ts - Timestamp string
- * @returns {number|null} Epoch milliseconds or null if invalid
- */
-function normalizeTimestamp(ts) {
-  const ms = parseTimestamp(ts);
-  if (ms === null) return null;
-  return ms;
-}
-
-/**
  * Validates file path to prevent path traversal
  * @param {string} filePath - File path to validate
  * @returns {boolean} true if valid
@@ -67,7 +56,7 @@ function isValidFilePath(filePath) {
   if (filePath.match(/^[a-zA-Z]:[/\\]/)) return false;
 
   // Reject Unix absolute paths like /etc/x
-  if (filePath.startsWith('/')) return false;
+  if (filePath.startsWith('/') || filePath.startsWith('\\')) return false;
 
   // Allow relative paths like 'src/name.mjs'
   return true;
@@ -391,11 +380,23 @@ export function auditLocalSession(input) {
   const failedAfterClaim = input.tests.some(test =>
     parseTimestamp(test.at) > claimAtMs &&
     (test.pass <= 0 || test.fail > 0 || test.exitCode !== 0));
+  // Failed or unconfirmed edits do not establish a known source state.
+  // Fail closed even if later tests pass: a tool may have partially modified files.
+  const hasUnconfirmedEdit = input.edits.some(edit => edit.successful === false);
+  // Test completion and the agent's claim at the same instant cannot be ordered.
+  const hasSameInstantClaimTest = input.tests.some(test =>
+    parseTimestamp(test.at) === claimAtMs);
 
   let status;
   let reason;
 
-  if (!hasValidPassingTest && latestSuccessfulEditMs === null) {
+  if (hasUnconfirmedEdit) {
+    status = 'INSUFFICIENT_SESSION_EVIDENCE';
+    reason = 'Unconfirmed or failed source edit prevents establishing a current test verdict';
+  } else if (hasSameInstantClaimTest) {
+    status = 'INSUFFICIENT_SESSION_EVIDENCE';
+    reason = 'Test and agent claim have the same timestamp; their order is ambiguous';
+  } else if (!hasValidPassingTest && latestSuccessfulEditMs === null) {
     status = 'INSUFFICIENT_SESSION_EVIDENCE';
     reason = 'No passing tests or successful edits found';
   } else if (!hasValidPassingTest) {
