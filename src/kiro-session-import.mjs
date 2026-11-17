@@ -274,7 +274,10 @@ function result(events) {
   const tests=[],edits=[],unverifiedOperations=[];
   const testResultOrder=new WeakMap();
   const testWindows=[],editWindows=[],uncertainWindows=[];
-  let unclassifiedEdits=0,unpairedRelevant=0,failedEditingToolResults=0;
+  // unpairedRelevant is telemetry: a failed test can be superseded by retesting.
+  // Only orphan results, failed edits, or unknown failed mutating operations
+  // constitute uncertainty that a later PASS cannot erase.
+  let unclassifiedEdits=0,unpairedRelevant=0,failedEditingToolResults=0,unresolvedMutationRisks=0;
   const readOnlyTools=new Set(['read_file','list_directory','update_session_information','get_session_information','list_files']);
   for(const [id,call] of callById){
     const p=call.payload;
@@ -290,6 +293,9 @@ function result(events) {
       // shell calls or unsupported tools. Treat later operations as uncertain.
       if(shell||!readOnlyTools.has(tool)){
         if(observed&&iso(observed.timestamp)<iso(call.timestamp))return safeError('RESULT_BEFORE_TOOL');
+        // Unknown tools and shell commands may have partially modified source
+        // even when their result reports failure. Never supersede that with a PASS.
+        if(observed&&observed.payload.success!==true)unresolvedMutationRisks++;
         unverifiedOperations.push({at:observed?.timestamp??new Date(lastTime).toISOString()});
         uncertainWindows.push({start:iso(call.timestamp),end:observed?iso(observed.timestamp):lastTime});
       }
@@ -337,11 +343,12 @@ function result(events) {
     }
     if(tests.length>60||edits.length>60)return safeError('TOO_MANY_RELEVANT_EVENTS');
   }
-  // A result without a recorded call has unknown effect and cannot be
-  // presumed read-only. A later recognized test may supersede its uncertainty.
+  // A result without its call cannot be classified as read-only or verified.
+  // It is a session-wide provenance gap, even if later tests pass.
   for(const [id,observed] of resultById){
     if(!callById.has(id)){
       unpairedRelevant++;
+      unresolvedMutationRisks++;
       unverifiedOperations.push({at:observed.timestamp});
       uncertainWindows.push({start:iso(observed.timestamp),end:iso(observed.timestamp)});
     }
@@ -357,7 +364,8 @@ function result(events) {
   };
   // Failed edits may partially mutate source even when a later test passes.
   // Never let a newer test silently supersede this uncertain provenance.
-  if(failedEditingToolResults>0)return safeError('INCOMPLETE_RELEVANT_TOOL_EVIDENCE',info);
+  if(failedEditingToolResults>0||unresolvedMutationRisks>0)
+    return safeError('INCOMPLETE_RELEVANT_TOOL_EVIDENCE',info);
   // A test's completion time alone cannot prove it ran against a later
   // source edit. If a test and an edit/uncertain tool operation overlap,
   // their source state is ambiguous even when the test finishes last.
