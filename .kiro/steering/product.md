@@ -5,10 +5,10 @@ description: Security and evidence boundaries that every Specter Audit change mu
 
 # Specter Audit — product standards
 
-## Current authority (2026-11-16; supersedes historical release notes below)
+## Current authority (2026-11-17; supersedes historical release notes below)
 
-- The active Kiroween submission #1281241 points to the M204 source e68b39d on Vercel; V6H was filmed on older M130. The live Devpost entry https://devpost.com/software/specter-audit-trust-the-evidence and docs/JUDGE_CURRENT.md govern current release links.
-- The remote main branch can include source/documentation fixes newer than the immutable submitted M204 deployment. Never infer that a Git merge has been deployed; inspect remote main, source/tree and live deployment before a change.
+- The active Kiroween submission #1281241 points to the M305 judge alias https://specter-audit-judge-m305-nvhoa1691993-6852s-projects.vercel.app/ (reviewed source 4bb872e96c8a31c88d5ae2876ef2ec7ae3b55a60); V6H was filmed on older M130 and M204 is historical. The live Devpost entry https://devpost.com/software/specter-audit-trust-the-evidence and docs/JUDGE_CURRENT.md govern current release links.
+- The remote main branch can include source/documentation fixes newer than the submitted M305 Vercel deployment. Do not infer that a Git merge updates the pinned deployment or its mutable alias; inspect remote main, the alias target, source/tree and live deployment before a change.
 - The security and evidence boundaries in this file remain mandatory. The M6F block below is a historical milestone snapshot, not a description of the current deployed release.
 - Kiro usage, attribution and proof limitations: docs/competition/KIRO_TECHNOLOGY_EVIDENCE_INDEX_20261116.md. Do not attribute later ChatGPT/WAG work to Kiro or claim native hooks/Crew/PBT/MCP without directly verifying them.
 
