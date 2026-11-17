@@ -1,6 +1,6 @@
 # Specter Audit — Judge Quickstart
 
-> **CURRENT SUBMISSION (2026-11-14):** The official Kiroween entry now uses **[M130 working demo](https://specter-audit-pi5tpg7i7-nvhoa1691993-6852s-projects.vercel.app/)** and **[V6H video](https://youtu.be/yabjJ5JpsS0)**. For current judge instructions, Kiro evidence, exact filmed source and limitations, read **[Current M130/V6H Judge Guide](JUDGE_CURRENT.md)**. The M75/V5D content below is an archived 2026-11-12 snapshot, preserved for reproducibility.
+> **ARCHIVED JUDGE QUICKSTART (M75/M130 historical snapshots):** M75/V5D and M130/V6H were earlier submission states, not the current demo. **Current M305 submitted judge demo:** [https://specter-audit-judge-m305-nvhoa1691993-6852s-projects.vercel.app/](https://specter-audit-judge-m305-nvhoa1691993-6852s-projects.vercel.app/); the [V6H video](https://youtu.be/yabjJ5JpsS0) was filmed on M130. For current status, precise source mapping and limitations, see **[Current M305/V6H Judge Guide](JUDGE_CURRENT.md)**. Material below is intentionally historical.
 
 ## Historical judge entry snapshot — M75/V5D (2026-11-12; superseded)
 
