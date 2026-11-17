@@ -274,7 +274,7 @@ function result(events) {
   const tests=[],edits=[],unverifiedOperations=[];
   const testResultOrder=new WeakMap();
   const testWindows=[],editWindows=[],uncertainWindows=[];
-  let unclassifiedEdits=0,unpairedRelevant=0;
+  let unclassifiedEdits=0,unpairedRelevant=0,failedEditingToolResults=0;
   const readOnlyTools=new Set(['read_file','list_directory','update_session_information','get_session_information','list_files']);
   for(const [id,call] of callById){
     const p=call.payload;
@@ -311,6 +311,7 @@ function result(events) {
       unpairedRelevant++;
       unverifiedOperations.push({at:observed.timestamp});
       uncertainWindows.push({start:iso(call.timestamp),end:iso(observed.timestamp)});
+      if(isEditingTool)failedEditingToolResults++;
       continue;
     }
     if(isEditingTool){
@@ -354,6 +355,9 @@ function result(events) {
     testTimesBeforeClaim:tests.filter(t=>iso(t.at)<=claim.ms).length,
     scope:'ONE_SAVED_LOCAL_KIRO_SESSION_ONLY'
   };
+  // Failed edits may partially mutate source even when a later test passes.
+  // Never let a newer test silently supersede this uncertain provenance.
+  if(failedEditingToolResults>0)return safeError('INCOMPLETE_RELEVANT_TOOL_EVIDENCE',info);
   // A test's completion time alone cannot prove it ran against a later
   // source edit. If a test and an edit/uncertain tool operation overlap,
   // their source state is ambiguous even when the test finishes last.
