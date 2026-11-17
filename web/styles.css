@@ -257,3 +257,14 @@ textarea::placeholder{color:#626d84}
 .hero-secondary-path a{color:var(--teal);text-decoration:underline;text-underline-offset:3px}
 .hero-secondary-path a:focus-visible{outline:3px solid var(--teal);outline-offset:3px}
 @media(max-width:600px){.alibi-room-cta{margin-top:17px;padding:13px 15px}.alibi-room-cta strong{font-size:14px}}
+
+/* M320 mobile judge entry visual polish — local QA candidate only. */
+@media (max-width:650px) {
+  .hero-art { right:2px; top:-26px; transform:scale(.28); transform-origin:top right; opacity:.85; pointer-events:none; }
+  .hero-art .orb-tag, .hero-art .scan-line, .hero-art .orbit-three { display:none; }
+}
+@media (max-width:360px) {
+  .hero-copy { padding:15px 0; }
+  .hero h1 { margin:12px 0; }
+  .hero-flags { margin-top:16px; }
+}
