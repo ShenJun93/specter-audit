@@ -210,4 +210,4 @@ As checked 2026-11-12, GitHub `main` is `1230272391c958597d7c858510f195da00ccfcb
 
 The app is not a security certification or an independent semantic code auditor. `SUPPORTED` means **Git path alignment**, not that tests passed or code works.
 
-Current judge instructions: [M204/V6H Judge Guide](docs/JUDGE_CURRENT.md). Historical materials: [M19 Quickstart](docs/JUDGE_QUICKSTART.md) and [V5D video](https://youtu.be/kQKkw7Dkp-M). [Devpost entry](https://devpost.com/software/specter-audit-trust-the-evidence). At the 2026-11-11 snapshot, formal submission was pending. It has since been submitted and updated; consult the current M204/V6H Judge Guide.
+Current judge instructions: [M305/V6H Judge Guide](docs/JUDGE_CURRENT.md) and [current Kiroween entry](https://devpost.com/software/specter-audit-trust-the-evidence). Historical materials: [M19 Quickstart](docs/JUDGE_QUICKSTART.md) and [V5D video](https://youtu.be/kQKkw7Dkp-M). At the 2026-11-11 snapshot, formal submission was pending; it has since been submitted and updated to M305. The V6H video was filmed on older M130.
