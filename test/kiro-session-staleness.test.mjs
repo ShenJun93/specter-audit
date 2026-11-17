@@ -494,7 +494,7 @@ describe('auditLocalSession', () => {
       strictEqual(result.timeline.length, 2);
     });
 
-    it('should handle edit with successful=false correctly', () => {
+    it('fails closed when edit has successful=false', () => {
       const input = {
         sourceKind: 'RECORDED_LOCAL_KIRO_CLI_SESSION',
         claimAt: '2026-11-04T10:45:00.000Z',
@@ -509,11 +509,11 @@ describe('auditLocalSession', () => {
 
       const result = auditLocalSession(input);
 
-      strictEqual(result.status, 'CURRENT_SELF_RECORDED_TEST');
+      strictEqual(result.status, 'INSUFFICIENT_SESSION_EVIDENCE');
       strictEqual(result.timeline.length, 2);
     });
 
-    it('should allow max 60 tests', () => {
+    it('accepts 60 test records but fails closed when one equals claim time', () => {
       const tests = [];
       for (let i = 0; i < 60; i++) {
         tests.push({
@@ -534,7 +534,7 @@ describe('auditLocalSession', () => {
 
       const result = auditLocalSession(input);
 
-      strictEqual(result.status, 'CURRENT_SELF_RECORDED_TEST');
+      strictEqual(result.status, 'INSUFFICIENT_SESSION_EVIDENCE');
       strictEqual(result.timeline.length, 60);
     });
 

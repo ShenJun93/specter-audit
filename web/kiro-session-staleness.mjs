@@ -14,24 +14,28 @@
  * @returns {number|null} Unix timestamp in ms or null if invalid
  */
 function parseTimestamp(ts) {
-  if (typeof ts !== 'string' || ts.trim() === '') return null;
-  // Reject timestamps without explicit timezone (Z or numeric offset)
-  // ISO8601 without timezone is ambiguous and must be rejected
-  if (!ts.endsWith('Z') && !/[+-]\d{2}:\d{2}$/.test(ts)) return null;
-  const date = new Date(ts);
-  if (isNaN(date.getTime())) return null;
-  return date.getTime();
-}
-
-/**
- * Normalizes a timestamp string to epoch milliseconds for comparison
- * @param {string} ts - Timestamp string
- * @returns {number|null} Epoch milliseconds or null if invalid
- */
-function normalizeTimestamp(ts) {
-  const ms = parseTimestamp(ts);
-  if (ms === null) return null;
-  return ms;
+  if (typeof ts !== 'string' || ts.length > 38) return null;
+  // Require an explicit, complete ISO timestamp; Date.parse alone silently
+  // normalizes impossible days (e.g. February 30) to a different month.
+  const match = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.\d{1,3})?(Z|[+-]\d{2}:\d{2})$/.exec(ts);
+  if (!match) return null;
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+  const hour = Number(match[4]);
+  const minute = Number(match[5]);
+  const second = Number(match[6]);
+  if (month < 1 || month > 12 || hour > 23 || minute > 59 || second > 59) return null;
+  const leap = year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
+  const monthDays = [31, leap ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+  if (day < 1 || day > monthDays[month - 1]) return null;
+  if (match[7] !== 'Z') {
+    const offsetHour = Number(match[7].slice(1, 3));
+    const offsetMinute = Number(match[7].slice(4, 6));
+    if (offsetHour > 23 || offsetMinute > 59) return null;
+  }
+  const ms = Date.parse(ts);
+  return Number.isFinite(ms) ? ms : null;
 }
 
 /**
@@ -52,7 +56,7 @@ function isValidFilePath(filePath) {
   if (filePath.match(/^[a-zA-Z]:[/\\]/)) return false;
 
   // Reject Unix absolute paths like /etc/x
-  if (filePath.startsWith('/')) return false;
+  if (filePath.startsWith('/') || filePath.startsWith('\\')) return false;
 
   // Allow relative paths like 'src/name.mjs'
   return true;
@@ -179,6 +183,15 @@ export function auditLocalSession(input) {
 
   // Process and validate tests
   for (const test of input.tests) {
+    if (!test || typeof test !== 'object' || Array.isArray(test)) {
+      return {
+        status: 'INSUFFICIENT_SESSION_EVIDENCE',
+        reason: 'Invalid test event shape',
+        timeline: [],
+        independentAttestation: false,
+        semanticCorrectnessVerified: false
+      };
+    }
     const testAtMs = parseTimestamp(test.at);
     if (testAtMs === null) {
       return {
@@ -273,6 +286,15 @@ export function auditLocalSession(input) {
 
   // Process and validate edits
   for (const edit of input.edits) {
+    if (!edit || typeof edit !== 'object' || Array.isArray(edit)) {
+      return {
+        status: 'INSUFFICIENT_SESSION_EVIDENCE',
+        reason: 'Invalid edit event shape',
+        timeline: [],
+        independentAttestation: false,
+        semanticCorrectnessVerified: false
+      };
+    }
     const editAtMs = parseTimestamp(edit.at);
     if (editAtMs === null) {
       return {
@@ -358,11 +380,23 @@ export function auditLocalSession(input) {
   const failedAfterClaim = input.tests.some(test =>
     parseTimestamp(test.at) > claimAtMs &&
     (test.pass <= 0 || test.fail > 0 || test.exitCode !== 0));
+  // Failed or unconfirmed edits do not establish a known source state.
+  // Fail closed even if later tests pass: a tool may have partially modified files.
+  const hasUnconfirmedEdit = input.edits.some(edit => edit.successful === false);
+  // Test completion and the agent's claim at the same instant cannot be ordered.
+  const hasSameInstantClaimTest = input.tests.some(test =>
+    parseTimestamp(test.at) === claimAtMs);
 
   let status;
   let reason;
 
-  if (!hasValidPassingTest && latestSuccessfulEditMs === null) {
+  if (hasUnconfirmedEdit) {
+    status = 'INSUFFICIENT_SESSION_EVIDENCE';
+    reason = 'Unconfirmed or failed source edit prevents establishing a current test verdict';
+  } else if (hasSameInstantClaimTest) {
+    status = 'INSUFFICIENT_SESSION_EVIDENCE';
+    reason = 'Test and agent claim have the same timestamp; their order is ambiguous';
+  } else if (!hasValidPassingTest && latestSuccessfulEditMs === null) {
     status = 'INSUFFICIENT_SESSION_EVIDENCE';
     reason = 'No passing tests or successful edits found';
   } else if (!hasValidPassingTest) {

@@ -18,10 +18,28 @@ const safeError=(errorCode,summary={})=>({
   errorCode
 });
 function iso(s) {
-  if(typeof s!=='string'||s.length>38||
-     !/^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(?:\.\d{1,3})?(?:Z|[+-]\d\d:\d\d)$/.test(s))return null;
-  const time=Date.parse(s);
-  return Number.isFinite(time)?time:null;
+  if (typeof s !== 'string' || s.length > 38) return null;
+  // Date.parse alone normalizes impossible days (e.g. February 30).
+  // Validate event timestamps before building claim/test/edit chronology.
+  const m = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.\d{1,3})?(Z|[+-]\d{2}:\d{2})$/.exec(s);
+  if (!m) return null;
+  const year = Number(m[1]);
+  const month = Number(m[2]);
+  const day = Number(m[3]);
+  const hour = Number(m[4]);
+  const minute = Number(m[5]);
+  const second = Number(m[6]);
+  if (month < 1 || month > 12 || hour > 23 || minute > 59 || second > 59) return null;
+  const leap = year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
+  const days = [31, leap ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+  if (day < 1 || day > days[month - 1]) return null;
+  if (m[7] !== 'Z') {
+    const offsetHours = Number(m[7].slice(1, 3));
+    const offsetMinutes = Number(m[7].slice(4, 6));
+    if (offsetHours > 23 || offsetMinutes > 59) return null;
+  }
+  const time = Date.parse(s);
+  return Number.isFinite(time) ? time : null;
 }
 function pathFromKiro(s) {
   if(typeof s!=='string'||s.length>600)return null;
@@ -256,7 +274,10 @@ function result(events) {
   const tests=[],edits=[],unverifiedOperations=[];
   const testResultOrder=new WeakMap();
   const testWindows=[],editWindows=[],uncertainWindows=[];
-  let unclassifiedEdits=0,unpairedRelevant=0;
+  // unpairedRelevant is telemetry: a failed test can be superseded by retesting.
+  // Only orphan results, failed edits, or unknown failed mutating operations
+  // constitute uncertainty that a later PASS cannot erase.
+  let unclassifiedEdits=0,unpairedRelevant=0,failedEditingToolResults=0,unresolvedMutationRisks=0;
   const readOnlyTools=new Set(['read_file','list_directory','update_session_information','get_session_information','list_files']);
   for(const [id,call] of callById){
     const p=call.payload;
@@ -272,6 +293,9 @@ function result(events) {
       // shell calls or unsupported tools. Treat later operations as uncertain.
       if(shell||!readOnlyTools.has(tool)){
         if(observed&&iso(observed.timestamp)<iso(call.timestamp))return safeError('RESULT_BEFORE_TOOL');
+        // Unknown tools and shell commands may have partially modified source
+        // even when their result reports failure. Never supersede that with a PASS.
+        if(observed&&observed.payload.success!==true)unresolvedMutationRisks++;
         unverifiedOperations.push({at:observed?.timestamp??new Date(lastTime).toISOString()});
         uncertainWindows.push({start:iso(call.timestamp),end:observed?iso(observed.timestamp):lastTime});
       }
@@ -293,6 +317,7 @@ function result(events) {
       unpairedRelevant++;
       unverifiedOperations.push({at:observed.timestamp});
       uncertainWindows.push({start:iso(call.timestamp),end:iso(observed.timestamp)});
+      if(isEditingTool)failedEditingToolResults++;
       continue;
     }
     if(isEditingTool){
@@ -318,11 +343,12 @@ function result(events) {
     }
     if(tests.length>60||edits.length>60)return safeError('TOO_MANY_RELEVANT_EVENTS');
   }
-  // A result without a recorded call has unknown effect and cannot be
-  // presumed read-only. A later recognized test may supersede its uncertainty.
+  // A result without its call cannot be classified as read-only or verified.
+  // It is a session-wide provenance gap, even if later tests pass.
   for(const [id,observed] of resultById){
     if(!callById.has(id)){
       unpairedRelevant++;
+      unresolvedMutationRisks++;
       unverifiedOperations.push({at:observed.timestamp});
       uncertainWindows.push({start:iso(observed.timestamp),end:iso(observed.timestamp)});
     }
@@ -336,6 +362,10 @@ function result(events) {
     testTimesBeforeClaim:tests.filter(t=>iso(t.at)<=claim.ms).length,
     scope:'ONE_SAVED_LOCAL_KIRO_SESSION_ONLY'
   };
+  // Failed edits may partially mutate source even when a later test passes.
+  // Never let a newer test silently supersede this uncertain provenance.
+  if(failedEditingToolResults>0||unresolvedMutationRisks>0)
+    return safeError('INCOMPLETE_RELEVANT_TOOL_EVIDENCE',info);
   // A test's completion time alone cannot prove it ran against a later
   // source edit. If a test and an edit/uncertain tool operation overlap,
   // their source state is ambiguous even when the test finishes last.

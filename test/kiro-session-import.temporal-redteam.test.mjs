@@ -107,7 +107,7 @@ test('a failed source edit can have partially mutated files: never upgrade to CU
  ]);
  assert.notEqual(verdict,'CURRENT_SELF_RECORDED_TEST');
 });
-test('a failed edit followed by a newer observed passing test does not force a false stale verdict',()=>{
+test('a failed edit before a passing test remains insufficient instead of CURRENT',()=>{
  const {parsed,verdict}=inspect([
   call('00','e','str_replace',{filePath:'src/main.mjs'}),
   result('01','e',false,'Tool failed during write'),
@@ -116,6 +116,7 @@ test('a failed edit followed by a newer observed passing test does not force a f
   claim('04'),
   event('05',{type:'turn_end'})
  ]);
- assert.equal(parsed.errorCode,null);
- assert.equal(verdict,'CURRENT_SELF_RECORDED_TEST');
+ assert.equal(parsed.errorCode,'INCOMPLETE_RELEVANT_TOOL_EVIDENCE');
+ assert.equal(parsed.input,null);
+ assert.equal(verdict,null);
 });
